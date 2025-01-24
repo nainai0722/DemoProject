@@ -22,7 +22,8 @@ struct IndexTopBarPart: View {
     
     var body: some View {
         HStack{
-            NavigationLink(destination: PageTutorialList(title:"History Tutorials")){
+            NavigationLink(destination: HistoryTutorialsView()){
+//            NavigationLink(destination: PageTutorialList(title:"History Tutorials")){
                 Image(systemName: "list.bullet")
                     .font(.system(size: 22))
                     .foregroundColor(.gray)

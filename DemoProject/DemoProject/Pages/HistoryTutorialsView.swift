@@ -16,10 +16,14 @@ struct HistoryTutorialsView: View {
             VStack {
                 ForEach(tutorials.items.indices, id: \.self){ index in
                     TutorialItemView(tutorial: tutorials.items[index])
+                    Divider()
                 }
             }
             Spacer()
         }
+        
+        .navigationTitle("")
+        .navigationBarHidden(true)
     }
 }
 
@@ -92,9 +96,9 @@ struct TutorialItemView: View {
                         Text(tutorial.fireCount.description)
                     }
                 }
+                .padding(.top,10)
             }
             .padding(.leading)
-            Spacer()
         }
         .padding()
         

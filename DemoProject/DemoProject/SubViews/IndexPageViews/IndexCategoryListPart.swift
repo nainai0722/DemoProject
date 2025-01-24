@@ -17,9 +17,9 @@ struct IndexCategoryListPart: View {
             
             ZStack {
                 
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: 0)
                     .fill(LinearGradient(colors: [Color(red: 255/255, green: 122/255, blue: 109/255),Color(red: 229/255, green: 193/255, blue: 113/255)], startPoint: .leading, endPoint: .trailing))
-                    .offset(x: 20, y: 0)
+//                    .offset(x: 20, y: 0)
                 ScrollView(Axis.Set.horizontal, showsIndicators: false){
                     HStack(alignment:.center, spacing:0){
                         NavigationLink(destination:PageCategories(title: "デザイン")){

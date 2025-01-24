@@ -31,8 +31,6 @@ struct PageViewIndex: View {
                         
                     }
                 }
-                .navigationTitle("")
-                .padding(.top,10)
             }
             .onAppear(){
                 self.isAnimating = true
