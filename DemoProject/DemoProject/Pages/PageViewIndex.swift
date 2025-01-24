@@ -11,29 +11,29 @@ struct PageViewIndex: View {
     @State var isAnimating = false
     var body: some View {
         NavigationView{
-            ScrollView{
-                VStack{
-                    IndexTopBarPart()
-                        .opacity(isAnimating ? 1 : 0)
-                        .animation(.spring().delay(0.2), value: isAnimating)
-                    
-                    IndexCategoryListPart()
-                        .opacity(isAnimating ? 1 : 0)
-                        .animation(.spring().delay(0.4), value: isAnimating)
-                    
-                    IndexClassListPart()
-                        .opacity(isAnimating ? 1 : 0)
-                        .animation(.spring().delay(0.6), value: isAnimating)
-                    
-                    IndexTopicsListPart()
-                        .opacity(isAnimating ? 1 : 0)
-                        .animation(.spring().delay(0.8), value: isAnimating)
-                    
+            VStack{
+                IndexTopBarPart()
+                    .opacity(isAnimating ? 1 : 0)
+                    .animation(.spring().delay(0.2), value: isAnimating)
+            VStack {
+                ScrollView{
+                        IndexCategoryListPart()
+                            .opacity(isAnimating ? 1 : 0)
+                            .animation(.spring().delay(0.4), value: isAnimating)
+                        
+                        IndexClassListPart()
+                            .opacity(isAnimating ? 1 : 0)
+                            .animation(.spring().delay(0.6), value: isAnimating)
+                        
+                        IndexTopicsListPart()
+                            .opacity(isAnimating ? 1 : 0)
+                            .animation(.spring().delay(0.8), value: isAnimating)
+                        
+                    }
                 }
+                .navigationTitle("")
+                .padding(.top,10)
             }
-            .navigationTitle("")
-            .navigationBarBackButtonHidden(true)
-            .padding(.top,10)
             .onAppear(){
                 self.isAnimating = true
             }
