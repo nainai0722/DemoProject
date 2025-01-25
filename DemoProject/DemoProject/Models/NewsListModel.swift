@@ -23,6 +23,17 @@ class NewsViewModel: ObservableObject {
                 }
             }
         }
+        // 検証用のニュースを取得する
+//        fetchMockNews { result in
+//            DispatchQueue.main.async {
+//                switch result {
+//                case .success(let news):
+//                    self.newsList = news
+//                case .failure(let error):
+//                    print("エラーが発生しました: \(error.localizedDescription)")
+//                }
+//            }
+//        }
     }
     
     func fetchNews(completion: @escaping (Result<[News], Error>) -> Void) {
@@ -52,14 +63,16 @@ class NewsViewModel: ObservableObject {
         task.resume()
     }
     
-    //    private func fetchMockNews(completion: @escaping (Result<[ModelNews], Error>) -> Void) {
-    //        // サンプルデータを返すフェッチ処理
-    //        let sampleData = [
-    //            ModelNews(title: "ニュース1", subTile: "詳細1", postDate: "2025-01-25"),
-    //            ModelNews(title: "ニュース2", subTile: "詳細2", postDate: "2025-01-25"),
-    //            ModelNews(title: "ニュース3", subTile: "詳細3", postDate: "2025-01-25"),
-    //        ]
-    //        completion(.success(sampleData))
-    //    }
+    private func fetchMockNews(completion: @escaping (Result<[News], Error>) -> Void) {
+        // サンプルデータを返すフェッチ処理
+        let sampleData = [
+            News(id: 1, title: "ニュースタイトル1", subTile: "ニュース詳細", postDate: "2025-1-25 13:34"),
+            News(id: 2, title: "ニュースタイトル2", subTile: "ニュース詳細", postDate: "2025-1-25 13:34"),
+            News(id: 3, title: "ニュースタイトル3", subTile: "ニュース詳細", postDate: "2025-1-25 13:34"),
+            News(id: 4, title: "ニュースタイトル4", subTile: "ニュース詳細", postDate: "2025-1-25 13:34"),
+            News(id: 5, title: "ニュースタイトル5", subTile: "ニュース詳細", postDate: "2025-1-25 13:34"),
+        ]
+        completion(.success(sampleData))
+    }
 
 }

@@ -8,20 +8,20 @@
 import SwiftUI
 
 struct HistoryTutorialsView: View {
-    var tutorials = ModelTutorialList()
+    @StateObject private var model = TutorialListModel()
     var body: some View {
         VStack(alignment: .leading, spacing: 0){
             SubPageTopTitle(title: "最近のチュートリアル", subTitle: "100件を上限に掲載されている",withArrow: true)
             Divider()
             VStack {
-                ForEach(tutorials.items.indices, id: \.self){ index in
-                    TutorialItemView(tutorial: tutorials.items[index])
+                ForEach(model.items){ item in
+                    TutorialItemView(tutorial: item)
                     Divider()
                 }
             }
             Spacer()
         }
-        
+        .onAppear(perform: model.fetch)
         .navigationTitle("")
         .navigationBarHidden(true)
     }
@@ -110,11 +110,11 @@ struct StatusCircleView: View {
     var body: some View {
         VStack{
             switch status {
-            case .None:
+            case .none:
                 Circle() // 全体の円
                     .fill(Color.gray.opacity(0.3)) // 背景色
                     .frame(width: 15, height: 15)
-            case .Undone:
+            case .undone:
                 ZStack {
                     Circle() // 全体の円
                         .fill(Color.gray.opacity(0.3)) // 背景色
@@ -127,7 +127,7 @@ struct StatusCircleView: View {
                         .frame(width: 15, height: 15)
                 }
                 
-            case .Completed:
+            case .completed:
                 Circle()
                     .fill(.orange)
                     .frame(width: 15, height: 15)

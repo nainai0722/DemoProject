@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct ModelStatus {
+struct StatusModel {
     var status: String
 }

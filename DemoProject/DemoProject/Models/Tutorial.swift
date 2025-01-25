@@ -6,14 +6,14 @@
 //
 
 import Foundation
-enum TutorialStatus {
-    case None
-    case Undone
-    case Completed
+enum TutorialStatus: String, Codable {
+    case none = "None"
+    case undone = "Undone"
+    case completed = "Completed"
 }
 
-class Tutorial: NSObject {
-    var sequence : Int
+class Tutorial: NSObject,Codable,Identifiable {
+    var id : Int
     var status : TutorialStatus
     var title :String
     var subTitle: String
@@ -21,14 +21,25 @@ class Tutorial: NSObject {
     var fireCount : Int
     var favoriteCount : Int
     
-    init(sequence: Int,status: TutorialStatus,title:String,subTitle: String,startCount: Int,fireCount : Int,favoriteCount : Int) {
+    init(id: Int,status: TutorialStatus,title:String, subTitle: String,startCount: Int,fireCount : Int,favoriteCount : Int) {
         self.status = status
-        self.sequence = sequence
+        self.id = id
         self.title = title
         self.subTitle = subTitle
         self.starCount = startCount
         self.fireCount = fireCount
         self.favoriteCount = favoriteCount
+    }
+    
+    // CodingKeysを定義して、プロパティ名とJSONキーを対応付ける
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case status
+        case title
+        case subTitle = "sub_title"
+        case starCount = "star_count"
+        case fireCount = "fire_count"
+        case favoriteCount = "favorite_count" // JSONキーとプロパティ名が異なる場合に対応
     }
     
 //    override init() {

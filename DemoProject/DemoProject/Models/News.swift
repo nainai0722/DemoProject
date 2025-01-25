@@ -13,6 +13,13 @@ class News: NSObject,Codable,Identifiable {
     var subTile: String
     var postDate: String
     
+    init(id: Int, title: String, subTile: String, postDate: String) {
+        self.id = id
+        self.title = title
+        self.subTile = subTile
+        self.postDate = postDate
+    }
+    
     private enum CodingKeys: String, CodingKey {
         case id
         case title
