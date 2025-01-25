@@ -32,6 +32,12 @@ struct PageViewIndex: View {
                                 .opacity(isAnimating ? 1 : 0)
                                 .animation(.spring().delay(0.8), value: isAnimating)
                             
+                            NavigationLink(destination: NewsListView()){
+                                Image(systemName: "newspaper")
+                                    .font(.system(size: 20, weight: .bold, design: .default))
+                                    .foregroundColor(.gray)
+                            }
+                            
                         }
                     }
                     .padding(.top,10)

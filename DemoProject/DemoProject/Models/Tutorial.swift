@@ -12,7 +12,7 @@ enum TutorialStatus {
     case Completed
 }
 
-class ModelTutorial: NSObject {
+class Tutorial: NSObject {
     var sequence : Int
     var status : TutorialStatus
     var title :String

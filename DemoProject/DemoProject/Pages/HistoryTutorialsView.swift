@@ -62,7 +62,7 @@ struct SubPageTopTitle: View {
 }
 
 struct TutorialItemView: View {
-    let tutorial: ModelTutorial
+    let tutorial: Tutorial
     var body: some View {
         HStack {
             StatusCircleView(status: tutorial.status)
