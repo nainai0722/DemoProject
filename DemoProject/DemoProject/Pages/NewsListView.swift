@@ -39,21 +39,6 @@ struct NewsListView: View {
     NewsListView()
 }
 
-//struct SubPageNewsRow: View {
-//    var news: ModelNews
-//    var color : Color = .blue
-//    
-//    var body: some View {
-//        HStack{
-//            Rectangle()
-//                .fill(.gray)
-//                .frame(minWidth: 1, idealWidth: 1, maxWidth: 1, minHeight: 120, idealHeight: 100, maxHeight: 1000, alignment: .leading)
-//                .offset(x:20)
-//            Text("Hello, World!")
-//        }
-//    }
-//}
-
 struct SubPageNewsRow: View {
     var news: News
     var color : Color = .blue

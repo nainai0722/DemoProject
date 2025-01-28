@@ -5,7 +5,6 @@
 //  Created by 指原奈々 on 2025/01/25.
 //
 import SwiftUI
-import Foundation
 
 enum CategoryType: String, Codable {
     case income

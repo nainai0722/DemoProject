@@ -13,18 +13,7 @@ class NewsViewModel: ObservableObject {
 
     func fetch() {
         // ニュースを取得する
-        fetchNews { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let news):
-                    self.newsList = news
-                case .failure(let error):
-                    print("エラーが発生しました: \(error.localizedDescription)")
-                }
-            }
-        }
-        // 検証用のニュースを取得する
-//        fetchMockNews { result in
+//        fetchNews { result in
 //            DispatchQueue.main.async {
 //                switch result {
 //                case .success(let news):
@@ -34,6 +23,17 @@ class NewsViewModel: ObservableObject {
 //                }
 //            }
 //        }
+        // 検証用のニュースを取得する
+        fetchMockNews { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let news):
+                    self.newsList = news
+                case .failure(let error):
+                    print("エラーが発生しました: \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
     func fetchNews(completion: @escaping (Result<[News], Error>) -> Void) {

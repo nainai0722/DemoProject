@@ -16,6 +16,7 @@ struct HomeView: View {
             CategoryListView()
             
             ClassListView()
+            Spacer()
         }
     }
 }

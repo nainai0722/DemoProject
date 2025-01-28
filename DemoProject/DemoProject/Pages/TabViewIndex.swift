@@ -16,7 +16,7 @@ struct TabViewIndex: View {
                     Text("Home")
                 }
             
-            PageTest()
+            PageTestList()
                 .tabItem {
                     Image(systemName: "list.dash")
                     Text("Quiz")

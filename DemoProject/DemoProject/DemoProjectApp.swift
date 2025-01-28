@@ -11,7 +11,8 @@ import SwiftUI
 struct DemoProjectApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+//            HomeView()
+            TabViewIndex()
         }
     }
 }
