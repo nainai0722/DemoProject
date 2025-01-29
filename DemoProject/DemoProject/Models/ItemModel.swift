@@ -29,16 +29,16 @@ class QuizCategoryModel: ObservableObject {
     private func fetchMockItems(completion: @escaping (Result<[QuizCategory], Error>) -> Void) {
         // サンプルデータを返すフェッチ処理
         let quizCategories: [QuizCategory] = [
-            QuizCategory(id: 1, title: "時間", starCount: 3, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
-            QuizCategory(id: 2, title: "食べ物", starCount: 5, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
-            QuizCategory(id: 3, title: "生活", starCount: 2, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
-            QuizCategory(id: 4, title: "生き物", starCount: 0, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
-            QuizCategory(id: 5, title: "時間", starCount: 4, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
-            QuizCategory(id: 6, title: "食べ物", starCount: 1, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
-            QuizCategory(id: 7, title: "生活", starCount: 5, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
-            QuizCategory(id: 8, title: "生き物", starCount: 2, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
-            QuizCategory(id: 9, title: "時間", starCount: 3, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
-            QuizCategory(id: 10, title: "食べ物", starCount: 4, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
+//            QuizCategory(id: 1, title: "時間", starCount: 3, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
+//            QuizCategory(id: 2, title: "食べ物", starCount: 5, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
+//            QuizCategory(id: 3, title: "生活", starCount: 2, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
+//            QuizCategory(id: 4, title: "生き物", starCount: 0, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
+//            QuizCategory(id: 5, title: "時間", starCount: 4, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
+//            QuizCategory(id: 6, title: "食べ物", starCount: 1, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
+//            QuizCategory(id: 7, title: "生活", starCount: 5, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
+//            QuizCategory(id: 8, title: "生き物", starCount: 2, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
+//            QuizCategory(id: 9, title: "時間", starCount: 3, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28"),
+//            QuizCategory(id: 10, title: "食べ物", starCount: 4, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
         ]
         completion(.success(quizCategories))
     }

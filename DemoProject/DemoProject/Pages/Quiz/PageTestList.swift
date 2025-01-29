@@ -8,16 +8,15 @@
 import SwiftUI
 
 struct PageTestList: View {
-    @ObservedObject var viewModel = QuizCategoryModel()
+    @ObservedObject var viewModel = QuizCategoryListModel()
     var body: some View {
         //クイズの一覧画面を表示する
-        // クイズデータをローカルに置いておく場合、アプリを家の中でしか使えない。
-        // クイズデータを別サーバを立てると、その分の学習コストがかかる。Firebaseでいいのか。
-        //
-        ScrollView{
-            VStack {
-                ForEach(viewModel.items) { item in
-                    SubPageTestRow(isAnimating: false, quizCategory: item)
+        NavigationView{
+            ScrollView{
+                VStack {
+                    ForEach(viewModel.categories) { categories in
+                        SubPageTestRow(isAnimating: false, quizCategory: categories)
+                    }
                 }
             }
         }

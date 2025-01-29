@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SubPageTestRow: View {
     @State var isAnimating = false
-    var quizCategory:QuizCategory = QuizCategory(id: 1, title: "時間", starCount: 3, questions: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
+    var quizCategory:QuizCategory = QuizCategory(id: 1, title: "時間", starCount: 3, quizItems: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
     var body: some View {
         ZStack{
             RoundedRectangle(cornerRadius: 8)
@@ -38,7 +38,7 @@ struct SubPageTestRow: View {
                             VStack {
                                 Text("答えた数")
                                     .font(.system(size: 16))
-                                Text("\(quizCategory.correctCount)/\(quizCategory.questions.count)")
+                                Text("\(quizCategory.correctCount)/\(quizCategory.quizItems.count)")
                             }
                         }
                         HStack{
@@ -53,17 +53,17 @@ struct SubPageTestRow: View {
                     
                 }
                 .frame(width: UIScreen.main.bounds.width - 100, height: 150)
-                ZStack {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.purple.opacity(0.65))
-                        .frame(width: 100, height: 30)
-                    Text("はじめる")
-                }
-                .onTapGesture {
-                    //クイズ画面へ遷移する
-                    QuizView()
+                NavigationLink(destination:
+                                QuizView(categoryTitle:quizCategory.title ,  quizItems: quizCategory.quizItems)){
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.purple.opacity(0.65))
+                            .frame(width: 100, height: 30)
+                        Text("はじめる")
+                    }
                 }
             }
+            
         }
         .padding(.top, 10)
         .opacity(isAnimating ? 1 : 0)
@@ -71,6 +71,7 @@ struct SubPageTestRow: View {
         .onAppear {
             self.isAnimating = true
         }
+        
     }
 }
 
