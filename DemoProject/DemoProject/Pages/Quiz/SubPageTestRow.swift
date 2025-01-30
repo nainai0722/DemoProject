@@ -14,20 +14,21 @@ struct SubPageTestRow: View {
         ZStack{
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.white)
-                .frame(width: UIScreen.main.bounds.width - 100, height: 200)
+                .frame(width: UIScreen.main.bounds.width - 40, height: 200)
                 .shadow(radius: 8)
             VStack {
                 HStack(){
                     ZStack {
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.purple.opacity(0.65))
-                            .frame(width: 100, height: 100)
+                            .fill(Color.green.opacity(0.65))
+                            .frame(width: 120, height: 120)
                         
                         VStack {
                             Image("quiz_\(quizCategory.id)")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 70, height: 70)
+                                .padding(.top)
                             Text(quizCategory.title)
                         }
                     }
@@ -57,9 +58,10 @@ struct SubPageTestRow: View {
                                 QuizView(categoryTitle:quizCategory.title ,  quizItems: quizCategory.quizItems)){
                     ZStack {
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.purple.opacity(0.65))
+                            .fill(Color.green.opacity(0.65))
                             .frame(width: 100, height: 30)
                         Text("はじめる")
+                            .foregroundStyle(.white)
                     }
                 }
             }

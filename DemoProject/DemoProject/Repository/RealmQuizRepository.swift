@@ -9,7 +9,7 @@ import Foundation
 import RealmSwift
 
 
-struct DataInserUpdateLogic {
+struct RealmQuizRepository {
     
     func getTableList() {
         let realm = try! Realm()
@@ -44,18 +44,63 @@ struct DataInserUpdateLogic {
         }
     }
     
+
+//    func initializeDefaultCategoriesIfNeeded() {
+//        let realm = try! Realm()
+//        let existingCategories = realm.objects(RealmQuizCategory.self)
+//        if existingCategories.isEmpty {
+//            let categoryNames = ["漢字", "ことわざ", "動物", "生活", "有名人", "家族", "社会"]
+//            for categoryName in categoryNames {
+//                try! realm.write {
+//                    let defaultCategory = RealmQuizCategory()
+//                    defaultCategory.title = categoryName
+//                    defaultCategory.starCount = 0
+//                    defaultCategory.createdAt = Date()
+//                    realm.add(defaultCategory)
+//                    print("\(categoryName)を追加しました")
+//                }
+//            }
+//        }
+//    }
+    
+    func initializeDefaultCategoriesIfNeeded() {
+        let realm = try! Realm()
+        let existingCategories = realm.objects(RealmQuizCategory.self)
+        
+        if existingCategories.isEmpty {
+            let categoryNames = ["漢字", "ことわざ", "動物", "生活", "有名人", "家族", "社会"]
+            
+            try! realm.write {
+                for categoryName in categoryNames {
+                    let defaultCategory = RealmQuizCategory()
+                    let max2Id = realm.objects(RealmQuizCategory.self).max(ofProperty: "id") as Int?
+                    //        print("最大値を取得:\(String(describing: max2Id))")
+                    defaultCategory.id = (max2Id ?? 0) + 1
+                    defaultCategory.title = categoryName
+                    defaultCategory.starCount = 0
+                    defaultCategory.createdAt = Date()
+                    realm.add(defaultCategory)
+                    print("\(categoryName)を追加しました")
+                }
+            }
+        }
+    }
+
+    
+    
     /// カテゴリー情報を配列で返す
     /// - Returns: 配列型のカテゴリ情報
     func getCategories() -> [RealmQuizCategory] {
         let realm = try! Realm()
         let categories = realm.objects(RealmQuizCategory.self)
         
-        var categoryArray:[RealmQuizCategory] = []
-        
-        for category in categories {
-            categoryArray.append(category)
-        }
-        return categoryArray
+//        var categoryArray:[RealmQuizCategory] = []
+//        
+//        for category in categories {
+//            categoryArray.append(category)
+//        }
+//        return categoryArray
+        return Array(categories)
     }
     
     
@@ -129,8 +174,8 @@ struct DataInserUpdateLogic {
         let realm = try! Realm()
         
         let maxId = realm.objects(RealmQuiz.self).max(ofProperty: "id") as Int?
+        //クイズidを上書きする
         quiz.id = (maxId ?? 0) + 1
-        print("上書きした\(quiz.id)")
         // 引数categoryIdに一致するidのRealmQuizCategoryを取得
         if let category = realm.objects(RealmQuizCategory.self).filter("id == %@", categoryId).first {
             // 一致するカテゴリが見つかった場合、quizItemsに新しいクイズを追加

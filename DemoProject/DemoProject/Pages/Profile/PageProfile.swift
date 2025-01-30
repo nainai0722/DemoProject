@@ -9,10 +9,29 @@ import SwiftUI
 
 struct PageProfile: View {
     var body: some View {
-        Text("Profile")
+        VStack{
+            ProfileTitleView()
+            VStack{
+                
+            }
+        }
     }
 }
 
 #Preview {
     PageProfile()
+}
+
+struct ProfileTitleView: View {
+    var body: some View {
+        VStack {
+            HStack{
+                Image(systemName: "person.circle")
+                VStack{
+                    Text("Name")
+                    Text("自己紹介文")
+                }
+            }
+        }
+    }
 }

@@ -16,20 +16,27 @@ struct ControlDBView: View {
             SubPageTopTitle(title: "戻る", withArrow: true)
             Divider()
             Button(action:{
-                DataInserUpdateLogic().deleteAllData()
+                RealmQuizRepository().deleteAllData()
             }){
                 Text("すべてのデータを削除")
             }
             Spacer()
             
             Button(action:{
-                DataInserUpdateLogic().getTableList()}){
+                RealmQuizRepository().initializeDefaultCategoriesIfNeeded()
+            }){
+                Text("デフォルトカテゴリを追加")
+            }
+            Spacer()
+            
+            Button(action:{
+                RealmQuizRepository().getTableList()}){
                 Text("テーブル一覧")
             }
             Spacer()
             
             Button(action:{
-                DataInserUpdateLogic().printDebugDBElementFromTable()}){
+                RealmQuizRepository().printDebugDBElementFromTable()}){
                 Text("テーブルの中身")
             }
             Spacer()
@@ -37,13 +44,13 @@ struct ControlDBView: View {
             
             
             Button(action:{
-                DataInserUpdateLogic().addFirstMockData()
+                RealmQuizRepository().addFirstMockData()
             }){
                 Text("カテゴリとクイズ新規追加")
             }
             Spacer()
             Button(action:{
-                DataInserUpdateLogic().addQuizByCategory(categoryId: 0)
+                RealmQuizRepository().addQuizByCategory(categoryId: 0)
             }){
                 Text("指定したカテゴリにクイズのみ追加")
             }
@@ -55,7 +62,7 @@ struct ControlDBView: View {
                 quiz1.detail = "いきものをつかまえたりする「わな」の正しい漢字は？"
                 quiz1.answerNumber = 3
                 quiz1.quizOptions.append(objectsIn: ["縄", "和名", "罠", "輪名"])
-                DataInserUpdateLogic().addInputQuizData(quiz: quiz1, categoryId: 0)
+                RealmQuizRepository().addInputQuizData(quiz: quiz1, categoryId: 0)
             }){
                 Text("ビュー側で設定したクイズの追加")
             }

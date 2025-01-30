@@ -10,11 +10,11 @@ import SwiftUI
 struct TabViewIndex: View {
     var body: some View {
         TabView {
-            PageViewIndex()
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Home")
-                }
+//            PageViewIndex()
+//                .tabItem {
+//                    Image(systemName: "house.fill")
+//                    Text("Home")
+//                }
             
             PageTestList()
                 .tabItem {
@@ -34,11 +34,11 @@ struct TabViewIndex: View {
                     Text("つくる")
                 }
             
-            PageProfile()
-                .tabItem {
-                    Image(systemName: "person.circle")
-                    Text("自分のこと")
-                }
+//            PageProfile()
+//                .tabItem {
+//                    Image(systemName: "person.circle")
+//                    Text("自分のこと")
+//                }
             
                 
         }
@@ -48,3 +48,4 @@ struct TabViewIndex: View {
 #Preview {
     TabViewIndex()
 }
+

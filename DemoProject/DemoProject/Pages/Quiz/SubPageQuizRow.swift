@@ -8,17 +8,9 @@
 import SwiftUI
 import RealmSwift
 
-//struct SubPageQuizRow: View {
-//    @State var isAnimating = false
-//    var quizCategory = RealmQuizCategory(id: 3, title: "漢字クイズ", starCount: 3, createdAt: Date())
-//    var body: some View {
-//        Text("\(quizCategory.title)")
-//    }
-//}
-
 struct SubPageQuizRow: View {
     @State var isAnimating = false
-    var quizCategory = RealmQuizCategory(id: 3, title: "漢字クイズ", starCount: 3, createdAt: Date())
+    var quizCategory = RealmQuizCategory(id: 3, title: "漢字", starCount: 3, createdAt: Date())
     var body: some View {
         ZStack{
             RoundedRectangle(cornerRadius: 8)
@@ -29,14 +21,15 @@ struct SubPageQuizRow: View {
                 HStack(){
                     ZStack {
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.purple.opacity(0.65))
-                            .frame(width: 100, height: 100)
+                            .fill(Color.orange.opacity(0.65))
+                            .frame(width: 120, height: 120)
 
                         VStack {
                             Image("quiz_\(quizCategory.id)")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 70, height: 70)
+                                .padding(.top, 10)
                             Text(quizCategory.title)
                         }
                     }
@@ -63,12 +56,13 @@ struct SubPageQuizRow: View {
                 }
                 .frame(width: UIScreen.main.bounds.width - 100, height: 150)
                 NavigationLink(destination:
-                                QuizView(categoryTitle:quizCategory.title, categoryId: quizCategory.id, realmQuizItems: DataInserUpdateLogic().fetchQuizDataByCategoryId(categoryId: quizCategory.id))){
+                                RealmQuizView(categoryTitle:quizCategory.title, categoryId: quizCategory.id, realmQuizItems: RealmQuizRepository().fetchQuizDataByCategoryId(categoryId: quizCategory.id))){
                     ZStack {
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.purple.opacity(0.65))
+                            .fill(Color.orange.opacity(0.65))
                             .frame(width: 100, height: 30)
                         Text("はじめる")
+                            .foregroundStyle(.white)
                     }
                 }
             }

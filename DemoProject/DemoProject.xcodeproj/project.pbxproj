@@ -8,7 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		F867873B2D49CC74005A0168 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F867873A2D49CC74005A0168 /* RealmSwift */; };
+		F86787532D4B4433005A0168 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = F867873A2D49CC74005A0168 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F86787522D4B4411005A0168 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F86787532D4B4433005A0168 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		F8F36A712D42539F00A75EC4 /* DemoProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,6 +75,7 @@
 				F8F36A6D2D42539F00A75EC4 /* Sources */,
 				F8F36A6E2D42539F00A75EC4 /* Frameworks */,
 				F8F36A6F2D42539F00A75EC4 /* Resources */,
+				F86787522D4B4411005A0168 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -264,6 +280,8 @@
 				DEVELOPMENT_TEAM = 58J628MLWX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "作れるクイズ";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.trivia-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -294,6 +312,8 @@
 				DEVELOPMENT_TEAM = 58J628MLWX;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "作れるクイズ";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.trivia-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

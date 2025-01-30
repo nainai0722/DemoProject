@@ -1,14 +1,14 @@
 //
-//  QuizView.swift
+//  RealmQuizView.swift
 //  DemoProject
 //
-//  Created by 指原奈々 on 2025/01/28.
+//  Created by 指原奈々 on 2025/01/30.
 //
 
 import SwiftUI
 import RealmSwift
 
-struct QuizView: View {
+struct RealmQuizView: View {
     @State var isAnimating = false
     var categoryTitle: String = "ことわざ"
     var categoryId:Int = 0
@@ -25,11 +25,11 @@ struct QuizView: View {
             Divider()
             ZStack {
                 VStack(alignment:.leading) {
-                    if index < viewModel.quizzes.count {
-                        QuizItemView(selectedAnswer: $selectedAnswer, quiz: $viewModel.quizzes[index])
+                    if index < viewModel.realmQuizzes.count {
+                        QuizItem2View(selectedAnswer: $selectedAnswer, quiz: $viewModel.realmQuizzes[index])
                         Spacer()
                         Button(action:{
-                            if(selectedAnswer == viewModel.quizzes[index].answerNumber) {
+                            if(selectedAnswer == viewModel.realmQuizzes[index].answerNumber) {
                                 isCorrectedPresented = true
                             }
                             isAnimating = true
@@ -74,22 +74,9 @@ struct QuizView: View {
                     print("\(viewModel.realmQuizzes.count)")
                 }
                 
-                if(isAnimating) {
-                    VStack {
-                        Image(systemName: isCorrectedPresented ? "circle" : "xmark.app")
-                            .font(.system(size: 200))
-                            .foregroundStyle(isCorrectedPresented ? .red : .blue)
-                            .shadow(radius: 10)
-                            .opacity(isAnimating ? 1 : 0 )
-                            .animation(.easeInOut(duration: 0.5),value:isAnimating)
-                        Text(isCorrectedPresented ? "正解!!" : "ちがいます")
-                            .font(.system(size: 40))
-                            .foregroundStyle(isCorrectedPresented ? .red : .blue)
-                            .shadow(radius: 10)
-                            .opacity(isAnimating ? 1 : 0 )
-                            .animation(.easeInOut(duration: 0.5),value:isAnimating)
-                    }
-                }
+                
+                AnswerActionView(isCorrectedPresented:$isCorrectedPresented, isAnimating: $isAnimating)
+                
             }
             Spacer()
         }
@@ -99,17 +86,15 @@ struct QuizView: View {
 }
 
 #Preview {
-    QuizView()
+    RealmQuizView()
 }
 
-struct QuizItemView: View {
+struct QuizItem2View: View {
     let padding:CGFloat = 16
     @Binding var selectedAnswer:Int
+    @Binding var quiz:RealmQuiz
     var body: some View {
-        
         VStack(alignment:.leading, spacing: 0)  {
-//            SubPageTopTitle(title: "戻る",withArrow: true)
-//            Divider()
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.white)
@@ -126,7 +111,7 @@ struct QuizItemView: View {
                         .padding()
                 }
             }
-            ScrollView {
+            ScrollView() {
                 ForEach(Array(quiz.quizOptions.enumerated()), id: \.0) { index, option in
                     HStack(alignment:.top) {
                         if( selectedAnswer == index) {
@@ -156,10 +141,59 @@ struct QuizItemView: View {
         .navigationTitle("")
         .navigationBarHidden(true)
     }
-    @Binding var quiz: Quiz
-    /*= Quiz(id: 1, title: "猫に小判", detail: "猫に小判とはどういういみのことば？", answerNumber: 2, quizOptions: ["価値のあるものをあげても、価値を理解できない相手ではしかたない","かわいい相手にはいくらでもお金を注ぎ込める","贈り物をすると、あとでお礼がもらえる","小判などピカピカ光るものをねこは好む"])
-     */
+    
+    func testMethod() -> RealmQuiz{
+        // 空の List<String> を作成し、データを追加
+        let options = RealmSwift.List<String>()
+        options.append(objectsIn: [
+            "価値のあるものをあげても、価値を理解できない相手ではしかたない",
+            "かわいい相手にはいくらでもお金を注ぎ込める",
+            "贈り物をすると、あとでお礼がもらえる",
+            "小判などピカピカ光るものをねこは好む"
+        ])
+        // 変数 quiz を作成
+        let quiz = RealmQuiz(id: 1, title: "猫に小判", detail: "猫に小判とはどういう意味の言葉？", answerNumber: 2, quizOptions: options)
+        return quiz
+
+    }
 }
 
 
+/// 回答を選択し、次へボタンを押した際に正否を画面上に表示する
+struct AnswerActionView: View {
+    @Binding var isCorrectedPresented: Bool
+    @Binding var isAnimating: Bool
+    var body: some View {
+        VStack {
+            Image(systemName: isCorrectedPresented ? "circle" : "xmark.app")
+                .font(.system(size: 200))
+                .foregroundStyle(isCorrectedPresented ? .red : .blue)
+                .shadow(radius: 10)
+                .opacity(isAnimating ? 1 : 0 )
+                .animation(.easeInOut(duration: 0.5),value:isAnimating)
+            Text(isCorrectedPresented ? "正解!!" : "ちがいます")
+                .font(.system(size: 40))
+                .foregroundStyle(isCorrectedPresented ? .red : .blue)
+                .shadow(radius: 10)
+                .opacity(isAnimating ? 1 : 0 )
+                .animation(.easeInOut(duration: 0.5),value:isAnimating)
+        }
+    }
+}
 
+
+extension RealmSwift.List {
+    func then(_ configure: (Self) -> Void) -> Self {
+        configure(self)
+        return self
+    }
+}
+
+//#Preview("Loading") {
+//    @State var previewSelectedAnswer = 1
+//    let options = RealmSwift.List<String>().then { $0.append(objectsIn: ["価値のあるものをあげても、価値を理解できない相手ではしかたない", "かわいい相手にはいくらでもお金を注ぎ込める", "贈り物をすると、あとでお礼がもらえる", "小判などピカピカ光るものをねこは好む"]) }
+//    let quiz = RealmQuiz(id: 1, title: "猫に小判", detail: "猫に小判とはどういう意味の言葉？", answerNumber: 2, quizOptions: options)
+//
+//    @State var previewQuiz = quiz
+//    QuizItem2View(selectedAnswer: $previewSelectedAnswer, quiz: $previewQuiz)
+//}

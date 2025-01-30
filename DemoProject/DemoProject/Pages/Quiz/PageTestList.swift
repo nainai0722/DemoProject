@@ -11,13 +11,14 @@ struct PageTestList: View {
     @ObservedObject var viewModel = QuizCategoryListModel()
     var body: some View {
         //クイズの一覧画面を表示する
-        NavigationView{
-            ScrollView(){
+        NavigationView {
+            ScrollView(.vertical, showsIndicators: false)  {
                 VStack(spacing:0) {
                     ForEach(viewModel.categories) { categories in
                         SubPageTestRow(isAnimating: false, quizCategory: categories)
                     }
                 }
+                .frame(maxWidth: .infinity)
             }
         }
         .onAppear(perform: viewModel.fetch)

@@ -19,7 +19,9 @@ final class QuizCategoryListModel: ObservableObject {
                 case .success(let news):
                     self.categories = news
                 case .failure(let error):
-                    print("エラーが発生しました: \(error.localizedDescription)")
+//                    print("エラーが発生しました: \(error.localizedDescription)")
+                    print("[\(NSString(string: #file).lastPathComponent):\(#line) \(#function)] エラーが発生しました: \(error.localizedDescription)")
+
                 }
             }
         }

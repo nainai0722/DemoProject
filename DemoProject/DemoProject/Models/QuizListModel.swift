@@ -23,7 +23,8 @@ final class QuizListModel: ObservableObject {
                 case .success(let quizzes):
                     self.quizzes = quizzes
                 case .failure(let error):
-                    print("エラーが発生しました: \(error.localizedDescription)")
+//                    print("エラーが発生しました: \(error.localizedDescription)")
+                    print("[\(NSString(string: #file).lastPathComponent):\(#line) \(#function)] エラーが発生しました: \(error.localizedDescription)")
                 }
             }
         }
@@ -32,7 +33,7 @@ final class QuizListModel: ObservableObject {
     
     
     func fetchRealmData(categoryId:Int) {
-        realmQuizzes = DataInserUpdateLogic().getQuizByCategoryId(by: categoryId)
+        realmQuizzes = RealmQuizRepository().getQuizByCategoryId(by: categoryId)
         print(realmQuizzes)
     }
     
