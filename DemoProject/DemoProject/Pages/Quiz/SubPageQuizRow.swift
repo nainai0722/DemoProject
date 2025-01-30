@@ -63,7 +63,7 @@ struct SubPageQuizRow: View {
                 }
                 .frame(width: UIScreen.main.bounds.width - 100, height: 150)
                 NavigationLink(destination:
-                                QuizView(categoryTitle:quizCategory.title ,  realmQuizItems: DataInserUpdateLogic().fetchQuizDataByCategoryId(categoryId: quizCategory.id))){
+                                QuizView(categoryTitle:quizCategory.title, categoryId: quizCategory.id, realmQuizItems: DataInserUpdateLogic().fetchQuizDataByCategoryId(categoryId: quizCategory.id))){
                     ZStack {
                         RoundedRectangle(cornerRadius: 8)
                             .fill(Color.purple.opacity(0.65))
