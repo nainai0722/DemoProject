@@ -13,6 +13,7 @@ class Quiz: NSObject, Codable,Identifiable {
     var detail : String
     var answerNumber : Int
     var quizOptions: [String]
+
     init(id: Int, title: String, detail: String, answerNumber: Int, quizOptions: [String]) {
         self.id = id
         self.title = title

@@ -25,6 +25,7 @@ final class QuizCategoryListModel: ObservableObject {
         }
     }
     
+    
     private func fetchMockNews(completion: @escaping (Result<[QuizCategory], Error>) -> Void) {
 
         // サンプルデータを返すフェッチ処理

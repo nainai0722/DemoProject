@@ -1,21 +1,21 @@
 //
-//  PageTest.swift
+//  PageQuizList.swift
 //  DemoProject
 //
-//  Created by 指原奈々 on 2025/01/26.
+//  Created by 指原奈々 on 2025/01/29.
 //
 
 import SwiftUI
 
-struct PageTestList: View {
-    @ObservedObject var viewModel = QuizCategoryListModel()
+struct PageQuizList: View {
+    @ObservedObject var viewModel = RealmQuizCategoryListModel()
     var body: some View {
         //クイズの一覧画面を表示する
         NavigationView{
             ScrollView(){
                 VStack(spacing:0) {
-                    ForEach(viewModel.categories) { categories in
-                        SubPageTestRow(isAnimating: false, quizCategory: categories)
+                    ForEach(viewModel.categories) { category in
+                        SubPageQuizRow(isAnimating: false, quizCategory: category)
                     }
                 }
             }
@@ -26,5 +26,5 @@ struct PageTestList: View {
 }
 
 #Preview {
-    PageTestList()
+    PageQuizList()
 }

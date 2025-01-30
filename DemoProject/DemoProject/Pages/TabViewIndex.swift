@@ -19,14 +19,28 @@ struct TabViewIndex: View {
             PageTestList()
                 .tabItem {
                     Image(systemName: "list.dash")
-                    Text("Quiz")
+                    Text("クイズ")
+                }
+            
+            PageQuizList()
+                .tabItem {
+                    Image(systemName: "list.dash")
+                    Text("自作クイズ")
+                }
+            
+            PageCreateQuiz()
+                .tabItem {
+                    Image(systemName: "rectangle.and.pencil.and.ellipsis")
+                    Text("つくる")
                 }
             
             PageProfile()
                 .tabItem {
                     Image(systemName: "person.circle")
-                    Text("Profile")
+                    Text("自分のこと")
                 }
+            
+                
         }
     }
 }

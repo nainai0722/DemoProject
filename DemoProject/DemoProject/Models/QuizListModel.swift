@@ -10,6 +10,7 @@ import Combine
 
 final class QuizListModel: ObservableObject {
     @Published var quizzes: [Quiz] = []
+    @Published var realmQuizzes: [RealmQuiz] = []
     // TODO: @Publisherに必要だったはず。ひとまず置いておく
 //    var cancellables: Set<AnyCancellable> = []
     var categoryTitle: String = ""
@@ -26,6 +27,13 @@ final class QuizListModel: ObservableObject {
                 }
             }
         }
+    }
+    
+    
+    
+    func fetchRealmData(categoryId:Int) {
+        realmQuizzes = DataInserUpdateLogic().getQuizByCategoryId(by: categoryId)
+        print(realmQuizzes)
     }
     
     private func fetchMockQuiz(categoryTitle: String,completion: @escaping (Result<[Quiz], Error>) -> Void) {
