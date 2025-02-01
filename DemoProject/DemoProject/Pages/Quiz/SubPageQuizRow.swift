@@ -21,54 +21,16 @@ struct SubPageQuizRow: View {
                 .shadow(radius: 8)
             VStack {
                 HStack(){
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.green.opacity(0.65))
-                            .frame(width: 120, height: 120)
-                        
-                        VStack {
-                            Image("quiz_\(quizCategory.id)")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 70, height: 70)
-                                .padding(.top)
-                            Text(quizCategory.title)
-                        }
-                    }
-                    VStack(alignment:.leading, spacing: 0){
-                        Text("\(quizCategory.title)クイズに挑戦しよう")
-                            .font(.system(size: 20))
-                        HStack {
-                            VStack {
-                                Text("答えた数")
-                                    .font(.system(size: 16))
-                                Text("\(quizCategory.correctCount)/\(quizCategory.quizItems.count)")
-                            }
-                        }
-                        HStack{
-                            ForEach(0..<quizCategory.starCount){ _ in
-                                Image(systemName: "star.fill")
-                            }
-                            ForEach(quizCategory.starCount..<5){ _ in
-                                Image(systemName: "star")
-                            }
-                        }
-                    }
+                    QuizCategoryView(quizCategory: quizCategory)
+                    QuizStatsView(quizCategory: quizCategory)
                     
                 }
                 .frame(width: CommonLayout.width, height: 150)
                 NavigationLink(destination:
-                                QuizView(categoryTitle:quizCategory.title,
-                                         categoryId:quizCategory.id,
+                                QuizView(categoryId:quizCategory.id,
                                          myQuizFlag:self.myQuizFlag )
                 ){
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.green.opacity(0.65))
-                            .frame(width: 100, height: 30)
-                        Text("はじめる")
-                            .foregroundStyle(.white)
-                    }
+                    StartButton()
                 }
             }
             
@@ -87,4 +49,61 @@ struct SubPageQuizRow: View {
     @State var quizCategory:QuizCategory = QuizCategory(id: 1, title: "時間", starCount: 3, quizItems: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
 //    SubPageQuizRow(quizCategory: $quizCategory, onSelect: { _ in })
     SubPageQuizRow(onSelect: { _ in })
+}
+
+struct StartButton: View {
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.green.opacity(0.65))
+                .frame(width: 100, height: 30)
+            Text("はじめる")
+                .foregroundStyle(.white)
+        }
+    }
+}
+
+struct QuizStatsView: View {
+    var quizCategory: QuizCategory
+    var body: some View {
+        VStack(alignment:.leading, spacing: 0){
+            Text("\(quizCategory.title)クイズに挑戦しよう")
+                .font(.system(size: 20))
+            HStack {
+                VStack {
+                    Text("答えた数")
+                        .font(.system(size: 16))
+                    Text("\(quizCategory.correctCount)/\(quizCategory.quizItems.count)")
+                }
+            }
+            HStack{
+                ForEach(0..<quizCategory.starCount){ _ in
+                    Image(systemName: "star.fill")
+                }
+                ForEach(quizCategory.starCount..<5){ _ in
+                    Image(systemName: "star")
+                }
+            }
+        }
+    }
+}
+
+struct QuizCategoryView: View {
+    var quizCategory: QuizCategory
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.green.opacity(0.65))
+                .frame(width: 120, height: 120)
+            
+            VStack {
+                Image("quiz_\(quizCategory.id)")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 70, height: 70)
+                    .padding(.top)
+                Text(quizCategory.title)
+            }
+        }
+    }
 }
