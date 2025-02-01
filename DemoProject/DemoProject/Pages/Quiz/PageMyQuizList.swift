@@ -12,20 +12,50 @@ struct PageMyQuizList: View {
     @State private var selectedCategory: QuizCategory? = nil
     let myQuizFlag = true
     var body: some View {
+        // NavigationViewはiOS18.2より非推奨のためコメントアウト
+//        NavigationView{
+//            ScrollView(.vertical, showsIndicators: false) {
+//                VStack(spacing:0) {
+//                    ForEach(viewModel.categories) { category in
+//                        SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in self.selectedCategory = category})
+//                    }
+//                }
+//                .frame(maxWidth: .infinity)
+//            }
+//            MasterView()
+//        }
+//        .onAppear(perform: viewModel.fetch)
         //クイズの一覧画面を表示する
-        NavigationView{
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing:0) {
-                    ForEach(viewModel.categories) { category in
-                        SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in self.selectedCategory = category})
+        ZStack {
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                NavigationStack{
+                    ScrollView(.vertical, showsIndicators: false) {
+                        VStack(spacing:0) {
+                            ForEach(viewModel.categories) { category in
+                                SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in self.selectedCategory = category})
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                 }
-                .frame(maxWidth: .infinity)
+            } else {
+                NavigationSplitView(
+                    sidebar:{
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack(spacing:0) {
+                                ForEach(viewModel.categories) { category in
+                                    SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in self.selectedCategory = category})
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                        }
+                    },
+                    detail: {
+                        MasterView()
+                    }
+                )
             }
-            VStack{
-                Text("左上のアイコンを押してクイズを選んでね")
-                    .font(.system(size: 40))
-            }
+            
         }
         .onAppear(perform: viewModel.fetch)
     }
@@ -34,4 +64,13 @@ struct PageMyQuizList: View {
 
 #Preview {
     PageMyQuizList()
+}
+
+struct MasterView: View {
+    var body: some View {
+        VStack{
+            Text("左上のアイコンを押してクイズを選んでね")
+                .font(.system(size: 40))
+        }
+    }
 }

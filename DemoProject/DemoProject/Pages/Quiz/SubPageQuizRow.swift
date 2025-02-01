@@ -19,19 +19,23 @@ struct SubPageQuizRow: View {
                 .fill(Color.white)
                 .frame(width: CommonLayout.width, height: 200)
                 .shadow(radius: 8)
-            VStack {
-                HStack(){
-                    QuizCategoryView(quizCategory: quizCategory)
-                    QuizStatsView(quizCategory: quizCategory)
-                    
-                }
-                .frame(width: CommonLayout.width, height: 150)
-                NavigationLink(destination:
-                                QuizView(categoryId:quizCategory.id,
-                                         myQuizFlag:self.myQuizFlag )
-                ){
+            NavigationLink(destination:
+                            QuizView(categoryId:quizCategory.id,
+                                     myQuizFlag:self.myQuizFlag )
+            ){
+                VStack {
+                    HStack(){
+                        QuizCategoryView(quizCategory: quizCategory)
+                        QuizStatsView(quizCategory: quizCategory)
+                        
+                    }
+                    .foregroundStyle(.black)
+                    .frame(width: CommonLayout.width, height: 150)
                     StartButton()
                 }
+            }
+            .onTapGesture {
+                onSelect(quizCategory)
             }
             
         }
@@ -67,7 +71,7 @@ struct QuizStatsView: View {
     var quizCategory: QuizCategory
     var body: some View {
         VStack(alignment:.leading, spacing: 0){
-            Text("\(quizCategory.title)クイズに挑戦しよう")
+            Text("\(quizCategory.title)クイズに\n挑戦しよう")
                 .font(.system(size: 20))
             HStack {
                 VStack {
