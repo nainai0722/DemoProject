@@ -10,7 +10,6 @@ import RealmSwift
 
 struct QuizView: View {
     @State var isAnimating = false
-    var categoryTitle: String = "ことわざ"
     var categoryId:Int = 0
     var myQuizFlag = true
     //TODO: サーバにデータ管理する際に使う想定
@@ -72,7 +71,7 @@ struct QuizView: View {
                     if myQuizFlag {
                         viewModel.fetchMyQuizByCategoryId(by: categoryId)
                     } else{
-                        viewModel.fetch(categoryTitle: categoryTitle)
+                        viewModel.fetch(by: categoryId)
                     }
                 }
                 

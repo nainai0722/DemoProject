@@ -12,17 +12,15 @@ final class QuizListModel: ObservableObject {
     @Published var quizzes: [Quiz] = []
     // TODO: @Publisherに必要だったはず。ひとまず置いておく
 //    var cancellables: Set<AnyCancellable> = []
-//    var categoryTitle: String = ""
     
-    func fetch(categoryTitle:String) {
+    func fetch(by id:Int) {
         // 検証用のクイズカテゴリを取得する
-        fetchMockQuizByTitle(by:categoryTitle) { result in
+        fetchMockQuizByTitle(by:id) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let quizzes):
                     self.quizzes = quizzes
                 case .failure(let error):
-//                    print("エラーが発生しました: \(error.localizedDescription)")
                     print("[\(NSString(string: #file).lastPathComponent):\(#line) \(#function)] エラーが発生しました: \(error.localizedDescription)")
                 }
             }
@@ -42,19 +40,19 @@ final class QuizListModel: ObservableObject {
         print(quizzes)
     }
     
-    private func fetchMockQuizByTitle(by categoryTitle: String,completion: @escaping (Result<[Quiz], Error>) -> Void) {
+    private func fetchMockQuizByTitle(by id:Int,completion: @escaping (Result<[Quiz], Error>) -> Void) {
         var  sampleQuizzes: [Quiz] = []
         // サンプルデータを返すフェッチ処理
-        switch categoryTitle {
-        case "漢字":
+        switch id {
+        case 1: //"漢字"
             sampleQuizzes = QuizCategoryListModel().wordQuiz
-        case "ことわざ":
+        case 2: //"ことわざ"
             sampleQuizzes = QuizCategoryListModel().kotowazaQuiz
-        case "動物":
+        case 3: //"動物"
             sampleQuizzes = QuizCategoryListModel().animalQuiz
-        case "生活":
+        case 4: //"生活"
             sampleQuizzes = QuizCategoryListModel().lifeQuiz
-        case "有名人":
+        case 5: //"有名人"
             sampleQuizzes = QuizCategoryListModel().famousPersonQuiz
         default:
             sampleQuizzes = []
