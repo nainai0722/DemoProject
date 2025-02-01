@@ -16,23 +16,29 @@ struct TabViewIndex: View {
 //                    Text("Home")
 //                }
             
-            PageTestList()
-                .tabItem {
-                    Image(systemName: "list.dash")
-                    Text("クイズ")
-                }
-            
-            PageQuizList()
-                .tabItem {
-                    Image(systemName: "list.dash")
-                    Text("自作クイズ")
-                }
-            
             PageCreateQuiz()
                 .tabItem {
                     Image(systemName: "rectangle.and.pencil.and.ellipsis")
                     Text("つくる")
                 }
+            
+            PageQuizList()
+                .tabItem {
+                    Image(systemName: "list.dash")
+                    Text("クイズ")
+                }
+            
+            PageMyQuizList()
+                .tabItem {
+                    Image(systemName: "list.dash")
+                    Text("自作クイズ")
+                }
+            
+//            PageImageQuizList()
+//                .tabItem {
+//                    Image(systemName: "list.dash")
+//                    Text("自作クイズ")
+//                }
             
 //            PageProfile()
 //                .tabItem {

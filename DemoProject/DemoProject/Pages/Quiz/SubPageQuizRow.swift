@@ -1,35 +1,37 @@
 //
-//  SubPageQuizRow.swift
+//  SubPageTestRow.swift
 //  DemoProject
 //
-//  Created by 指原奈々 on 2025/01/29.
+//  Created by 指原奈々 on 2025/01/26.
 //
 
 import SwiftUI
-import RealmSwift
 
 struct SubPageQuizRow: View {
     @State var isAnimating = false
-    var quizCategory = RealmQuizCategory(id: 3, title: "漢字", starCount: 3, createdAt: Date())
+    var quizCategory:QuizCategory = QuizCategory(id: 1, title: "時間", starCount: 3, quizItems: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
+    var myQuizFlag = false
+    //クロージャで呼び出し元に返す
+    let onSelect: (QuizCategory) -> Void
     var body: some View {
         ZStack{
             RoundedRectangle(cornerRadius: 8)
                 .fill(Color.white)
-                .frame(width: UIScreen.main.bounds.width - 100, height: 200)
+                .frame(width: CommonLayout.width, height: 200)
                 .shadow(radius: 8)
             VStack {
                 HStack(){
                     ZStack {
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.orange.opacity(0.65))
+                            .fill(Color.green.opacity(0.65))
                             .frame(width: 120, height: 120)
-
+                        
                         VStack {
                             Image("quiz_\(quizCategory.id)")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 70, height: 70)
-                                .padding(.top, 10)
+                                .padding(.top)
                             Text(quizCategory.title)
                         }
                     }
@@ -52,21 +54,24 @@ struct SubPageQuizRow: View {
                             }
                         }
                     }
-
+                    
                 }
-                .frame(width: UIScreen.main.bounds.width - 100, height: 150)
+                .frame(width: CommonLayout.width, height: 150)
                 NavigationLink(destination:
-                                RealmQuizView(categoryTitle:quizCategory.title, categoryId: quizCategory.id, realmQuizItems: RealmQuizRepository().fetchQuizDataByCategoryId(categoryId: quizCategory.id))){
+                                QuizView(categoryTitle:quizCategory.title,
+                                         categoryId:quizCategory.id,
+                                         myQuizFlag:self.myQuizFlag )
+                ){
                     ZStack {
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(Color.orange.opacity(0.65))
+                            .fill(Color.green.opacity(0.65))
                             .frame(width: 100, height: 30)
                         Text("はじめる")
                             .foregroundStyle(.white)
                     }
                 }
             }
-
+            
         }
         .padding(.top, 10)
         .opacity(isAnimating ? 1 : 0)
@@ -74,10 +79,12 @@ struct SubPageQuizRow: View {
         .onAppear {
             self.isAnimating = true
         }
-
+        
     }
 }
 
 #Preview {
-    SubPageQuizRow()
+    @State var quizCategory:QuizCategory = QuizCategory(id: 1, title: "時間", starCount: 3, quizItems: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
+//    SubPageQuizRow(quizCategory: $quizCategory, onSelect: { _ in })
+    SubPageQuizRow(onSelect: { _ in })
 }

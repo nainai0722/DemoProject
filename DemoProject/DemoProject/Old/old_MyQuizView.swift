@@ -8,28 +8,26 @@
 import SwiftUI
 import RealmSwift
 
-struct RealmQuizView: View {
+struct old_MyQuizView: View {
     @State var isAnimating = false
-    var categoryTitle: String = "ことわざ"
     var categoryId:Int = 0
-    //TODO: サーバにデータ管理する際に使う想定
     @ObservedObject var viewModel = QuizListModel()
     @State var index = 0
     @State var selectedAnswer :Int = -1
     @State var isCorrectedPresented :Bool = false
-    var quizItems:[Quiz] = []
-    var realmQuizItems:[RealmQuiz] = []
     var body: some View {
         VStack {
-            SubPageTopTitle(title: "戻る", withArrow: true)
-            Divider()
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                SubPageTopTitle(title: "戻る", withArrow: true)
+                Divider()
+            }
             ZStack {
                 VStack(alignment:.leading) {
-                    if index < viewModel.realmQuizzes.count {
-                        QuizItem2View(selectedAnswer: $selectedAnswer, quiz: $viewModel.realmQuizzes[index])
+                    if index < viewModel.quizzes.count {
+                        QuizItem2View(selectedAnswer: $selectedAnswer, quiz: $viewModel.quizzes[index])
                         Spacer()
                         Button(action:{
-                            if(selectedAnswer == viewModel.realmQuizzes[index].answerNumber) {
+                            if(selectedAnswer == viewModel.quizzes[index].answerNumber) {
                                 isCorrectedPresented = true
                             }
                             isAnimating = true
@@ -68,31 +66,27 @@ struct RealmQuizView: View {
                 }
                 .opacity(isAnimating ? 0.3 : 1)
                 .onAppear{
-                    viewModel.fetch(categoryTitle: categoryTitle)
-                    viewModel.fetchRealmData(categoryId: categoryId)
-                    print("\(categoryId)")
-                    print("\(viewModel.realmQuizzes.count)")
+                    viewModel.fetchMyQuizByCategoryId(by: categoryId)
                 }
-                
-                
+                // ○×で結果を表示する
                 AnswerActionView(isCorrectedPresented:$isCorrectedPresented, isAnimating: $isAnimating)
                 
             }
             Spacer()
         }
-        .navigationTitle("")
-        .navigationBarHidden(true)
+        .navigationTitle(UIDevice.current.userInterfaceIdiom == .phone ? "" : "戻る")
+        .navigationBarHidden(UIDevice.current.userInterfaceIdiom == .phone ? true : false)
     }
 }
 
 #Preview {
-    RealmQuizView()
+    old_MyQuizView()
 }
 
 struct QuizItem2View: View {
     let padding:CGFloat = 16
     @Binding var selectedAnswer:Int
-    @Binding var quiz:RealmQuiz
+    @Binding var quiz:Quiz
     var body: some View {
         VStack(alignment:.leading, spacing: 0)  {
             ZStack {
@@ -138,8 +132,6 @@ struct QuizItem2View: View {
                 .padding()
             }
         }
-        .navigationTitle("")
-        .navigationBarHidden(true)
     }
     
     func testMethod() -> RealmQuiz{

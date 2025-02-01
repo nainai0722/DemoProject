@@ -15,7 +15,6 @@ struct PageCreateQuiz: View {
     
     @State private var selectedCategoryId: Int = -1
     @State private var selectedCategoryTitle: String = ""
-//    @State private var selectedOption: String? = nil 使っていないのでコメントアウト
     
     @State private var title: String = ""
     @State private var detail: String = ""
@@ -33,13 +32,13 @@ struct PageCreateQuiz: View {
     
     @FocusState private var isTextFieldFocused: Bool
     
-    var sortCategories: [RealmQuizCategory] {
+    var sortCategories: [QuizCategory] {
         let sortedCategories = viewModel.categories.sorted { $0.id > $1.id }
         
         return sortedCategories
     }
     
-    var categories: [RealmQuizCategory] {
+    var categories: [QuizCategory] {
         return viewModel.categories
     }
     
@@ -71,15 +70,6 @@ struct PageCreateQuiz: View {
                 }
                 
                 Spacer()
-                
-//Button(action: {
-//    showSaveMessage = true
-//    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-//        showSaveMessage = false
-//    }
-//}){
-//    Text("アニメ開始")
-//}
                 Button(action:{
                     let quiz1 = RealmQuiz()
                     if isValidated() {
@@ -273,7 +263,7 @@ struct InputAnswerView: View {
 
 struct InputCategoryView: View {
     @State var isShowingPopover = false
-    @Binding var categories : [RealmQuizCategory]
+    @Binding var categories : [QuizCategory]
     @Binding var inputText: String
     @Binding var selectedCategoryId : Int
     @Binding var isValidCategory: Bool

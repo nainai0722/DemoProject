@@ -7,14 +7,13 @@
 
 import SwiftUI
 
+/// DB操作するための画面　ボタンからRealmQuizRepositoryクラスのメソッドを呼び出ししている
 struct ControlDBView: View {
     
     @ObservedObject var viewModel = RealmQuizCategoryListModel()
     
     var body: some View {
         VStack {
-            SubPageTopTitle(title: "戻る", withArrow: true)
-            Divider()
             Button(action:{
                 RealmQuizRepository().deleteAllData()
             }){
@@ -36,11 +35,27 @@ struct ControlDBView: View {
             Spacer()
             
             Button(action:{
-                RealmQuizRepository().printDebugDBElementFromTable()}){
+//                RealmQuizRepository().printDebugDBElementFromTable()
+                let categories = RealmQuizRepository().getQuizCategoryArray()
+                for category in categories {
+                    print(category.id)
+                    print(category.title)
+                }
+            }){
                 Text("テーブルの中身")
             }
             Spacer()
             
+            Button(action:{
+                let quizArray = RealmQuizRepository().getQuizByCategoryId(by:1)
+                for quiz in quizArray{
+                    print("\(quiz.id)")
+                    print(quiz.title)
+                }
+            }){
+                Text("CategoryQuiz型で取得")
+            }
+            Spacer()
             
             
             Button(action:{
@@ -62,7 +77,7 @@ struct ControlDBView: View {
                 quiz1.detail = "いきものをつかまえたりする「わな」の正しい漢字は？"
                 quiz1.answerNumber = 3
                 quiz1.quizOptions.append(objectsIn: ["縄", "和名", "罠", "輪名"])
-                RealmQuizRepository().addInputQuizData(quiz: quiz1, categoryId: 0)
+                RealmQuizRepository().addInputQuizData(quiz: quiz1, categoryId: 1)
             }){
                 Text("ビュー側で設定したクイズの追加")
             }

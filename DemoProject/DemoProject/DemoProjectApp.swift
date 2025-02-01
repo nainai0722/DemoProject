@@ -11,8 +11,12 @@ import SwiftUI
 struct DemoProjectApp: App {
     var body: some Scene {
         WindowGroup {
-//            HomeView()
             TabViewIndex()
+//            if UIDevice.current.userInterfaceIdiom == .phone {
+//                TabViewIndex()
+//            } else {
+//                SelectPageView()
+//            }
         }
     }
 }

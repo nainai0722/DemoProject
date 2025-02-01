@@ -44,25 +44,6 @@ struct RealmQuizRepository {
         }
     }
     
-
-//    func initializeDefaultCategoriesIfNeeded() {
-//        let realm = try! Realm()
-//        let existingCategories = realm.objects(RealmQuizCategory.self)
-//        if existingCategories.isEmpty {
-//            let categoryNames = ["漢字", "ことわざ", "動物", "生活", "有名人", "家族", "社会"]
-//            for categoryName in categoryNames {
-//                try! realm.write {
-//                    let defaultCategory = RealmQuizCategory()
-//                    defaultCategory.title = categoryName
-//                    defaultCategory.starCount = 0
-//                    defaultCategory.createdAt = Date()
-//                    realm.add(defaultCategory)
-//                    print("\(categoryName)を追加しました")
-//                }
-//            }
-//        }
-//    }
-    
     func initializeDefaultCategoriesIfNeeded() {
         let realm = try! Realm()
         let existingCategories = realm.objects(RealmQuizCategory.self)
@@ -85,21 +66,44 @@ struct RealmQuizRepository {
             }
         }
     }
+/*
+ List -> Arrayへの変換
+ let testList = List<Tag>() //List型
+ var testArray = Array<Any>() // Array型
 
+ testArray.append(contentsOf: Array(testList)) // Array()でListを変換
+
+ */
     
-    
-    /// カテゴリー情報を配列で返す
-    /// - Returns: 配列型のカテゴリ情報
-    func getCategories() -> [RealmQuizCategory] {
+    /// RealmQuizCategory型のクイズカテゴリー情報をQuizCategory型の配列で返す
+    /// - Returns: QuizCategory型の配列
+    func getQuizCategoryArray() -> [QuizCategory] {
         let realm = try! Realm()
         let categories = realm.objects(RealmQuizCategory.self)
+        var categoriesArray : [QuizCategory] = []
         
-//        var categoryArray:[RealmQuizCategory] = []
-//        
-//        for category in categories {
-//            categoryArray.append(category)
-//        }
-//        return categoryArray
+        for category in categories {
+            // `RealmQuiz` のリストを `Quiz` に変換する
+            let quizArray: [Quiz] = category.quizItems.map { realmQuiz in
+                Quiz(id: realmQuiz.id, title: realmQuiz.title, detail: realmQuiz.detail, answerNumber: realmQuiz.answerNumber, quizOptions: Array(realmQuiz.quizOptions))
+            }
+
+            // `createdAt` を `String` に変換
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
+            let createdAtString = dateFormatter.string(from: category.createdAt)
+            // category.createdAtをDate型からString型へ
+            let tempQuizCategory = QuizCategory(id: category.id, title: category.title, starCount: category.starCount, quizItems: quizArray, completed: category.completed, correctCount: category.correctCount, createdAt:createdAtString)
+            categoriesArray.append(tempQuizCategory)
+        }
+        return categoriesArray
+    }
+    
+    /// カテゴリー情報をRealmQuizCategory型のArrayで返す
+    /// - Returns: 配列型のカテゴリ情報
+    func getRealmQuizCategoryArray() -> [RealmQuizCategory] {
+        let realm = try! Realm()
+        let categories = realm.objects(RealmQuizCategory.self)
         return Array(categories)
     }
     
@@ -107,23 +111,42 @@ struct RealmQuizRepository {
     /// 指定したカテゴリidと一致するクイズ情報を取得する
     /// - Parameter id: カテゴリーidを指定する
     /// - Returns: 配列型のクイズ情報
-    func getQuizByCategoryId(by id :Int) -> [RealmQuiz]  {
+    func getRealmQuizByCategoryId(by id :Int) -> [RealmQuiz]  {
         let realm = try! Realm()
         let categories = realm.objects(RealmQuizCategory.self)
-//        let quizzes = realm.objects(RealmQuiz.self)　使っていないのでコメントアウトした
         
         var quizArray:[RealmQuiz] = []
         
         for category in categories {
             if (category.id == id) {
                 for quiz in category.quizItems {
-//                    print("  - クイズ: \(quiz.id):\(quiz.title), 問題: \(quiz.detail)")
                     quizArray.append(quiz)
                 }
             }
         }
         return quizArray
     }
+    
+    /// 指定したカテゴリidと一致するクイズ情報を取得する
+    /// - Parameter id: カテゴリーidを指定する
+    /// - Returns: 配列型のクイズ情報
+    func getQuizByCategoryId(by id :Int) -> [Quiz]  {
+        let realm = try! Realm()
+        let categories = realm.objects(RealmQuizCategory.self)
+        
+        var quizArray:[Quiz] = []
+        
+        for category in categories {
+            if (category.id == id) {
+                // `RealmQuiz` のリストを `Quiz` に変換する
+                quizArray = category.quizItems.map { realmQuiz in
+                    Quiz(id: realmQuiz.id, title: realmQuiz.title, detail: realmQuiz.detail, answerNumber: realmQuiz.answerNumber, quizOptions: Array(realmQuiz.quizOptions))
+                }
+            }
+        }
+        return quizArray
+    }
+    
     
     func deleteAllData() {
         let realm = try! Realm()
