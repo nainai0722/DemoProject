@@ -35,22 +35,25 @@ struct ControlDBView: View {
             Spacer()
             
             Button(action:{
-//                RealmQuizRepository().printDebugDBElementFromTable()
-                let categories = RealmQuizRepository().getQuizCategoryArray()
-                for category in categories {
-                    print(category.id)
-                    print(category.title)
-                }
+                RealmQuizRepository().printDebugDBElementFromTable()
+//                let categories = RealmQuizRepository().getQuizCategoryArray()
+//                for category in categories {
+//                    print(category.id)
+//                    print(category.title)
+//                    category.quizItems.forEach { item in
+//                        print("\(item.title)")
+//                    }
+//                }
             }){
                 Text("テーブルの中身")
             }
             Spacer()
             
             Button(action:{
-                let quizArray = RealmQuizRepository().getQuizByCategoryId(by:1)
+                let quizArray = RealmQuizRepository().getQuizByCategoryId(by:8)
                 for quiz in quizArray{
                     print("\(quiz.id)")
-                    print(quiz.title)
+                    print("\(quiz.title)\(quiz.detail)")
                 }
             }){
                 Text("CategoryQuiz型で取得")
@@ -65,7 +68,7 @@ struct ControlDBView: View {
             }
             Spacer()
             Button(action:{
-                RealmQuizRepository().addQuizByCategory(categoryId: 0)
+                RealmQuizRepository().addMockQuizByCategory(categoryId: 1)
             }){
                 Text("指定したカテゴリにクイズのみ追加")
             }
@@ -77,9 +80,34 @@ struct ControlDBView: View {
                 quiz1.detail = "いきものをつかまえたりする「わな」の正しい漢字は？"
                 quiz1.answerNumber = 3
                 quiz1.quizOptions.append(objectsIn: ["縄", "和名", "罠", "輪名"])
-                RealmQuizRepository().addInputQuizData(quiz: quiz1, categoryId: 1)
+                RealmQuizRepository().addInputQuiz(quiz: quiz1, categoryId: 1)
             }){
                 Text("ビュー側で設定したクイズの追加")
+            }
+            Spacer()
+            Button(action:{
+                let quiz1 = RealmQuiz()
+                quiz1.id = 2
+                quiz1.title = "いつでも漢字クイズ"
+                quiz1.detail = "いきものをつかまえたりする「わな」の正しい漢字は？"
+                quiz1.answerNumber = 3
+                quiz1.quizOptions.append(objectsIn: ["縄", "和名", "罠", "輪名"])
+                RealmQuizRepository().updateInputQuiz(quiz: quiz1, categoryId: 1)
+            }){
+                Text("クイズの変更")
+            }
+            
+            Spacer()
+            Button(action:{
+                let quiz1 = RealmQuiz()
+                quiz1.id = 2
+                quiz1.title = "いつでも漢字クイズ"
+                quiz1.detail = "いきものをつかまえたりする「わな」の正しい漢字は？"
+                quiz1.answerNumber = 3
+                quiz1.quizOptions.append(objectsIn: ["縄", "和名", "罠", "輪名"])
+                RealmQuizRepository().deleteQuiz(quiz: quiz1, categoryId: 1)
+            }){
+                Text("クイズの削除")
             }
             
             
@@ -90,6 +118,7 @@ struct ControlDBView: View {
                 ForEach(category.quizItems){ quiz in
                     HStack {
                         Text("\(quiz.id)")
+                        Text(quiz.title)
                         Text(quiz.detail)
                     }
                 }

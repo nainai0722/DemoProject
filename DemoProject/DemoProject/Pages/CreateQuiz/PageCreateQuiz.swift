@@ -84,7 +84,7 @@ struct PageCreateQuiz: View {
                         quiz1.detail = detail
                         quiz1.answerNumber = answerNumber
                         quiz1.quizOptions.append(objectsIn: [option1, option2, option3, option4])
-                        RealmQuizRepository().addInputQuizData(quiz: quiz1, categoryId: selectedCategoryId) //指定したカテゴリに要素追加されることを確認済み
+                        RealmQuizRepository().addInputQuiz(quiz: quiz1, categoryId: selectedCategoryId) //指定したカテゴリに要素追加されることを確認済み
                         resetInputElements()
                         showSaveMessage = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {

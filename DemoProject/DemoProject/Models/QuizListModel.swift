@@ -28,18 +28,24 @@ final class QuizListModel: ObservableObject {
     }
     
     
-    
+    ///  Realmデータベースの中からidが一致するQuiz型の配列をプロパティに格納する
+    /// - Parameter id: クイズカテゴリのID
     func fetchMyQuizByCategoryId(by id:Int) {
+//        print("fetchMyQuizByCategoryIdを呼び出す")
+//        print("categoryId : \(id)")
         // Previews閲覧しやすいようにQuiz型にする
-        print("fetchMyQuizByCategoryIdを呼び出す")
-        print("categoryId : \(id)")
         quizzes = RealmQuizRepository().getQuizByCategoryId(by: id)
-        for quiz in quizzes {
-            print("クイズタイトル" + quiz.title)
-        }
+//        for quiz in quizzes {
+//            print("クイズタイトル" + quiz.title)
+//        }
         print(quizzes)
     }
     
+    
+    /// アプリ内で用意しているカテゴリクイズにアクセスし、idが一致するQuiz型の配列をコールバックする
+    /// - Parameters:
+    ///   - id: クイズのid
+    ///   - completion: 完了したら、idが一致するQuiz型の配列をコールバックする
     private func fetchMockQuizByTitle(by id:Int,completion: @escaping (Result<[Quiz], Error>) -> Void) {
         var  sampleQuizzes: [Quiz] = []
         // サンプルデータを返すフェッチ処理
