@@ -10,16 +10,18 @@ import SwiftUI
 struct PageCreateQuiz: View {
     @ObservedObject var viewModel = RealmQuizCategoryListModel()
     
-    //編集関連のプロパティ
+    // 編集関連のプロパティ
     @Binding var isEditMode: Bool
     @Binding var editQuiz: Quiz?
     @Binding var editCategoryId: Int?
     @State private var showSaveMessage = false
     @State private var showValidationMessage = false
     
+    // カテゴリ選択判定のプロパティ
     @State private var selectedCategoryId: Int = -1
     @State private var selectedCategoryTitle: String = ""
     
+    // クイズの入力項目
     @State private var title: String = ""
     @State private var detail: String = ""
     @State private var answerNumberString: String = ""
@@ -39,7 +41,7 @@ struct PageCreateQuiz: View {
     var body: some View {
         ZStack {
             VStack {
-                EditQuizTopTitle(title: isEditMode ? "クイズを編集する" : "クイズを作ろう",subTitle: "すべての項目を入力しよう",isPresented: .constant(false),onCancel: resetInputElements,
+                EditQuizTopTitle(title: isEditMode ? "クイズを編集する" : "クイズを作ろう",subTitle: "すべての項目を入力しよう",isPresented: .constant(false),isEditMode: $isEditMode, onCancel: resetInputElements,
                                  onSave: tappedSaveButton)
                 Divider()
                 // TODO : 検証用
@@ -89,6 +91,7 @@ struct PageCreateQuiz: View {
         }
     }
     
+    /// 更新画面に情報をセットする
     func inputEditParameters() {
         guard let editQuiz = editQuiz else { return }
         guard let editCategoryId = editCategoryId else { return }
@@ -111,6 +114,7 @@ struct PageCreateQuiz: View {
         }
     }
     
+    
     func tappedSaveButton() {
         if isValidated() {
             saveQuiz()
@@ -130,6 +134,9 @@ struct PageCreateQuiz: View {
         }
     }
 
+    
+    /// 空のチェックを行う
+    /// - Returns: すべて入力されていたらtrueを返す
     func isValidated() -> Bool {
         if selectedCategoryId == -1 {
             print("カテゴリが選択されていません")
@@ -159,6 +166,7 @@ struct PageCreateQuiz: View {
         return true
     }
     
+    /// 登録及び更新処理を行う
     func saveQuiz() {
         print("入力内容は正しく入力されています。") //検証済み
         print("\(selectedCategoryId)")
@@ -174,8 +182,9 @@ struct PageCreateQuiz: View {
         quiz1.quizOptions.append(objectsIn: [option1, option2, option3, option4])
         if isEditMode {
             guard let editQuiz = editQuiz else { return
-                print("編集するクイズが見つかりません")
+                print("変更するクイズが見つかりません")
             }
+            // MEMO: idがないとクラッシュする
             quiz1.id = editQuiz.id
             RealmQuizRepository().updateInputQuiz(quiz: quiz1, categoryId: selectedCategoryId)
         } else {
@@ -231,12 +240,14 @@ extension View {
 //Text(<# String #>)
 //            .titleStyle(color: .blue)
 
+/// キャンセルと保存ボタンを押した際に、呼び出し元でメソッドが発火する
 struct EditQuizTopTitle: View {
     var title :String = ""
     var subTitle :String = ""
     var iconString :String = ""
     var memo:String = ""
     @Binding var isPresented: Bool
+    @Binding var isEditMode: Bool
     var onCancel: () -> Void
     var onSave: () -> Void
     
@@ -247,7 +258,7 @@ struct EditQuizTopTitle: View {
                     // 呼び出し元でresetInputElementsを呼び出し
                     onCancel()
                 }){
-                    Text("キャンセル")
+                    Text("取り消し")
                 }
                 .frame(width: 80, height: 40)
                 Spacer()
@@ -264,7 +275,7 @@ struct EditQuizTopTitle: View {
                     
                     onSave()
                 }){
-                    Text("保存")
+                    Text(isEditMode ? "更新" : "保存")
                 }
                 .frame(width: 80, height: 40)
                 
@@ -308,7 +319,6 @@ struct InputAnswerView: View {
     @State var isShowingNumberPopover:Bool = false
     @Binding var inputText: String
     var inputTitle : String = "クイズの答え"
-//    @State var sampleText : String = "未選択"
     @Binding var sampleText : String
     var body: some View {
         VStack(alignment:.leading) {
@@ -349,12 +359,12 @@ struct InputAnswerView: View {
 }
 
 struct InputCategoryView: View {
-    @State var isShowingPopover = false
     @Binding var categories : [QuizCategory]
     @Binding var inputText: String
     @Binding var selectedCategoryId : Int
     @Binding var isValidCategory: Bool
     var inputTitle : String = "カテゴリーを選ぶ"
+    @State var isShowingPopover = false
     @State var sampleText : String = "未選択"
     var body: some View {
         VStack(alignment:.leading) {
@@ -402,6 +412,8 @@ struct InputCategoryView: View {
     }
 }
 
+
+/// 保存ボタンを押した際の結果を表示する画面
 struct SubmitResultView: View {
     var title: String = "メッセージ"
     
