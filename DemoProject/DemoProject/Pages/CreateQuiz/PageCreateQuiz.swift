@@ -10,6 +10,10 @@ import SwiftUI
 struct PageCreateQuiz: View {
     @ObservedObject var viewModel = RealmQuizCategoryListModel()
     
+    //編集関連のプロパティ
+    @Binding var isEditMode: Bool
+    @Binding var editQuiz: Quiz?
+    @Binding var editCategoryId: Int?
     @State private var showSaveMessage = false
     @State private var showValidationMessage = false
     
@@ -32,20 +36,11 @@ struct PageCreateQuiz: View {
     
     @FocusState private var isTextFieldFocused: Bool
     
-    var sortCategories: [QuizCategory] {
-        let sortedCategories = viewModel.categories.sorted { $0.id > $1.id }
-        
-        return sortedCategories
-    }
-    
-    var categories: [QuizCategory] {
-        return viewModel.categories
-    }
-    
     var body: some View {
         ZStack {
             VStack {
-                QuizPageTopTitle(title: "クイズを作ろう",subTitle: "すべての項目を入力しよう")
+                EditQuizTopTitle(title: isEditMode ? "クイズを編集する" : "クイズを作ろう",subTitle: "すべての項目を入力しよう",isPresented: .constant(false),onCancel: resetInputElements,
+                                 onSave: tappedSaveButton)
                 Divider()
                 // TODO : 検証用
                 //            Text("選択された: \(selectedCategoryId)")
@@ -70,49 +65,6 @@ struct PageCreateQuiz: View {
                 }
                 
                 Spacer()
-                Button(action:{
-                    let quiz1 = RealmQuiz()
-                    if isValidated() {
-                        print("入力内容は正しく入力されています。") //検証済み
-                        print("\(selectedCategoryId)")
-                        print("\(selectedCategoryTitle)")
-                        print("\(title)")
-                        print("\(detail)")
-                        print("\(answerNumberString)")
-                        print("\(option1)");print("\(option2)");print("\(option3)");print("\(option4)")
-                        quiz1.title = title
-                        quiz1.detail = detail
-                        quiz1.answerNumber = answerNumber
-                        quiz1.quizOptions.append(objectsIn: [option1, option2, option3, option4])
-                        RealmQuizRepository().addInputQuiz(quiz: quiz1, categoryId: selectedCategoryId) //指定したカテゴリに要素追加されることを確認済み
-                        resetInputElements()
-                        showSaveMessage = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                            showSaveMessage = false
-                        }
-                    }else{
-                        withAnimation(.easeInOut) {
-                            showValidationMessage = true
-                        }
-                        timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
-                            shakeOffset = Bool.random() ? 5 : -5
-                        }
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            timer?.invalidate()
-                            showValidationMessage = false
-                            shakeOffset = 0
-                        }
-                    }
-                }){
-                    Text("追加")
-                        .font(.system(size: 20))
-                        .padding()
-                        .frame(width: UIScreen.main.bounds.width * 0.8, height: 50)
-                        .foregroundStyle(.white)
-                        .background(.blue)
-                }
-                .padding(.bottom,20)
             }
             .onTapGesture {
                 isTextFieldFocused = false // 画面タップで閉じる
@@ -126,8 +78,45 @@ struct PageCreateQuiz: View {
                 .opacity(showValidationMessage ? 1 : 0)
                 .offset(x: shakeOffset)
         }
-        .onAppear(perform: viewModel.fetch)
+        .onAppear(){
+            viewModel.fetch()
+            inputEditParameters()
+        }
     }
+    
+    func inputEditParameters() {
+        guard let editQuiz = editQuiz else { return }
+        if isEditMode {
+            title = editQuiz.title
+            detail = editQuiz.detail
+            answerNumber = editQuiz.answerNumber
+            answerNumberString = "選択中の答案"
+            option1 = editQuiz.quizOptions[0]
+            option2 = editQuiz.quizOptions[1]
+            option3 = editQuiz.quizOptions[2]
+            option4 = editQuiz.quizOptions[3]
+        }
+    }
+    
+    func tappedSaveButton() {
+        if isValidated() {
+            saveQuiz()
+        }else{
+            withAnimation(.easeInOut) {
+                showValidationMessage = true
+            }
+            timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
+                shakeOffset = Bool.random() ? 5 : -5
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                timer?.invalidate()
+                showValidationMessage = false
+                shakeOffset = 0
+            }
+        }
+    }
+
     func isValidated() -> Bool {
         if selectedCategoryId == -1 {
             print("カテゴリが選択されていません")
@@ -157,8 +146,37 @@ struct PageCreateQuiz: View {
         return true
     }
     
+    func saveQuiz() {
+        print("入力内容は正しく入力されています。") //検証済み
+        print("\(selectedCategoryId)")
+        print("\(selectedCategoryTitle)")
+        print("\(title)")
+        print("\(detail)")
+        print("\(answerNumberString)")
+        print("\(option1)");print("\(option2)");print("\(option3)");print("\(option4)")
+        let quiz1 = RealmQuiz()
+        quiz1.title = title
+        quiz1.detail = detail
+        quiz1.answerNumber = answerNumber
+        quiz1.quizOptions.append(objectsIn: [option1, option2, option3, option4])
+        if isEditMode {
+            guard let editQuiz = editQuiz else { return
+                print("編集するクイズが見つかりません")
+            }
+            quiz1.id = editQuiz.id
+            RealmQuizRepository().updateInputQuiz(quiz: quiz1, categoryId: selectedCategoryId)
+        } else {
+            RealmQuizRepository().addInputQuiz(quiz: quiz1, categoryId: selectedCategoryId) //指定したカテゴリに要素追加されることを確認済み
+        }
+         
+        resetInputElements()
+        showSaveMessage = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            showSaveMessage = false
+        }
+    }
+    
     func resetInputElements() {
-        
         title = ""
         detail = ""
         answerNumber = -1
@@ -172,7 +190,9 @@ struct PageCreateQuiz: View {
 }
 
 #Preview {
-    PageCreateQuiz()
+    @Previewable @State var mockQuiz:Quiz? = Quiz.mockQuizData
+    
+    PageCreateQuiz(isEditMode: .constant(false), editQuiz: $mockQuiz, editCategoryId:.constant(1))
 }
 
 // カスタムModifier（MyTitle）の定義
@@ -196,6 +216,58 @@ extension View {
 ////使うとき
 //Text(<# String #>)
 //            .titleStyle(color: .blue)
+
+struct EditQuizTopTitle: View {
+    var title :String = ""
+    var subTitle :String = ""
+    var iconString :String = ""
+    var memo:String = ""
+    @Binding var isPresented: Bool
+    var onCancel: () -> Void
+    var onSave: () -> Void
+    
+    var body: some View {
+        ZStack {
+            HStack(alignment:.top){
+                Button(action:{
+                    // 呼び出し元でresetInputElementsを呼び出し
+                    onCancel()
+                }){
+                    Text("キャンセル")
+                }
+                .frame(width: 80, height: 40)
+                Spacer()
+                VStack(alignment:.center) {
+                    Text(title)
+                        .font(.system(size: 24))
+                    Text(subTitle)
+                        .font(.system(size: 13))
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.bottom,20)
+                Spacer()
+                Button(action:{
+                    
+                    onSave()
+                }){
+                    Text("保存")
+                }
+                .frame(width: 80, height: 40)
+                
+            }
+            HStack {
+                Spacer()
+                Image(systemName: iconString)
+                    .font(.system(size: 30))
+                    .padding(.trailing)
+                    .onTapGesture {
+                        isPresented.toggle()
+                    }
+            }
+        }
+        
+    }
+}
 
 struct InputView: View {
     @Binding var inputText: String
@@ -222,7 +294,7 @@ struct InputAnswerView: View {
     @State var isShowingNumberPopover:Bool = false
     @Binding var inputText: String
     var inputTitle : String = "クイズの答え"
-    @State var sampleText : String = "0"
+    @State var sampleText : String = "未選択"
     var body: some View {
         VStack(alignment:.leading) {
             Text(inputTitle)
@@ -312,24 +384,6 @@ struct InputCategoryView: View {
                 }
                 
             }
-        }
-    }
-}
-
-struct QuizPageTopTitle: View {
-    var title :String = ""
-    var subTitle :String = ""
-    
-    var body: some View {
-        HStack(alignment:.top){
-            VStack(alignment:.center) {
-                Text(title)
-                    .font(.system(size: 24))
-                Text(subTitle)
-                    .font(.system(size: 13))
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.bottom,20)
         }
     }
 }

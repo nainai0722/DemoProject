@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct TabViewIndex: View {
+    @State var mockQuiz:Quiz? = Quiz.mockQuizData
+    @State var isEditeMode = false
     var body: some View {
         TabView {
 //            PageViewIndex()
@@ -16,7 +18,7 @@ struct TabViewIndex: View {
 //                    Text("Home")
 //                }
             
-            PageCreateQuiz()
+            PageCreateQuiz(isEditMode:$isEditeMode, editQuiz:$mockQuiz,editCategoryId: .constant(Int(1)))
                 .tabItem {
                     Image(systemName: "rectangle.and.pencil.and.ellipsis")
                     Text("つくる")
