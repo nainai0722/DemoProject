@@ -27,23 +27,28 @@ struct PageMyQuizEditList: View {
                                     .onTapGesture {
                                         selectedCategoryId = category.id
                                         selectedQuiz = quizItem
+                                        isEditModalPresented = true
+                                        
                                     }
                             }
-                        }
-                    }
-                    .onChange(of: selectedQuiz) { oldValue,newValue in
-                        if newValue != nil {
-                            isEditModalPresented = true
-                        }
-                    }
-                    .sheet(isPresented: $isEditModalPresented) {
-                        if let quiz = selectedQuiz, let categoryId = selectedCategoryId {
-                            EditQuizModalView(quiz: .constant(quiz), categoryId: .constant(categoryId))
                         }
                     }
                     .headerProminence(.increased)
                 }
                 .listStyle(.insetGrouped)
+                .sheet(isPresented: $isEditModalPresented) {
+                    if let quiz = selectedQuiz, let categoryId = selectedCategoryId {
+                        EditQuizModalView(quiz: .constant(quiz), categoryId: .constant(categoryId))
+                            .onAppear(){
+                                print("EditQuizModalView が表示された")
+                            }
+                            .onDisappear {
+                                print("EditQuizModalView が閉じられた")
+                                selectedQuiz = nil
+                                selectedCategoryId = nil
+                            }
+                    }
+                }
             }
             .onAppear(perform: viewModel.fetch)
             
@@ -51,6 +56,11 @@ struct PageMyQuizEditList: View {
                 .animation(.easeIn.delay(0.5), value: isPresented)
                 .opacity(isPresented ? 1 : 0)
         }
+    }
+    
+    func methodTest()  {
+        selectedQuiz = nil
+        selectedCategoryId = nil
     }
 }
 
