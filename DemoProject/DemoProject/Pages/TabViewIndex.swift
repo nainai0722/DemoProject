@@ -34,6 +34,12 @@ struct TabViewIndex: View {
                     Text("自作クイズ")
                 }
             
+            PageMyQuizEditList()
+                .tabItem {
+                    Image(systemName: "checklist")
+                    Text("自作クイズの編集")
+                }
+            
 //            PageImageQuizList()
 //                .tabItem {
 //                    Image(systemName: "list.dash")
