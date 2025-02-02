@@ -14,7 +14,7 @@ struct QuizConverter {
     /// - Parameter realmQuiz: データベース用の型
     /// - Returns: 画面用の型
     static func toQuiz(realmQuiz:RealmQuiz)-> Quiz {
-        return Quiz(id: realmQuiz.id, title: realmQuiz.title, detail: realmQuiz.detail, answerNumber: realmQuiz.answerNumber, quizOptions: Array(realmQuiz.quizOptions))
+        return Quiz(id: realmQuiz.id, title: realmQuiz.title, detail: realmQuiz.detail, answerNumber: realmQuiz.answerNumber, quizOptions: toQuizOption(quizOptions: realmQuiz.quizOptions) )
     }
     
     static func toRealmQuiz(quiz:Quiz) -> RealmQuiz {
@@ -27,7 +27,7 @@ struct QuizConverter {
     static func toQuizList(quizItems:List<RealmQuiz>) -> [Quiz] {
         // `RealmQuiz` のリストを `Quiz` に変換する
         let quizArray: [Quiz] = quizItems.map { realmQuiz in
-            Quiz(id: realmQuiz.id, title: realmQuiz.title, detail: realmQuiz.detail, answerNumber: realmQuiz.answerNumber, quizOptions: Array(realmQuiz.quizOptions))
+            toQuiz(realmQuiz: realmQuiz)
         }
         return quizArray
     }
@@ -42,11 +42,12 @@ struct QuizConverter {
         return Array(quizOptions)
     }
         
-    // TODO: 未対処　
-    static func toRealmQuizCategory(categories:[QuizCategory]) -> RealmQuizCategory {
-        
-        return RealmQuizCategory()
+    // TODO: `[QuizCategory]` を受け取って `RealmQuizCategory` に変換する処理を追加
+    static func toRealmQuizCategory(categories: [QuizCategory]) -> RealmQuizCategory {
+        fatalError("未実装: QuizCategory を RealmQuizCategory に変換する処理を実装する")
     }
+
+    
     
     static func toQuizCategoryList(categories : Results<RealmQuizCategory>) -> [QuizCategory] {
         var categoriesArray : [QuizCategory] = []
