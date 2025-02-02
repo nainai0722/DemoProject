@@ -59,7 +59,12 @@ struct PageCreateQuiz: View {
                         InputView(inputText: $option2, inputTitle: "選択肢2", sampleText: "ぎたい")
                         InputView(inputText: $option3, inputTitle: "選択肢3", sampleText: "ぎたい")
                         InputView(inputText: $option4, inputTitle: "選択肢4", sampleText: "ぎたい")
-                        InputAnswerView(inputText: $answerNumberString, inputTitle: "選択肢の中から答えの番号を選ぶ", sampleText: "0")
+                        if isEditMode {
+                            InputAnswerView(inputText: $answerNumberString, inputTitle: "選択肢の中から答えの番号を選ぶ", sampleText:$answerNumberString)
+                        } else {
+                            InputAnswerView(inputText: $answerNumberString, inputTitle: "選択肢の中から答えの番号を選ぶ", sampleText: .constant("未選択"))
+                        }
+                        
                     }
                     .focused($isTextFieldFocused) // フォーカス管理
                 }
@@ -86,15 +91,23 @@ struct PageCreateQuiz: View {
     
     func inputEditParameters() {
         guard let editQuiz = editQuiz else { return }
+        guard let editCategoryId = editCategoryId else { return }
         if isEditMode {
             title = editQuiz.title
             detail = editQuiz.detail
             answerNumber = editQuiz.answerNumber
-            answerNumberString = "選択中の答案"
+            answerNumberString = "\(editQuiz.answerNumber + 1)番を選択"
             option1 = editQuiz.quizOptions[0]
             option2 = editQuiz.quizOptions[1]
             option3 = editQuiz.quizOptions[2]
             option4 = editQuiz.quizOptions[3]
+            selectedCategoryId = editCategoryId
+            if let category = viewModel.categories.first(where: { $0.id == editCategoryId }) {
+                selectedCategoryTitle = category.title
+            } else {
+                selectedCategoryTitle = "未選択"
+            }
+            
         }
     }
     
@@ -180,6 +193,7 @@ struct PageCreateQuiz: View {
         title = ""
         detail = ""
         answerNumber = -1
+        answerNumberString = ""
         option1 = ""
         option2 = ""
         option3 = ""
@@ -294,7 +308,8 @@ struct InputAnswerView: View {
     @State var isShowingNumberPopover:Bool = false
     @Binding var inputText: String
     var inputTitle : String = "クイズの答え"
-    @State var sampleText : String = "未選択"
+//    @State var sampleText : String = "未選択"
+    @Binding var sampleText : String
     var body: some View {
         VStack(alignment:.leading) {
             Text(inputTitle)
@@ -340,7 +355,7 @@ struct InputCategoryView: View {
     @Binding var selectedCategoryId : Int
     @Binding var isValidCategory: Bool
     var inputTitle : String = "カテゴリーを選ぶ"
-    @State var sampleText : String = "0"
+    @State var sampleText : String = "未選択"
     var body: some View {
         VStack(alignment:.leading) {
             Text(inputTitle)
@@ -365,7 +380,6 @@ struct InputCategoryView: View {
                     }
                 } label: {
                     if selectedCategoryId > 0 && selectedCategoryId <= categories.count {
-                        
                         HStack {
                             Text(categories[selectedCategoryId - 1].title)
                                 .padding(.leading, 10)
@@ -375,7 +389,7 @@ struct InputCategoryView: View {
                         
                     }else{
                         HStack {
-                            Text(inputTitle)
+                            Text(sampleText)
                                 .padding(.leading, 10)
                             Spacer()
                         }

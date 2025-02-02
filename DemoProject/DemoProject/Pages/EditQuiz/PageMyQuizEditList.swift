@@ -21,14 +21,19 @@ struct PageMyQuizEditList: View {
                 
                 List {
                     ForEach(viewModel.categories) { category in
-                        Section(header: Text(category.title)) {
+                        Section(header:
+                            VStack {
+                                Text(category.title)
+//                            if category.quizItems.count == 0 {
+//                                Text("このカテゴリはデータがない")
+//                            }
+                        }
+                        ) {
                             ForEach(category.quizItems) { quizItem in
                                 Text(quizItem.title)
                                     .onTapGesture {
                                         selectedCategoryId = category.id
                                         selectedQuiz = quizItem
-                                        isEditModalPresented = true
-                                        
                                     }
                             }
                         }
@@ -36,6 +41,17 @@ struct PageMyQuizEditList: View {
                     .headerProminence(.increased)
                 }
                 .listStyle(.insetGrouped)
+                .onChange(of: selectedQuiz) { oldValue, newValue in
+                    print("selectedQuiz 変更: \(oldValue) → \(newValue)")
+                    
+                    if newValue != nil {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            isEditModalPresented = true
+                            print("isEditModalPresented を true に設定")
+                        }
+                    }
+                }
+
                 .sheet(isPresented: $isEditModalPresented) {
                     if let quiz = selectedQuiz, let categoryId = selectedCategoryId {
                         EditQuizModalView(quiz: .constant(quiz), categoryId: .constant(categoryId))
