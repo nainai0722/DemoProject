@@ -7,81 +7,26 @@
 
 import SwiftUI
 struct PageMyQuizEditList: View {
-    @ObservedObject var viewModel = RealmQuizCategoryListModel()
-    @State private var isEditModalPresented: Bool = false
-    @State private var selectedQuiz: Quiz? = nil
-    @State private var selectedCategoryId: Int? = nil
     @State var isPresented: Bool = false
 
     var body: some View {
         ZStack {
-            VStack {
-                // タイトル部分
-                QuizPageTopTitle(isPresented: $isPresented)
-                
-                List {
-                    ForEach(viewModel.categories) { category in
-                        Section(header:
-                            VStack {
-                                Text(category.title)
-//                            if category.quizItems.count == 0 {
-//                                Text("このカテゴリはデータがない")
-//                            }
-                        }
-                        ) {
-                            ForEach(category.quizItems) { quizItem in
-                                Text(quizItem.title)
-                                    .onTapGesture {
-                                        selectedCategoryId = category.id
-                                        selectedQuiz = quizItem
-                                    }
-                            }
-                        }
-                    }
-                    .headerProminence(.increased)
-                }
-                .listStyle(.insetGrouped)
-                .onChange(of: selectedQuiz) { oldValue, newValue in
-                    print("selectedQuiz 変更: \(oldValue) → \(newValue)")
-                    
-                    if newValue != nil {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            isEditModalPresented = true
-                            print("isEditModalPresented を true に設定")
-                        }
-                    }
-                }
-
-                .sheet(isPresented: $isEditModalPresented) {
-                    if let quiz = selectedQuiz, let categoryId = selectedCategoryId {
-                        EditQuizModalView(quiz: .constant(quiz), categoryId: .constant(categoryId))
-                            .onAppear(){
-                                print("EditQuizModalView が表示された")
-                            }
-                            .onDisappear {
-                                print("EditQuizModalView が閉じられた")
-                                selectedQuiz = nil
-                                selectedCategoryId = nil
-                            }
-                    }
-                }
-            }
-            .onAppear(perform: viewModel.fetch)
+            MyQuizEditMainView(isPresented: $isPresented)
             
             HowToUseView(isPresented: $isPresented)
                 .animation(.easeIn.delay(0.5), value: isPresented)
                 .opacity(isPresented ? 1 : 0)
         }
     }
-    
-    func methodTest()  {
-        selectedQuiz = nil
-        selectedCategoryId = nil
-    }
 }
 
-#Preview {
+#Preview("List") {
     PageMyQuizEditList()
+}
+
+#Preview("Main") {
+    // プレビューの？ボタンタップ時のモーダルはこのビューより上の層なので、表示されない
+    MyQuizEditMainView(isPresented: .constant(false))
 }
 
 struct EditQuizModalView: View {
@@ -132,5 +77,93 @@ struct HowToUseView: View {
             }
             .frame(width: 300, height: 200)
         }
+    }
+}
+
+struct MyQuizEditMainView: View {
+    @ObservedObject var viewModel = RealmQuizCategoryListModel()
+//    @ObservedObject var viewModel = QuizCategoryListModel() 検証用
+    @State private var isEditModalPresented: Bool = false
+    @State private var selectedQuiz: Quiz? = nil
+    @State private var selectedCategoryId: Int? = nil
+    @State private var expandedCategories: [Int: Bool] = [:] // 各カテゴリごとの表示状態
+    @Binding var isPresented:Bool
+    var body: some View {
+        VStack {
+            // タイトル部分
+            QuizPageTopTitle(isPresented: $isPresented)
+            
+            List {
+                ForEach(viewModel.categories) { category in
+                    Section(header:
+                        HStack {
+                            Text(category.title)
+                            if category.quizItems.count == 0 {
+                                Text("このカテゴリはデータがない")
+                                    .font(.caption)
+                            } else {
+                                Spacer()
+                                Button(action:{
+                                        expandedCategories[category.id, default: true].toggle()
+                                    }
+                                ){
+                                    if expandedCategories[category.id, default: true] {
+                                        Image(systemName: "arrow.down.and.line.horizontal.and.arrow.up")
+                                    } else {
+                                        Image(systemName: "arrow.up.and.line.horizontal.and.arrow.down")
+                                    }
+                                }
+                            }
+                        }
+                    ) {
+                        if expandedCategories[category.id, default: true] {
+                            ForEach(category.quizItems) { quizItem in
+                                HStack{
+                                    Text(quizItem.title)
+                                    Spacer()
+                                }
+                                .frame(width: .infinity, height: 40)
+                                .contentShape(Rectangle()) // 全体をタップ可能にする
+                                .onTapGesture {
+                                    selectedCategoryId = category.id
+                                    selectedQuiz = quizItem
+                                }
+                                .transition(.slide)
+                            }
+                        }
+                    }
+                }
+                .headerProminence(.standard)
+            }
+            .listStyle(.insetGrouped)
+            .onChange(of: selectedQuiz) { oldValue, newValue in
+                //                    print("selectedQuiz 変更: \(oldValue) → \(newValue)")
+                if newValue != nil {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        isEditModalPresented = true
+                        //                            print("isEditModalPresented を true に設定")
+                    }
+                }
+            }
+            
+            .sheet(isPresented: $isEditModalPresented) {
+                if let quiz = selectedQuiz, let categoryId = selectedCategoryId {
+                    EditQuizModalView(quiz: .constant(quiz), categoryId: .constant(categoryId))
+                        .onAppear(){
+                            //                                print("EditQuizModalView が表示された")
+                        }
+                        .onDisappear {
+                            //                                print("EditQuizModalView が閉じられた")
+                            selectedQuiz = nil
+                            selectedCategoryId = nil
+                        }
+                }
+            }
+        }
+        .onAppear {
+            viewModel.fetch()
+            expandedCategories = viewModel.categories.reduce(into: [:]) { $0[$1.id] = true }
+        }
+//        (perform: viewModel.fetch)
     }
 }
