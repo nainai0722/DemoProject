@@ -86,7 +86,7 @@ struct PageCreateQuiz: View {
                 .offset(x: shakeOffset)
         }
         .onAppear(){
-            viewModel.fetch()
+//            viewModel.fetch()
             inputEditParameters()
         }
     }

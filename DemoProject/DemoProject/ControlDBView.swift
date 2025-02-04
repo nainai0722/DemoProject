@@ -36,14 +36,6 @@ struct ControlDBView: View {
             
             Button(action:{
                 RealmQuizRepository().printDebugDBElementFromTable()
-//                let categories = RealmQuizRepository().getQuizCategoryArray()
-//                for category in categories {
-//                    print(category.id)
-//                    print(category.title)
-//                    category.quizItems.forEach { item in
-//                        print("\(item.title)")
-//                    }
-//                }
             }){
                 Text("テーブルの中身")
             }
@@ -124,7 +116,7 @@ struct ControlDBView: View {
                 }
             }
         }
-        .onAppear(perform: viewModel.fetch)
+//        .onAppear(perform: viewModel.fetch)
     }
 
 }

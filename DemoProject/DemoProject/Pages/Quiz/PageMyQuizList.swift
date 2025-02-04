@@ -57,7 +57,7 @@ struct PageMyQuizList: View {
             }
             
         }
-        .onAppear(perform: viewModel.fetch)
+//        .onAppear(perform: viewModel.fetch)
     }
     
 }

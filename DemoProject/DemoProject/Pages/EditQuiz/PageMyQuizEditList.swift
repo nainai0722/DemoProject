@@ -137,23 +137,16 @@ struct MyQuizEditMainView: View {
             }
             .listStyle(.insetGrouped)
             .onChange(of: selectedQuiz) { oldValue, newValue in
-                //                    print("selectedQuiz 変更: \(oldValue) → \(newValue)")
                 if newValue != nil {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         isEditModalPresented = true
-                        //                            print("isEditModalPresented を true に設定")
                     }
                 }
             }
-            
             .sheet(isPresented: $isEditModalPresented) {
                 if let quiz = selectedQuiz, let categoryId = selectedCategoryId {
                     EditQuizModalView(quiz: .constant(quiz), categoryId: .constant(categoryId))
-                        .onAppear(){
-                            //                                print("EditQuizModalView が表示された")
-                        }
                         .onDisappear {
-                            //                                print("EditQuizModalView が閉じられた")
                             selectedQuiz = nil
                             selectedCategoryId = nil
                         }
@@ -161,9 +154,7 @@ struct MyQuizEditMainView: View {
             }
         }
         .onAppear {
-            viewModel.fetch()
             expandedCategories = viewModel.categories.reduce(into: [:]) { $0[$1.id] = true }
         }
-//        (perform: viewModel.fetch)
     }
 }

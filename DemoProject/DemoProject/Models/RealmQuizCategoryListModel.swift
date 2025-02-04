@@ -13,6 +13,10 @@ import RealmSwift
 final class RealmQuizCategoryListModel: ObservableObject {
     @Published var categories: [QuizCategory] = []
     
+    init() {
+        fetch()
+    }
+
     func fetch() {
         categories = RealmQuizRepository().getQuizCategoryArray()
     }
