@@ -116,6 +116,7 @@ struct RealmQuizRepository {
             // 一致するカテゴリが見つかった場合、quizItemsに新しいクイズを追加
             try! realm.write {
                 realm.add(quiz)
+                category.completed = false
                 category.quizItems.append(quiz)
             }
         } else {
