@@ -89,6 +89,18 @@ struct RealmQuizRepository {
         return quizArray
     }
     
+    func isExistCategory(id: Int) -> Bool {
+        let realm = try! Realm()
+        let categories = realm.objects(RealmQuizCategory.self)
+        
+        for category in categories {
+            if (category.id == id) {
+                return true
+            }
+        }
+        return false
+    }
+    
     /// 入力画面で作ったクイズ情報をデータベースに追加する
     /// - Parameters:
     ///   - quiz: 入力画面で作ったクイズ情報
@@ -178,6 +190,58 @@ struct RealmQuizRepository {
                     print("\(categoryName)を追加しました")
                 }
             }
+        }
+    }
+    
+    
+    
+    func updateCategoryCorrectCount(by id:Int, quizzesIndex:Int) {
+        let realm = try! Realm()
+        
+        // 引数categoryIdに一致するidのRealmQuizCategoryを取得
+        if let category = realm.objects(RealmQuizCategory.self).filter("id == %@", id).first {
+            try! realm.write {
+                
+                if  category.correctCount < category.quizItems.count {
+                    category.correctCount += 1
+                    category.completed = false
+                } else {
+                    category.correctCount = category.quizItems.count
+                    category.completed = true
+                }
+            }
+        } else {
+            print("指定したカテゴリIDが見つかりませんでした")
+        }
+    }
+    
+    func updateCategoryStarCount(by id:Int, starCount:Int){
+        let realm = try! Realm()
+        
+        if let category = realm.objects(RealmQuizCategory.self).filter("id == %@", id).first {
+            try! realm.write {
+                print("星の数を変更する前:\(category.starCount)")
+                category.starCount = starCount
+                print("星の数を変更したあと:\(category.starCount)")
+            }
+        }
+    }
+    
+    func updateCategoryComplete(by id:Int) {
+        let realm = try! Realm()
+        
+        // 引数categoryIdに一致するidのRealmQuizCategoryを取得
+        if let category = realm.objects(RealmQuizCategory.self).filter("id == %@", id).first {
+            try! realm.write {
+                if category.correctCount == category.quizItems.count {
+                    category.completed = true
+                } else {
+                    category.completed = true
+                }
+                realm.add(category, update: .modified)
+            }
+        } else {
+            print("指定したカテゴリIDが見つかりませんでした")
         }
     }
     

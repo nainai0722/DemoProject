@@ -6,25 +6,14 @@
 //
 
 import SwiftUI
+import RealmSwift
 
 struct PageMyQuizList: View {
-    @ObservedObject var viewModel = RealmQuizCategoryListModel()
+    @StateObject var viewModel = RealmQuizCategoryListModel()
     @State private var selectedCategory: QuizCategory? = nil
     let myQuizFlag = true
     var body: some View {
-        // NavigationViewはiOS18.2より非推奨のためコメントアウト
-//        NavigationView{
-//            ScrollView(.vertical, showsIndicators: false) {
-//                VStack(spacing:0) {
-//                    ForEach(viewModel.categories) { category in
-//                        SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in self.selectedCategory = category})
-//                    }
-//                }
-//                .frame(maxWidth: .infinity)
-//            }
-//            MasterView()
-//        }
-//        .onAppear(perform: viewModel.fetch)
+        // NavigationViewはiOS18.2より非推奨のため iPhoneではNavigationStack、iPadではNavigationSplitViewを採用
         //クイズの一覧画面を表示する
         ZStack {
             if UIDevice.current.userInterfaceIdiom == .phone {
@@ -32,10 +21,22 @@ struct PageMyQuizList: View {
                     ScrollView(.vertical, showsIndicators: false) {
                         VStack(spacing:0) {
                             ForEach(viewModel.categories) { category in
-                                SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in self.selectedCategory = category})
+                                SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in
+                                    self.selectedCategory = category
+                                    viewModel.fetch()
+                                })
                             }
                         }
                         .frame(maxWidth: .infinity)
+                    }
+                    .onAppear {
+                        viewModel.fetch()  // 画面が表示されるたびにデータを再取得
+                    }
+                    .onChange(of: selectedCategory) { newValue in
+                        if newValue == nil {
+                            print("ナビゲーションから戻ったのでデータ更新")
+                            viewModel.fetch() // 戻ったタイミングでデータを更新
+                        }
                     }
                 }
             } else {
@@ -49,6 +50,9 @@ struct PageMyQuizList: View {
                             }
                             .frame(maxWidth: .infinity)
                         }
+                        .onAppear {
+                            viewModel.fetch()  // 画面が表示されるたびにデータを再取得
+                        }
                     },
                     detail: {
                         MasterView()
@@ -57,7 +61,7 @@ struct PageMyQuizList: View {
             }
             
         }
-//        .onAppear(perform: viewModel.fetch)
+        .onAppear(perform: viewModel.fetch)
     }
     
 }

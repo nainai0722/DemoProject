@@ -92,7 +92,7 @@ struct MyQuizEditMainView: View {
         VStack {
             // タイトル部分
             QuizPageTopTitle(isPresented: $isPresented)
-            
+            // カテゴリ表示部分
             List {
                 ForEach(viewModel.categories) { category in
                     Section(header:

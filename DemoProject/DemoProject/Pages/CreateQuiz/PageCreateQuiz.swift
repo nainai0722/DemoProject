@@ -24,15 +24,17 @@ struct PageCreateQuiz: View {
     // クイズの入力項目
     @State private var title: String = ""
     @State private var detail: String = ""
-    @State private var answerNumberString: String = ""
+    @State private var answerNumberString: String = "未選択"
     @State private var answerNumber: Int = -1
     @State private var option1: String = ""
     @State private var option2: String = ""
     @State private var option3: String = ""
     @State private var option4: String = ""
     
+    //入力判定フラグ
     @State private var isValidCategory: Bool = false
     
+    // 入力結果画面のアニメーションパラメータ各種　うまく動いていないのでコード含め削除してもいいかも？
     @State private var shakeOffset: CGFloat = 0
     @State private var timer: Timer?
     
@@ -44,13 +46,6 @@ struct PageCreateQuiz: View {
                 EditQuizTopTitle(title: isEditMode ? "クイズを編集する" : "クイズを作ろう",subTitle: "すべての項目を入力しよう",isPresented: .constant(false),isEditMode: $isEditMode, onCancel: resetInputElements,
                                  onSave: tappedSaveButton)
                 Divider()
-                // TODO : 検証用
-                //            Text("選択された: \(selectedCategoryId)")
-                //                                .font(.headline)
-                //            if selectedCategoryId >= 0 && selectedCategoryId < viewModel.categories.count {
-                //                Text(viewModel.categories[selectedCategoryId].title)
-                //            }
-                // TODO : 検証用
                 ScrollView {
                     VStack {
                         InputCategoryView(categories: $viewModel.categories, inputText: $selectedCategoryTitle, selectedCategoryId: $selectedCategoryId, isValidCategory: $isValidCategory)
@@ -61,12 +56,7 @@ struct PageCreateQuiz: View {
                         InputView(inputText: $option2, inputTitle: "選択肢2", sampleText: "ぎたい")
                         InputView(inputText: $option3, inputTitle: "選択肢3", sampleText: "ぎたい")
                         InputView(inputText: $option4, inputTitle: "選択肢4", sampleText: "ぎたい")
-                        if isEditMode {
-                            InputAnswerView(inputText: $answerNumberString, inputTitle: "選択肢の中から答えの番号を選ぶ", sampleText:$answerNumberString)
-                        } else {
-                            InputAnswerView(inputText: $answerNumberString, inputTitle: "選択肢の中から答えの番号を選ぶ", sampleText: .constant("未選択"))
-                        }
-                        
+                        InputAnswerView(inputText: $answerNumberString, inputTitle: "選択肢の中から答えの番号を選ぶ", sampleText: $answerNumberString)
                     }
                     .focused($isTextFieldFocused) // フォーカス管理
                 }
@@ -86,7 +76,6 @@ struct PageCreateQuiz: View {
                 .offset(x: shakeOffset)
         }
         .onAppear(){
-//            viewModel.fetch()
             inputEditParameters()
         }
     }
@@ -188,7 +177,7 @@ struct PageCreateQuiz: View {
             quiz1.id = editQuiz.id
             RealmQuizRepository().updateInputQuiz(quiz: quiz1, categoryId: selectedCategoryId)
         } else {
-            RealmQuizRepository().addInputQuiz(quiz: quiz1, categoryId: selectedCategoryId) //指定したカテゴリに要素追加されることを確認済み
+            RealmQuizRepository().addInputQuiz(quiz: quiz1, categoryId: selectedCategoryId)
         }
          
         resetInputElements()
@@ -352,19 +341,21 @@ struct InputAnswerView: View {
                     }
                     .frame(width: UIScreen.main.bounds.width * 0.9, height: 40)
                 }
-                
             }
         }
     }
 }
 
+
+/// MenuコンポーネントはLabelにデフォルトの表示を設定し、タップされると、Menu{}に記述した表示を返す。
+/// 下記ではButton()をループで返す。
+///  格納されたButton()をタップすることで、selectedCategoryIdを更新し、@Bindingされているので、画面の再構築が実行される。
 struct InputCategoryView: View {
     @Binding var categories : [QuizCategory]
     @Binding var inputText: String
     @Binding var selectedCategoryId : Int
     @Binding var isValidCategory: Bool
     var inputTitle : String = "カテゴリーを選ぶ"
-    @State var isShowingPopover = false
     @State var sampleText : String = "未選択"
     var body: some View {
         VStack(alignment:.leading) {
@@ -378,7 +369,6 @@ struct InputCategoryView: View {
                     ForEach(categories, id: \.self) { category in
                         Button(action: {
                             selectedCategoryId = category.id
-                            isShowingPopover = false
                             isValidCategory = false
                         }) {
                             Text("\(category.id): \(category.title)")
@@ -406,7 +396,6 @@ struct InputCategoryView: View {
                         .frame(width: UIScreen.main.bounds.width * 0.9, height: 40)
                     }
                 }
-                
             }
         }
     }

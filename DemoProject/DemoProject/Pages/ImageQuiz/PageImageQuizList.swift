@@ -6,20 +6,6 @@
 //
 
 import SwiftUI
-/*
- NavigationSplitView {
-     List(colors, id: \.self, selection: $selection) { color in
-         NavigationLink(color.description, value: color)
-     }
- } detail: {
-     if let color = selection {
-         ColorDetail(color: color)
-     } else {
-         Text("Pick a color")
-     }
- }
- */
-
 
 struct PageImageQuizList: View {
     @ObservedObject var viewModel = RealmQuizCategoryListModel()

@@ -8,6 +8,8 @@
 import SwiftUI
 import Combine
 
+/// クイズの要素を管理するクラス
+/// この中でQuiz型でクイズ情報を入れている
 final class QuizCategoryListModel: ObservableObject {
     @Published var categories: [QuizCategory] = []
     
@@ -19,7 +21,6 @@ final class QuizCategoryListModel: ObservableObject {
                 case .success(let news):
                     self.categories = news
                 case .failure(let error):
-//                    print("エラーが発生しました: \(error.localizedDescription)")
                     print("[\(NSString(string: #file).lastPathComponent):\(#line) \(#function)] エラーが発生しました: \(error.localizedDescription)")
 
                 }
@@ -28,6 +29,8 @@ final class QuizCategoryListModel: ObservableObject {
     }
     
     
+    /// API通信を考慮してコールバック関数completionにResult型で<[QuizCategory], Error>を返却する
+    /// - Parameter completion:コールバック関数
     private func fetchMockNews(completion: @escaping (Result<[QuizCategory], Error>) -> Void) {
 
         // サンプルデータを返すフェッチ処理
@@ -124,7 +127,6 @@ final class QuizCategoryListModel: ObservableObject {
              quizOptions: ["目を閉じてぐっすり寝る","水底に沈んで寝る","脳の半分ずつ休ませながら寝る","一緒にいる群れと交代で寝る"])
     ]
 
-    
     let lifeQuiz:[Quiz] = [
         Quiz(id: 1,
              title: "じゅうなん剤について知ろう",
@@ -152,7 +154,6 @@ final class QuizCategoryListModel: ObservableObject {
              answerNumber: 3,
              quizOptions: ["どっちでもいい","横向きにする","黄身が上になるようにする","とがっている方を下にする"])
     ]
-
     
     let famousPersonQuiz:[Quiz] = [
         Quiz(id: 1,

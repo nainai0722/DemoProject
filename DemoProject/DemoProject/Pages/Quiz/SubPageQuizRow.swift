@@ -9,7 +9,8 @@ import SwiftUI
 
 struct SubPageQuizRow: View {
     @State var isAnimating = false
-    var quizCategory:QuizCategory = QuizCategory(id: 1, title: "時間", starCount: 3, quizItems: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
+    @State var quizCategory:QuizCategory = QuizCategory(id: 1, title: "時間", starCount: 5, quizItems: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
+//    @Binding var quizCategory:QuizCategory
     var myQuizFlag = false
     //クロージャで呼び出し元に返す
     let onSelect: (QuizCategory) -> Void
@@ -50,9 +51,9 @@ struct SubPageQuizRow: View {
 }
 
 #Preview {
-    @State var quizCategory:QuizCategory = QuizCategory(id: 1, title: "時間", starCount: 3, quizItems: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
-//    SubPageQuizRow(quizCategory: $quizCategory, onSelect: { _ in })
+    @State var quizCategory:QuizCategory = QuizCategory(id: 1, title: "時間", starCount: 5, quizItems: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
     SubPageQuizRow(onSelect: { _ in })
+//    SubPageQuizRow(quizCategory: .constant(quizCategory), onSelect: { _ in })
 }
 
 struct StartButton: View {
@@ -78,6 +79,11 @@ struct QuizStatsView: View {
                     Text("答えた数")
                         .font(.system(size: 16))
                     Text("\(quizCategory.correctCount)/\(quizCategory.quizItems.count)")
+                }
+                VStack {
+                    Text("クイズステータス")
+                        .font(.system(size: 16))
+                    Text(quizCategory.completed ? "完了" : "未完了")
                 }
             }
             HStack{

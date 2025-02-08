@@ -10,6 +10,8 @@ import SwiftUI
 import Combine
 import RealmSwift
 
+
+/// DB側からクイズのデータを取得するクラス
 final class RealmQuizCategoryListModel: ObservableObject {
     @Published var categories: [QuizCategory] = []
     

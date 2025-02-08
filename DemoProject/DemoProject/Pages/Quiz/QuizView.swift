@@ -8,14 +8,17 @@
 import SwiftUI
 import RealmSwift
 
+// NavigationLinkとTabViewでネストしているので、TabView切り替えした際に、viewModelがなくて、QuizCompletedView()表示になるので、直したい
 struct QuizView: View {
     @State var isAnimating = false
     var categoryId:Int = 8 //データ格納しているIDを入れておくといい
+    var quizCategory:QuizCategory = QuizCategory()
     var myQuizFlag = true // 自作クイズ判定フラグ
-    @ObservedObject var viewModel = QuizListModel()
+    @StateObject var viewModel = QuizListModel()
     @State var index = 0
     @State var selectedAnswer :Int = -1
     @State var isCorrectedPresented :Bool = false
+    @State var isEvaluateQuizPresented :Bool = false
     var body: some View {
         VStack {
             if UIDevice.current.userInterfaceIdiom == .phone {
@@ -31,7 +34,8 @@ struct QuizView: View {
                         NextButton(action: nextQuestion)
                     }else{
                         // クイズがすべて終了した場合の表示
-                        QuizCompletedView(restartAction: restartQuiz)
+                        QuizCompletedView(restartAction: restartQuiz, evaluateAction: evaluateQuiz)
+                        
                     }
                 }
                 .opacity(isAnimating ? 0.3 : 1)
@@ -41,6 +45,9 @@ struct QuizView: View {
                 
                 if(isAnimating) {
                     AnswerFeedbackView(isCorrect: isCorrectedPresented)
+                }
+                if(isEvaluateQuizPresented) {
+                    EvaluateQuizView(isEvaluateQuizPresented: $isEvaluateQuizPresented, quizCategory:quizCategory)
                 }
             }
             Spacer()
@@ -55,6 +62,10 @@ struct QuizView: View {
         }
         isAnimating = true
 
+        // 答えた数を反映させる
+        RealmQuizRepository().updateCategoryCorrectCount(by: categoryId, quizzesIndex: index)
+        RealmQuizRepository().updateCategoryComplete(by: categoryId)
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             isAnimating = false
             index += 1
@@ -66,6 +77,10 @@ struct QuizView: View {
     private func restartQuiz() {
         index = 0
         selectedAnswer = -1
+    }
+    
+    private func evaluateQuiz() {
+        isEvaluateQuizPresented.toggle()
     }
     
     private func loadQuizData() {
@@ -100,6 +115,7 @@ struct NextButton: View {
 
 struct QuizCompletedView: View {
     let restartAction: () -> Void
+    let evaluateAction: () -> Void
 
     var body: some View {
         VStack {
@@ -107,6 +123,7 @@ struct QuizCompletedView: View {
             Text("クイズが終了しました！")
                 .font(.headline)
             Button("もう一度プレイ", action: restartAction)
+            Button("クイズを評価する", action: evaluateAction)
             Spacer()
         }
     }
@@ -190,4 +207,64 @@ struct AnswerFeedbackView: View {
 //                .animation(.easeInOut(duration: 0.5),value:isAnimating)
         }
     }
+}
+
+struct EvaluateQuizView: View {
+    @Binding var isEvaluateQuizPresented: Bool
+    @State var quizCategory:QuizCategory
+    @State var startCount:Int = 0
+    @State var startFlag : Bool = false
+    @State private var selectedStar: Int? = nil // 選択された星のインデックス
+    var body: some View {
+        ZStack {
+//            RoundedRectangle(cornerRadius: 0)
+//                .fill(Color.black)
+//                .opacity(0.3)
+//                .ignoresSafeArea(edges: .all)
+            RoundedRectangle(cornerRadius: 15)
+                .fill(Color.white)
+                .frame(width: UIScreen.main.bounds.width * 0.8, height: 150)
+                .shadow(radius: 0.3)
+            
+            VStack{
+                Text("このクイズの評価をしてください")
+                HStack{
+                    ForEach(1..<6, id: \.self) { count in
+                        Button(action: {
+                            if selectedStar == count {
+                                selectedStar = count - 1  // すでに選択している星なら1つ消す
+                            } else {
+                                selectedStar = count      // 新しい星を選択
+                            }
+                            print("selectedStar \(selectedStar)")
+                        }) {
+                            Image(systemName: (selectedStar ?? quizCategory.starCount) >= count ? "star.fill" : "star")
+                                .foregroundColor(.yellow)
+                        }
+                    }
+                }
+                Divider()
+                Button(action:{
+                    applyChanges()
+                }){
+                    Text("閉じる")
+                }
+            }
+                .frame(width: 200, height: 200)
+        }
+    }
+    
+    func tapStarCount(count:Int) {
+        quizCategory.starCount = count
+        print("\(count)")
+    }
+    
+    func applyChanges(){
+        isEvaluateQuizPresented.toggle()
+        if let selectedStar = selectedStar {
+            RealmQuizRepository().updateCategoryStarCount(by:quizCategory.id , starCount: selectedStar)
+        }
+        
+    }
+    
 }

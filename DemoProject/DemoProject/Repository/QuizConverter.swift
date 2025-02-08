@@ -44,11 +44,11 @@ struct QuizConverter {
         
     // TODO: `[QuizCategory]` を受け取って `RealmQuizCategory` に変換する処理を追加
     static func toRealmQuizCategory(categories: [QuizCategory]) -> RealmQuizCategory {
+        
         fatalError("未実装: QuizCategory を RealmQuizCategory に変換する処理を実装する")
     }
 
-    
-    
+
     static func toQuizCategoryList(categories : Results<RealmQuizCategory>) -> [QuizCategory] {
         var categoriesArray : [QuizCategory] = []
         for category in categories {
@@ -67,7 +67,4 @@ struct QuizConverter {
         }
         return categoriesArray
     }
-    
 }
-
-
