@@ -16,54 +16,48 @@ struct PageMyQuizList: View {
         // NavigationViewはiOS18.2より非推奨のため iPhoneではNavigationStack、iPadではNavigationSplitViewを採用
         //クイズの一覧画面を表示する
         ZStack {
-            if UIDevice.current.userInterfaceIdiom == .phone {
+//            if UIDevice.current.userInterfaceIdiom == .phone {
                 NavigationStack{
                     ScrollView(.vertical, showsIndicators: false) {
                         VStack(spacing:0) {
-                            ForEach(viewModel.categories) { category in
+                            ForEach(viewModel.categories, id: \.self){ category in
                                 SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in
                                     self.selectedCategory = category
-                                    viewModel.fetch()
                                 })
                             }
                         }
                         .frame(maxWidth: .infinity)
                     }
                     .onAppear {
-                        viewModel.fetch()  // 画面が表示されるたびにデータを再取得
-                    }
-                    .onChange(of: selectedCategory) { newValue in
-                        if newValue == nil {
-                            print("ナビゲーションから戻ったのでデータ更新")
-                            viewModel.fetch() // 戻ったタイミングでデータを更新
-                        }
+                        print("データ再取得")
+//                        viewModel.updateCategories()
                     }
                 }
-            } else {
-                NavigationSplitView(
-                    sidebar:{
-                        ScrollView(.vertical, showsIndicators: false) {
-                            VStack(spacing:0) {
-                                ForEach(viewModel.categories) { category in
-                                    SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in self.selectedCategory = category})
-                                }
-                            }
-                            .frame(maxWidth: .infinity)
-                        }
-                        .onAppear {
-                            viewModel.fetch()  // 画面が表示されるたびにデータを再取得
-                        }
-                    },
-                    detail: {
-                        MasterView()
-                    }
-                )
-            }
+//            } else {
+//                NavigationSplitView(
+//                    sidebar:{
+//                        ScrollView(.vertical, showsIndicators: false) {
+//                            VStack(spacing:0) {
+//                                ForEach(viewModel.categories, id:\.id) { category in
+//                                    SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in self.selectedCategory = category})
+//                                }
+//                            }
+//                            .frame(maxWidth: .infinity)
+//                        }
+//                    },
+//                    detail: {
+//                        MasterView()
+//                    }
+//                )
+//            }
             
         }
-        .onAppear(perform: viewModel.fetch)
+//        .onAppear(perform: viewModel.fetch)
+        .onAppear {
+            print("ZStack データ再取得")
+//            viewModel.updateCategories()  // 画面が表示されるたびにデータを再取得
+        }
     }
-    
 }
 
 #Preview {

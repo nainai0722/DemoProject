@@ -24,8 +24,8 @@ struct PageCreateQuiz: View {
     // クイズの入力項目
     @State private var title: String = ""
     @State private var detail: String = ""
-    @State private var answerNumberString: String = "未選択"
     @State private var answerNumber: Int = -1
+    @State private var selectedAnswerString: String = ""
     @State private var option1: String = ""
     @State private var option2: String = ""
     @State private var option3: String = ""
@@ -56,7 +56,7 @@ struct PageCreateQuiz: View {
                         InputView(inputText: $option2, inputTitle: "選択肢2", sampleText: "ぎたい")
                         InputView(inputText: $option3, inputTitle: "選択肢3", sampleText: "ぎたい")
                         InputView(inputText: $option4, inputTitle: "選択肢4", sampleText: "ぎたい")
-                        InputAnswerView(inputText: $answerNumberString, inputTitle: "選択肢の中から答えの番号を選ぶ", sampleText: $answerNumberString)
+                        InputAnswerView(selectedAnswerNumber: $answerNumber, selectedAnswerString: $selectedAnswerString)
                     }
                     .focused($isTextFieldFocused) // フォーカス管理
                 }
@@ -88,7 +88,8 @@ struct PageCreateQuiz: View {
             title = editQuiz.title
             detail = editQuiz.detail
             answerNumber = editQuiz.answerNumber
-            answerNumberString = "\(editQuiz.answerNumber + 1)番を選択"
+//            print("\(answerNumber)")
+            selectedAnswerString = "\(answerNumber + 1)番を選択"
             option1 = editQuiz.quizOptions[0]
             option2 = editQuiz.quizOptions[1]
             option3 = editQuiz.quizOptions[2]
@@ -147,11 +148,10 @@ struct PageCreateQuiz: View {
             print("選択項目が入力されていません")
             return false
         }
-        guard let answerNumberInt = Int(answerNumberString) else {
-            print("正解番号が整数ではありません")
+        if answerNumber == -1 {
+            print("答えが選択されていません")
             return false
         }
-        answerNumber = answerNumberInt
         return true
     }
     
@@ -162,8 +162,8 @@ struct PageCreateQuiz: View {
         print("\(selectedCategoryTitle)")
         print("\(title)")
         print("\(detail)")
-        print("\(answerNumberString)")
         print("\(option1)");print("\(option2)");print("\(option3)");print("\(option4)")
+        print("\(answerNumber)") // 1~4を選んだ際に、0~3が代入されている
         let quiz1 = RealmQuiz()
         quiz1.title = title
         quiz1.detail = detail
@@ -174,7 +174,9 @@ struct PageCreateQuiz: View {
                 print("変更するクイズが見つかりません")
             }
             // MEMO: idがないとクラッシュする
+//            print("更新します")
             quiz1.id = editQuiz.id
+            print("\(quiz1.id)")
             RealmQuizRepository().updateInputQuiz(quiz: quiz1, categoryId: selectedCategoryId)
         } else {
             RealmQuizRepository().addInputQuiz(quiz: quiz1, categoryId: selectedCategoryId)
@@ -191,7 +193,7 @@ struct PageCreateQuiz: View {
         title = ""
         detail = ""
         answerNumber = -1
-        answerNumberString = ""
+        selectedAnswerString = ""
         option1 = ""
         option2 = ""
         option3 = ""
@@ -202,7 +204,7 @@ struct PageCreateQuiz: View {
 }
 
 #Preview {
-    @Previewable @State var mockQuiz:Quiz? = Quiz.mockQuizData
+    @State var mockQuiz:Quiz? = Quiz.mockQuizData
     
     PageCreateQuiz(isEditMode: .constant(false), editQuiz: $mockQuiz, editCategoryId:.constant(1))
 }
@@ -304,11 +306,11 @@ struct InputView: View {
     }
 }
 
+
 struct InputAnswerView: View {
-    @State var isShowingNumberPopover:Bool = false
-    @Binding var inputText: String
-    var inputTitle : String = "クイズの答え"
-    @Binding var sampleText : String
+    var inputTitle : String = "選択肢の中から答えの番号を選ぶ"
+    @Binding var selectedAnswerNumber: Int
+    @Binding var selectedAnswerString: String
     var body: some View {
         VStack(alignment:.leading) {
             Text(inputTitle)
@@ -318,15 +320,14 @@ struct InputAnswerView: View {
                     .fill(Color.gray.opacity(0.2))
                     .frame(width: UIScreen.main.bounds.width * 0.9, height: 40)
                 Menu {
-                    ForEach(1..<5, id: \.self) { num in
+                    ForEach(0..<4, id: \.self) { num in
                         Button(action: {
                             //配列は0...4なので、1つ減らす
-                            inputText = "\(num - 1)"
-                            sampleText = "\(num)番を選択"
-                            isShowingNumberPopover = false
+                            selectedAnswerNumber = num
+                            selectedAnswerString = "\(num + 1)番を選択"
                             
                         }) {
-                            Text("正解は\(num)")
+                            Text("正解は\(num + 1)番")
                                 .padding()
                                 .frame(maxWidth: .infinity)
                                 .background(Color.gray.opacity(0.2))
@@ -335,8 +336,13 @@ struct InputAnswerView: View {
                     }
                 } label: {
                     HStack {
-                        Text(sampleText)
-                            .padding(.leading, 10)
+                        if (selectedAnswerNumber == -1){
+                            Text("未選択")
+                                .padding(.leading, 10)
+                        }else{
+                            Text(selectedAnswerString)
+                                .padding(.leading, 10)
+                        }
                         Spacer()
                     }
                     .frame(width: UIScreen.main.bounds.width * 0.9, height: 40)

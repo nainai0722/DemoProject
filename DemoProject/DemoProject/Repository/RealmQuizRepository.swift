@@ -135,10 +135,14 @@ struct RealmQuizRepository {
         if let category = realm.objects(RealmQuizCategory.self).filter("id == %@", categoryId).first {
             // 一致するカテゴリが見つかった場合、quizItemsに新しいクイズを追加
             try! realm.write {
+                print("update")
                 realm.add(quiz, update:.modified)
-                // TODO: idは1から順列に並んでいるので、配列に代入する場合、-1する必要がある
-                category.quizItems.remove(at:quiz.id - 1)
-                category.quizItems.insert(quiz, at: quiz.id - 1)
+                // TODO: 更新箇所なので、クラッシュ起こしやすいかも？
+                print("")
+                if let index = category.quizItems.firstIndex(where: { $0.id == quiz.id }) {
+                    category.quizItems.remove(at: index)
+                    category.quizItems.insert(quiz, at: index)
+                }
             }
         } else {
             print("指定したカテゴリIDが見つかりませんでした")
@@ -160,7 +164,6 @@ struct RealmQuizRepository {
                     if let index = category.quizItems.firstIndex(where: { $0.id == matchQuiz.id }) {
                         category.quizItems.remove(at: index)
                     }
-                    
                     // `matchQuiz` を Realm から削除
                     realm.delete(matchQuiz)
                 }

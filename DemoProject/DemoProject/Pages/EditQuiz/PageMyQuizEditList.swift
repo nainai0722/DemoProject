@@ -81,7 +81,7 @@ struct HowToUseView: View {
 }
 
 struct MyQuizEditMainView: View {
-    @ObservedObject var viewModel = RealmQuizCategoryListModel()
+    @StateObject var viewModel = RealmQuizCategoryListModel()
 //    @ObservedObject var viewModel = QuizCategoryListModel() 検証用
     @State private var isEditModalPresented: Bool = false
     @State private var selectedQuiz: Quiz? = nil
@@ -94,7 +94,7 @@ struct MyQuizEditMainView: View {
             QuizPageTopTitle(isPresented: $isPresented)
             // カテゴリ表示部分
             List {
-                ForEach(viewModel.categories) { category in
+                ForEach(viewModel.categories, id:\.self) { category in
                     Section(header:
                         HStack {
                             Text(category.title)
@@ -117,7 +117,7 @@ struct MyQuizEditMainView: View {
                         }
                     ) {
                         if expandedCategories[category.id, default: true] {
-                            ForEach(category.quizItems) { quizItem in
+                            ForEach(category.quizItems, id:\.self) { quizItem in
                                 HStack{
                                     Text(quizItem.title)
                                     Spacer()
@@ -136,8 +136,8 @@ struct MyQuizEditMainView: View {
                 .headerProminence(.standard)
             }
             .listStyle(.insetGrouped)
-            .onChange(of: selectedQuiz) { oldValue, newValue in
-                if newValue != nil {
+            .onChange(of: selectedQuiz) { value in
+                if value != nil {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         isEditModalPresented = true
                     }
