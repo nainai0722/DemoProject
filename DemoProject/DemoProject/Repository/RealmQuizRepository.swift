@@ -153,7 +153,10 @@ struct RealmQuizRepository {
     /// - Parameters:
     ///   - quiz: 入力画面で変更されたクイズ
     ///   - categoryId: 変更するクイズカテゴリid
-    func deleteQuiz(quiz:RealmQuiz, categoryId: Int) {
+    func deleteQuiz(quiz:Quiz, categoryId: Int) {
+        
+//        let realmQuiz = QuizConverter.toRealmQuiz(quiz: quiz)
+        
         let realm = try! Realm()
         // 引数categoryIdに一致するidのRealmQuizCategoryを取得
         if let category = realm.objects(RealmQuizCategory.self).filter("id == %@", categoryId).first {

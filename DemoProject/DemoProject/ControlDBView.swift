@@ -97,7 +97,8 @@ struct ControlDBView: View {
                 quiz1.detail = "いきものをつかまえたりする「わな」の正しい漢字は？"
                 quiz1.answerNumber = 3
                 quiz1.quizOptions.append(objectsIn: ["縄", "和名", "罠", "輪名"])
-                RealmQuizRepository().deleteQuiz(quiz: quiz1, categoryId: 1)
+                let realmQuiz = QuizConverter.toQuiz(realmQuiz: quiz1)
+                RealmQuizRepository().deleteQuiz(quiz: realmQuiz, categoryId: 1)
             }){
                 Text("クイズの削除")
             }

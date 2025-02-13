@@ -124,6 +124,13 @@ struct MyQuizEditMainView: View {
                                 }
                                 .frame(width: .infinity, height: 40)
                                 .contentShape(Rectangle()) // 全体をタップ可能にする
+                                .swipeActions {
+                                    Button(role: .destructive) {
+                                        deleteQuiz(quizItem: quizItem, categoryId: category.id)
+                                    } label: {
+                                        Label("削除", systemImage: "trash")
+                                    }
+                                }
                                 .onTapGesture {
                                     selectedCategoryId = category.id
                                     selectedQuiz = quizItem
@@ -137,12 +144,22 @@ struct MyQuizEditMainView: View {
             }
             .listStyle(.insetGrouped)
             .onChange(of: selectedQuiz) { value in
+                // iOS17以降、非推奨になるが、修正は保留
                 if value != nil {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         isEditModalPresented = true
                     }
                 }
             }
+            // onChangeのiOS17対応の処理。まだ扱い方がわからない
+//            .onChangeInteractivelyAvailable(selectedQuiz) {
+//                guard let value = $0 else { return }
+//
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                    isEditModalPresented = true
+//                }
+//            }
+
             .sheet(isPresented: $isEditModalPresented) {
                 if let quiz = selectedQuiz, let categoryId = selectedCategoryId {
                     EditQuizModalView(quiz: .constant(quiz), categoryId: .constant(categoryId))
@@ -157,4 +174,35 @@ struct MyQuizEditMainView: View {
             expandedCategories = viewModel.categories.reduce(into: [:]) { $0[$1.id] = true }
         }
     }
+    
+    // 削除処理を関数として分ける
+    private func deleteQuiz(quizItem: Quiz, categoryId:Int) {
+        print("削除ボタンが押されました")
+        RealmQuizRepository().deleteQuiz(quiz: quizItem, categoryId: categoryId)
+    }
 }
+
+extension View {
+    // MARK: - Methods
+    @ViewBuilder
+    func onChangeInteractivelyAvailable<T: Equatable>(_ index: T,
+                                                      action: @escaping (T?, T) async -> Void
+    ) -> some View {
+        if #available(iOS 17.0, *) {
+        // iOS17からのonChange
+            onChange(of: index) { oldValue, newValue in
+                Task {
+                    await action(oldValue, newValue)
+                }
+            }
+        } else {
+        // iOS16までのonChange
+            onChange(of: index) { newValue in
+                Task {
+                    await action(nil, newValue)
+                }
+            }
+        }
+    }
+}
+
