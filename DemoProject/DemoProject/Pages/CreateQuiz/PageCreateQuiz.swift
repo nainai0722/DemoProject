@@ -17,6 +17,40 @@ struct PageCreateQuiz: View {
     @State private var showSaveMessage = false
     @State private var showValidationMessage = false
     
+    // 入力結果画面のアニメーションパラメータ各種　うまく動いていないのでコード含め削除してもいいかも？
+    @State private var shakeOffset: CGFloat = 0
+    @State private var timer: Timer?
+    
+    @FocusState private var isTextFieldFocused: Bool
+    
+    var body: some View {
+        ZStack {
+            CreateQuiaMainView(isEditMode: $isEditMode, editQuiz: $editQuiz, editCategoryId: $editCategoryId)
+        
+            SubmitResultView(title: "保存できました")
+                .opacity(showSaveMessage ? 1 : 0)
+                .animation(.easeInOut, value: showSaveMessage)
+            
+            SubmitResultView(title: "入力されていないところがあります")
+                .opacity(showValidationMessage ? 1 : 0)
+                .animation(.easeInOut, value: showValidationMessage)
+                .offset(x:shakeOffset)
+//                .opacity(showValidationMessage ? 1 : 0)
+//                .offset(x: shakeOffset)
+        }
+    }
+}
+
+struct CreateQuiaMainView: View {
+    @ObservedObject var viewModel = RealmQuizCategoryListModel()
+    
+    // 編集関連のプロパティ
+    @Binding var isEditMode: Bool
+    @Binding var editQuiz: Quiz?
+    @Binding var editCategoryId: Int?
+    @State private var showSaveMessage = false
+    @State private var showValidationMessage = false
+    
     // カテゴリ選択判定のプロパティ
     @State private var selectedCategoryId: Int = -1
     @State private var selectedCategoryTitle: String = ""
@@ -66,14 +100,6 @@ struct PageCreateQuiz: View {
             .onTapGesture {
                 isTextFieldFocused = false // 画面タップで閉じる
             }
-            
-            SubmitResultView(title: "保存できました")
-                .opacity(showSaveMessage ? 1 : 0)
-                .animation(.easeInOut, value: showSaveMessage)
-            
-            SubmitResultView(title: "入力されていないところがあります")
-                .opacity(showValidationMessage ? 1 : 0)
-                .offset(x: shakeOffset)
         }
         .onAppear(){
             inputEditParameters()
@@ -174,9 +200,7 @@ struct PageCreateQuiz: View {
                 print("変更するクイズが見つかりません")
             }
             // MEMO: idがないとクラッシュする
-//            print("更新します")
             quiz1.id = editQuiz.id
-            print("\(quiz1.id)")
             RealmQuizRepository().updateInputQuiz(quiz: quiz1, categoryId: selectedCategoryId)
         } else {
             RealmQuizRepository().addInputQuiz(quiz: quiz1, categoryId: selectedCategoryId)
@@ -207,6 +231,11 @@ struct PageCreateQuiz: View {
     @State var mockQuiz:Quiz? = Quiz.mockQuizData
     
     PageCreateQuiz(isEditMode: .constant(false), editQuiz: $mockQuiz, editCategoryId:.constant(1))
+}
+
+#Preview("メイン画面") {
+    @State var mockQuiz = Quiz.mockQuizData
+    CreateQuiaMainView(isEditMode: .constant(false), editQuiz: .constant(Optional(mockQuiz)), editCategoryId: .constant(Optional(8)))
 }
 
 // カスタムModifier（MyTitle）の定義
@@ -298,7 +327,7 @@ struct InputView: View {
                     .fill(Color.gray.opacity(0.2))
                     .frame(width: UIScreen.main.bounds.width * 0.9, height: 40)
                 TextField(sampleText, text: $inputText)
-                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 35)
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: (CGFloat($inputText.count) + 30 / 30) * 35 )
                     .padding(.leading, 20)
                     .font(.system(size: 24))
             }
