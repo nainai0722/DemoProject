@@ -30,7 +30,6 @@ class NewsViewModel: ObservableObject {
                 case .success(let news):
                     self.newsList = news
                 case .failure(let error):
-//                    print("エラーが発生しました: \(error.localizedDescription)")
                     print("[\(NSString(string: #file).lastPathComponent):\(#line) \(#function)] エラーが発生しました: \(error.localizedDescription)")
 
                 }

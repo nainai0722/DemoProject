@@ -19,7 +19,6 @@ class CategoryListModel: ObservableObject {
                 case .success(let items):
                     self.items = items
                 case .failure(let error):
-//                    print("エラーが発生しました: \(error.localizedDescription)")
                     print("[\(NSString(string: #file).lastPathComponent):\(#line) \(#function)] エラーが発生しました: \(error.localizedDescription)")
 
                 }
