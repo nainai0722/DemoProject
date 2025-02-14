@@ -13,62 +13,24 @@ struct PageMyQuizList: View {
     @State private var selectedCategory: QuizCategory? = nil
     let myQuizFlag = true
     var body: some View {
-        // NavigationViewはiOS18.2より非推奨のため iPhoneではNavigationStack、iPadではNavigationSplitViewを採用
         //クイズの一覧画面を表示する
         ZStack {
-//            if UIDevice.current.userInterfaceIdiom == .phone {
-                NavigationStack{
-                    ScrollView(.vertical, showsIndicators: false) {
-                        VStack(spacing:0) {
-                            ForEach(viewModel.categories, id: \.self){ category in
-                                SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in
-                                    self.selectedCategory = category
-                                })
-                            }
+            NavigationStack{
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing:0) {
+                        ForEach(viewModel.categories, id: \.self){ category in
+                            SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in
+                                self.selectedCategory = category
+                            })
                         }
-                        .frame(maxWidth: .infinity)
                     }
-                    .onAppear {
-                        print("データ再取得")
-//                        viewModel.updateCategories()
-                    }
+                    .frame(maxWidth: .infinity)
                 }
-//            } else {
-//                NavigationSplitView(
-//                    sidebar:{
-//                        ScrollView(.vertical, showsIndicators: false) {
-//                            VStack(spacing:0) {
-//                                ForEach(viewModel.categories, id:\.id) { category in
-//                                    SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in self.selectedCategory = category})
-//                                }
-//                            }
-//                            .frame(maxWidth: .infinity)
-//                        }
-//                    },
-//                    detail: {
-//                        MasterView()
-//                    }
-//                )
-//            }
-            
-        }
-//        .onAppear(perform: viewModel.fetch)
-        .onAppear {
-            print("ZStack データ再取得")
-//            viewModel.updateCategories()  // 画面が表示されるたびにデータを再取得
+            }
         }
     }
 }
 
 #Preview {
     PageMyQuizList()
-}
-
-struct MasterView: View {
-    var body: some View {
-        VStack{
-            Text("左上のアイコンを押してクイズを選んでね")
-                .font(.system(size: 40))
-        }
-    }
 }

@@ -27,38 +27,8 @@ struct HistoryTutorialsView: View {
     }
 }
 
-#Preview {
+#Preview ("チュートリアルタイトル画面"){
     HistoryTutorialsView()
-}
-
-struct SubPageTopTitle: View {
-    var title :String = ""
-    var subTitle :String = ""
-    var withArrow = true
-    @Environment(\.presentationMode) var presentationMode:Binding<PresentationMode>
-    
-    //閉じるときは以下を呼び出す
-    //self.presentationMode.wrappedValue.dismiss()
-    var body: some View {
-        HStack(alignment:.top){
-            Image(systemName: "arrowshape.backward")
-                .padding(.leading,10)
-                .padding(.top, 10)
-                .onTapGesture {
-                    self.presentationMode.wrappedValue.dismiss()
-                }
-            VStack(alignment:.leading) {
-                Text(title)
-                    .font(.system(size: 24))
-                Text(subTitle)
-                    .font(.system(size: 13))
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.leading, 20)
-            .padding(.bottom,20)
-            Spacer()
-        }
-    }
 }
 
 struct TutorialItemView: View {

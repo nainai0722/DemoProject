@@ -8,17 +8,16 @@
 import SwiftUI
 import RealmSwift
 
-// NavigationLinkとTabViewでネストしているので、TabView切り替えした際に、viewModelがなくて、QuizCompletedView()表示になるので、直したい
 struct QuizView: View {
     @State var isAnimating = false
     var categoryId:Int = 8 //データ格納しているIDを入れておくといい
-    var quizCategory:QuizCategory = QuizCategory()
+    var quizCategory = QuizCategory()
     var myQuizFlag = true // 自作クイズ判定フラグ
     @StateObject var viewModel = QuizListModel()
     @State var index = 0
     @State var selectedAnswer :Int = -1
-    @State var isCorrectedPresented :Bool = false
-    @State var isEvaluateQuizPresented :Bool = false
+    @State var isCorrectedPresented  = false
+    @State var isEvaluateQuizPresented = false
     var body: some View {
         VStack {
             if UIDevice.current.userInterfaceIdiom == .phone {
@@ -33,9 +32,8 @@ struct QuizView: View {
                         // 次へボタン
                         NextButton(action: nextQuestion)
                     }else{
-                        // クイズがすべて終了した場合の表示
+                        // クイズがすべて終了した際の画面
                         QuizCompletedView(restartAction: restartQuiz, evaluateAction: evaluateQuiz)
-                        
                     }
                 }
                 .opacity(isAnimating ? 0.3 : 1)
@@ -132,8 +130,8 @@ struct QuizCompletedView: View {
 struct QuizItemView: View {
     let padding:CGFloat = 16
     @Binding var selectedAnswer:Int
+    @Binding var quiz: Quiz
     var body: some View {
-        
         VStack(alignment:.leading, spacing: 0)  {
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
@@ -179,9 +177,6 @@ struct QuizItemView: View {
             }
         }
     }
-    @Binding var quiz: Quiz
-    /*= Quiz(id: 1, title: "猫に小判", detail: "猫に小判とはどういういみのことば？", answerNumber: 2, quizOptions: ["価値のあるものをあげても、価値を理解できない相手ではしかたない","かわいい相手にはいくらでもお金を注ぎ込める","贈り物をすると、あとでお礼がもらえる","小判などピカピカ光るものをねこは好む"])
-     */
 }
 
 
@@ -196,15 +191,11 @@ struct AnswerFeedbackView: View {
                 .foregroundStyle(isCorrect ? .red : .blue)
                 .shadow(radius: 10)
                 .transition(.opacity)
-//                .opacity(isAnimating ? 1 : 0 )
-//                .animation(.easeInOut(duration: 0.5),value:isAnimating)
             Text(isCorrect ? "正解!!" : "ちがいます")
                 .font(.system(size: 40))
                 .foregroundStyle(isCorrect ? .red : .blue)
                 .shadow(radius: 10)
                 .transition(.opacity)
-//                .opacity(isAnimating ? 1 : 0 )
-//                .animation(.easeInOut(duration: 0.5),value:isAnimating)
         }
     }
 }
@@ -217,10 +208,6 @@ struct EvaluateQuizView: View {
     @State private var selectedStar: Int? = nil // 選択された星のインデックス
     var body: some View {
         ZStack {
-//            RoundedRectangle(cornerRadius: 0)
-//                .fill(Color.black)
-//                .opacity(0.3)
-//                .ignoresSafeArea(edges: .all)
             RoundedRectangle(cornerRadius: 15)
                 .fill(Color.white)
                 .frame(width: UIScreen.main.bounds.width * 0.8, height: 150)
@@ -234,9 +221,10 @@ struct EvaluateQuizView: View {
                             if selectedStar == count {
                                 selectedStar = count - 1  // すでに選択している星なら1つ消す
                             } else {
-                                selectedStar = count      // 新しい星を選択
+                                selectedStar = count // 新しい星を選択
                             }
-                            print("selectedStar \(selectedStar)")
+                            guard let selectedStar = selectedStar else { return }
+                            print("selectedStar \(String(selectedStar))")
                         }) {
                             Image(systemName: (selectedStar ?? quizCategory.starCount) >= count ? "star.fill" : "star")
                                 .foregroundColor(.yellow)
@@ -250,7 +238,7 @@ struct EvaluateQuizView: View {
                     Text("閉じる")
                 }
             }
-                .frame(width: 200, height: 200)
+            .frame(width: 200, height: 200)
         }
     }
     
@@ -266,5 +254,39 @@ struct EvaluateQuizView: View {
         }
         
     }
+}
+
+#Preview ("タイトル"){
+    SubPageTopTitle()
+}
+
+struct SubPageTopTitle: View {
+    var title :String = ""
+    var subTitle :String = ""
+    var withArrow = true
+    @Environment(\.presentationMode) var presentationMode:Binding<PresentationMode>
     
+    //閉じるときは以下を呼び出す
+    //self.presentationMode.wrappedValue.dismiss()
+    var body: some View {
+        HStack(alignment:.top){
+            Image(systemName: "arrowshape.backward")
+                .padding(.leading,10)
+                .padding(.top, 10)
+                .onTapGesture {
+                    //閉じる
+                    self.presentationMode.wrappedValue.dismiss()
+                }
+            VStack(alignment:.leading) {
+                Text(title)
+                    .font(.system(size: 24))
+                Text(subTitle)
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.leading, 20)
+            .padding(.bottom,20)
+            Spacer()
+        }
+    }
 }

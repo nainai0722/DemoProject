@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+
+/// 操作ガイドと編集メイン画面を用意
+/// ？ボタンタップで画面全体にガイド表示がされる
 struct PageMyQuizEditList: View {
     @State var isPresented: Bool = false
 
@@ -17,72 +20,15 @@ struct PageMyQuizEditList: View {
                 .animation(.easeIn.delay(0.5), value: isPresented)
                 .opacity(isPresented ? 1 : 0)
         }
-    }
-}
-
-#Preview("List") {
-    PageMyQuizEditList()
-}
-
-#Preview("Main") {
-    // プレビューの？ボタンタップ時のモーダルはこのビューより上の層なので、表示されない
-    MyQuizEditMainView(isPresented: .constant(false))
-}
-
-struct EditQuizModalView: View {
-    @Binding var quiz: Quiz?
-    @Binding var categoryId: Int?
-    @State var isEditMode: Bool = true
-
-    var body: some View {
-        ZStack {
-            VStack {
-                PageCreateQuiz(
-                    isEditMode: $isEditMode,
-                    editQuiz: $quiz,
-                    editCategoryId: $categoryId
-                )
-                .padding(.top, 30)
-            }
-        }
-    }
-}
-
-struct HowToUseView: View {
-    @Binding var isPresented : Bool
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 0)
-                .fill(Color.gray.opacity(0.3))
-                .ignoresSafeArea(.all)
-                
-            
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color.white)
-                .frame(width: 300, height: 200)
-            VStack {
-                Spacer()
-                Text("リストを横スワイプすると、削除できます。")
-                    .frame(width: 270)
-                Text("リストをタップすると、編集画面が開きます")
-                    .frame(width: 270)
-                Spacer()
-                Divider()
-                Button(action:{
-                    isPresented = false
-                }){
-                    Text("閉じる")
-                }
-                .frame(height: 50)
-            }
-            .frame(width: 300, height: 200)
+        .onTapGesture {
+            isPresented = false
         }
     }
 }
 
 struct MyQuizEditMainView: View {
     @StateObject var viewModel = RealmQuizCategoryListModel()
-//    @ObservedObject var viewModel = QuizCategoryListModel() 検証用
+//    @ObservedObject var viewModel = QuizCategoryListModel() //検証用
     @State private var isEditModalPresented: Bool = false
     @State private var selectedQuiz: Quiz? = nil
     @State private var selectedCategoryId: Int? = nil
@@ -180,6 +126,70 @@ struct MyQuizEditMainView: View {
         print("削除ボタンが押されました")
         RealmQuizRepository().deleteQuiz(quiz: quizItem, categoryId: categoryId)
     }
+}
+
+struct EditQuizModalView: View {
+    @Binding var quiz: Quiz?
+    @Binding var categoryId: Int?
+    @State var isEditMode: Bool = true
+
+    var body: some View {
+        ZStack {
+            VStack {
+                PageCreateQuiz(
+                    isEditMode: $isEditMode,
+                    editQuiz: $quiz,
+                    editCategoryId: $categoryId
+                )
+                .padding(.top, 30)
+            }
+        }
+    }
+}
+
+struct HowToUseView: View {
+    @Binding var isPresented : Bool
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 0)
+                .fill(Color.gray.opacity(0.3))
+                .ignoresSafeArea(.all)
+                
+            
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color.white)
+                .frame(width: 300, height: 200)
+            VStack {
+                Spacer()
+                Text("リストを横スワイプすると、削除できます。")
+                    .frame(width: 270)
+                Text("リストをタップすると、編集画面が開きます")
+                    .frame(width: 270)
+                Spacer()
+                Divider()
+                Button(action:{
+                    isPresented = false
+                }){
+                    Text("閉じる")
+                }
+                .frame(height: 50)
+            }
+            .frame(width: 300, height: 200)
+        }
+    }
+}
+
+#Preview("ガイドあり") {
+    PageMyQuizEditList()
+}
+
+#Preview("ガイドなし") {
+    // プレビューの？ボタンタップ時のモーダルはこのビューより上の層なので、表示されない
+    MyQuizEditMainView(isPresented: .constant(false))
+}
+
+#Preview("ガイド") {
+    HowToUseView(isPresented: .constant(true))
 }
 
 extension View {
