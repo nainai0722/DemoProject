@@ -15,49 +15,109 @@ final class QuizCategoryListModel: ObservableObject {
     
     func fetch() {
         // 検証用のクイズカテゴリを取得する
-        fetchMockNews { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let news):
-                    self.categories = news
-                case .failure(let error):
-                    print("[\(NSString(string: #file).lastPathComponent):\(#line) \(#function)] エラーが発生しました: \(error.localizedDescription)")
-
-                }
-            }
-        }
+        self.categories = fetchMockNews()
     }
+
     
-    
-    /// API通信を考慮してコールバック関数completionにResult型で<[QuizCategory], Error>を返却する
-    /// - Parameter completion:コールバック関数
-    private func fetchMockNews(completion: @escaping (Result<[QuizCategory], Error>) -> Void) {
+    /// クイズの内容を返す
+    /// - Returns: QuizCategory型の配列で返す
+    private func fetchMockNews() -> [QuizCategory] {
 
         // サンプルデータを返すフェッチ処理
         let quizCategories: [QuizCategory] = [
-            QuizCategory(id: 1, title: "漢字", starCount: 3, quizItems: wordQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28"),
+            QuizCategory(id: 1, title: "漢字1", starCount: 3, quizItems: wordQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28"),
             QuizCategory(id: 2, title: "ことわざ", starCount: 5, quizItems: kotowazaQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28"),
             QuizCategory(id: 3, title: "動物", starCount: 0, quizItems: animalQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28"),
             QuizCategory(id: 4, title: "生活", starCount: 4, quizItems: lifeQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28"),
-            QuizCategory(id: 5, title: "有名人", starCount: 2, quizItems: famousPersonQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28")
+            QuizCategory(id: 5, title: "有名人", starCount: 2, quizItems: famousPersonQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28"),
+            QuizCategory(id: 6, title: "漢字2", starCount: 3, quizItems: wordQuiz2, completed: false, correctCount: 0, createdAt: "2025-02-15"),
+            QuizCategory(id: 7, title: "漢字3", starCount: 3, quizItems: wordQuiz3, completed: false, correctCount: 0, createdAt: "2025-02-15"),
+            QuizCategory(id: 8, title: "漢字4", starCount: 3, quizItems: wordQuiz4, completed: false, correctCount: 0, createdAt: "2025-02-15"),
         ]
-
-        completion(.success(quizCategories))
+        
+        // 新しいクイズを前に並べたいので、日付順にする。日付はString型
+        var sortedCreatedAt: [QuizCategory] = quizCategories.sorted{ $0.createdAt > $1.createdAt }
+        
+        return sortedCreatedAt
     }
     
+    let wordQuiz2 = [
+        Quiz(id: 1,
+             title: "漢字を当てよう",
+             detail: "心が満たされて、しあわせな気持ちになることを「こうふく」と言うよ。当てはまる漢字はどれ？",
+             answerNumber: 3,
+             quizOptions: ["不幸","口福","幸楽","幸福"]),
+        Quiz(id: 2,
+             title: "漢字を当てよう",
+             detail: "相手とどのように戦うか、先に決めておくことを「さくせん」と言うよ。当てはまる漢字はどれ？",
+             answerNumber: 1,
+             quizOptions: ["戦略","作戦","作品","戦争"]),
+        Quiz(id: 3,
+             title: "漢字を当てよう",
+             detail: "どうやっても出来そうにないことを「むり」というよ。ヒントは「理（ことわり）が無い」こと",
+             answerNumber: 2,
+             quizOptions: ["無法","無知","無理","無視"]),
+        Quiz(id: 4,
+             title: "漢字を当てよう",
+             detail: "山のてっぺんやものごとの一番上を「ちょうじょう」というよ。ヒントは「頂(いただき)のうえ」のこと",
+             answerNumber: 3,
+             quizOptions: ["頭頂","長城","超超","頂上"]),
+        Quiz(id: 5,
+             title: "漢字を当てよう",
+             detail: "ねむることを「すいみん」というよ。どれかな？",
+             answerNumber: 2,
+             quizOptions: ["快眠","惰眠","睡眠","珉珉"])
+        
+    ]
+    
+    let wordQuiz3 = [
+        Quiz(id: 1,
+             title: "漢字を当てよう",
+             detail: "なやんだり苦しむことを「くのう」というよ。当てはまる漢字はどれ？",
+             answerNumber: 1,
+             quizOptions: ["苦楽","苦悩","能力","技能"]),
+        Quiz(id: 2,
+             title: "漢字を当てよう",
+             detail: "怒ったり悲しんだり、よろこんだり色んな気持ちを「きどあいらく」と言うよ。どれかな？",
+             answerNumber: 3,
+             quizOptions: ["笑喜哀楽","哀楽喜泣","楽喜笑哀","喜怒哀楽"]),
+        Quiz(id: 3,
+             title: "漢字を当てよう",
+             detail: "相手のことをバカにしたようにあざわらうことを「れいしょう」と言うよ。どれかな？",
+             answerNumber: 2,
+             quizOptions: ["嘲笑","失笑","冷笑","笑点"]),
+        Quiz(id: 4,
+             title: "漢字を当てよう",
+             detail: "外に出かけることを「しゅっぱつ」というよ。どれかな？",
+             answerNumber: 0,
+             quizOptions: ["出発","外出","暴発","発進"]),
+        Quiz(id: 5,
+             title: "漢字を当てよう",
+             detail: "私達が暮らしている星を「ちきゅう」というよ。どれかな？",
+             answerNumber: 1,
+             quizOptions: ["太陽","地球","地星","球体"])
+    ]
+    
+    let wordQuiz4 = [
+        Quiz(id: 1,
+             title: "漢字を当てよう",
+             detail: "生きてきた年数のことを「ねんれい」というよ。当てはまる漢字はどれ？",
+             answerNumber: 2,
+             quizOptions: ["樹齢","年代","年齢","年相応"])
+    ]
     
     let wordQuiz = [
         Quiz(id: 1, title: "漢字を当てよう", detail: "別の生き物のように体を変化させることを「ぎたい」と言うよ。当てはまる漢字はどれ？", answerNumber: 1, quizOptions: ["疑体","擬態","技態","模対"]),
         Quiz(id: 1, title: "漢字を当てよう", detail: "おそろしい生き物のことを「ようかい」と言うよ。当てはまる漢字はどれ？", answerNumber: 3, quizOptions: ["洋獣","用海","怪会","妖怪"]),
         Quiz(id: 3, title: "漢字を当てよう", detail: "まちがった考えを「ごかい」と言うよ。当てはまる漢字はどれ？", answerNumber: 0, quizOptions: ["誤解", "護戒", "午界", "語会"]),
            
-           Quiz(id: 4, title: "漢字を当てよう", detail: "何かをしようとすることを「いと」すると言うよ。当てはまる漢字はどれ？", answerNumber: 0, quizOptions: ["意図", "異都", "衣渡", "威途"]),
-           
-           Quiz(id: 5, title: "漢字を当てよう", detail: "すばやく正確に動くことを「しゅんびん」と言うよ。当てはまる漢字はどれ？", answerNumber: 1, quizOptions: ["駿敏", "俊敏", "瞬便", "春民"]),
-           
-           Quiz(id: 6, title: "漢字を当てよう", detail: "大小・多少などの差が少なく、そろっていることを「へいきん」と言うよ。当てはまる漢字はどれ？", answerNumber: 2, quizOptions: ["兵近", "併筋", "平均", "並金"]),
-           
-           Quiz(id: 7, title: "漢字を当てよう", detail: "ありもしないことを信じてしまうことを「もうそう」と言うよ。当てはまる漢字はどれ？", answerNumber: 2, quizOptions: ["猛想", "網総", "妄想", "忘掃"])
+       Quiz(id: 4, title: "漢字を当てよう", detail: "何かをしようとすることを「いと」すると言うよ。当てはまる漢字はどれ？", answerNumber: 0, quizOptions: ["意図", "異都", "衣渡", "威途"]),
+       
+       Quiz(id: 5, title: "漢字を当てよう", detail: "すばやく正確に動くことを「しゅんびん」と言うよ。当てはまる漢字はどれ？", answerNumber: 1, quizOptions: ["駿敏", "俊敏", "瞬便", "春民"]),
+       
+       Quiz(id: 6, title: "漢字を当てよう", detail: "大小・多少などの差が少なく、そろっていることを「へいきん」と言うよ。当てはまる漢字はどれ？", answerNumber: 2, quizOptions: ["兵近", "併筋", "平均", "並金"]),
+       
+       Quiz(id: 7, title: "漢字を当てよう", detail: "ありもしないことを信じてしまうことを「もうそう」と言うよ。当てはまる漢字はどれ？", answerNumber: 2, quizOptions: ["猛想", "網総", "妄想", "忘掃"])
     ]
     
     let kotowazaQuiz: [Quiz] =  [

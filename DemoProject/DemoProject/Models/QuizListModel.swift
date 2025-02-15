@@ -31,13 +31,8 @@ final class QuizListModel: ObservableObject {
     ///  Realmデータベースの中からidが一致するQuiz型の配列をプロパティに格納する
     /// - Parameter id: クイズカテゴリのID
     func fetchMyQuizByCategoryId(by id:Int) {
-//        print("fetchMyQuizByCategoryIdを呼び出す")
-//        print("categoryId : \(id)")
         // Previews閲覧しやすいようにQuiz型にする
         quizzes = RealmQuizRepository().getQuizByCategoryId(by: id)
-//        for quiz in quizzes {
-//            print("クイズタイトル" + quiz.title)
-//        }
         print(quizzes)
     }
     
@@ -60,6 +55,12 @@ final class QuizListModel: ObservableObject {
             sampleQuizzes = QuizCategoryListModel().lifeQuiz
         case 5: //"有名人"
             sampleQuizzes = QuizCategoryListModel().famousPersonQuiz
+        case 6:
+            sampleQuizzes = QuizCategoryListModel().wordQuiz2
+        case 7:
+            sampleQuizzes = QuizCategoryListModel().wordQuiz3
+        case 8:
+            sampleQuizzes = QuizCategoryListModel().wordQuiz4
         default:
             sampleQuizzes = []
         }
