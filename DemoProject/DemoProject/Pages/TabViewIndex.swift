@@ -36,6 +36,11 @@ struct TabViewIndex: View {
                     Text("自作クイズの編集")
                 }
         }
+        .onAppear(){
+            // 自作クイズのための初期カテゴリ情報を保存
+            // これがないと、自作できないし、自作クイズ一覧が閲覧できない
+            RealmQuizRepository().initializeDefaultCategoriesIfNeeded()
+        }
     }
 }
 
