@@ -325,13 +325,17 @@ struct InputView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray.opacity(0.2))
-                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 40)
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: height())
                 TextField(sampleText, text: $inputText)
-                    .frame(width: UIScreen.main.bounds.width * 0.9, height: (CGFloat($inputText.count) + 30 / 30) * 35 )
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: height())
                     .padding(.leading, 20)
                     .font(.system(size: 24))
             }
         }
+    }
+    
+    func height()->CGFloat {
+        return (CGFloat(inputText.count + 30 ) / 30) * 35
     }
 }
 
