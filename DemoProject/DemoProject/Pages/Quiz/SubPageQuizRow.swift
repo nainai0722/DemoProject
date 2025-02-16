@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SubPageQuizRow: View {
     @State var isAnimating = false
-    @State var quizCategory:QuizCategory = QuizCategory(id: 1, title: "時間", starCount: 5, quizItems: [], completed: false, correctCount: 0, createdAt: "2025-01-28")
+    @State var quizCategory:QuizCategory = QuizCategory()
     var myQuizFlag = false
     //クロージャで呼び出し元に返す
     let onSelect: (QuizCategory) -> Void
