@@ -25,7 +25,7 @@ struct PageCreateQuiz: View {
     
     var body: some View {
         ZStack {
-            CreateQuiaMainView(isEditMode: $isEditMode, editQuiz: $editQuiz, editCategoryId: $editCategoryId)
+            CreateQuiaMainView(isEditMode: $isEditMode, editQuiz: $editQuiz, editCategoryId: $editCategoryId, showSaveMessage:$showSaveMessage, showValidationMessage:$showValidationMessage)
         
             SubmitResultView(title: "保存できました")
                 .opacity(showSaveMessage ? 1 : 0)
@@ -48,8 +48,8 @@ struct CreateQuiaMainView: View {
     @Binding var isEditMode: Bool
     @Binding var editQuiz: Quiz?
     @Binding var editCategoryId: Int?
-    @State private var showSaveMessage = false
-    @State private var showValidationMessage = false
+    @Binding var showSaveMessage: Bool
+    @Binding var showValidationMessage: Bool
     
     // カテゴリ選択判定のプロパティ
     @State private var selectedCategoryId: Int = -1
@@ -84,12 +84,13 @@ struct CreateQuiaMainView: View {
                     VStack {
                         InputCategoryView(categories: $viewModel.categories, inputText: $selectedCategoryTitle, selectedCategoryId: $selectedCategoryId, isValidCategory: $isValidCategory)
                         InputView(inputText:$title , inputTitle:"タイトル", sampleText: "例）漢字を当てよう")
-                        InputView(inputText: $detail, inputTitle: "クイズの問題文", sampleText: "例）「擬態」この漢字の読み方をこたえよう")
+                        InputDetailView(inputText: $detail)
+//                        InputView(inputText: $detail, inputTitle: "クイズの問題文", sampleText: "例）「擬態」この漢字の読み方をこたえよう")
                         // 選択肢
                         InputView(inputText: $option1, inputTitle: "選択肢1", sampleText: "ぎたい")
-                        InputView(inputText: $option2, inputTitle: "選択肢2", sampleText: "ぎたい")
-                        InputView(inputText: $option3, inputTitle: "選択肢3", sampleText: "ぎたい")
-                        InputView(inputText: $option4, inputTitle: "選択肢4", sampleText: "ぎたい")
+                        InputView(inputText: $option2, inputTitle: "選択肢2", sampleText: "げたい")
+                        InputView(inputText: $option3, inputTitle: "選択肢3", sampleText: "たいぎ")
+                        InputView(inputText: $option4, inputTitle: "選択肢4", sampleText: "いたい")
                         InputAnswerView(selectedAnswerNumber: $answerNumber, selectedAnswerString: $selectedAnswerString)
                     }
                     .focused($isTextFieldFocused) // フォーカス管理
@@ -235,7 +236,7 @@ struct CreateQuiaMainView: View {
 
 #Preview("メイン画面") {
     @State var mockQuiz = Quiz.mockQuizData
-    CreateQuiaMainView(isEditMode: .constant(false), editQuiz: .constant(Optional(mockQuiz)), editCategoryId: .constant(Optional(8)))
+    CreateQuiaMainView(isEditMode: .constant(false), editQuiz: .constant(Optional(mockQuiz)), editCategoryId: .constant(Optional(8)),showSaveMessage: .constant(false), showValidationMessage: .constant(false))
 }
 
 // カスタムModifier（MyTitle）の定義
@@ -314,7 +315,7 @@ struct EditQuizTopTitle: View {
     }
 }
 
-struct InputView: View {
+struct InputDetailView: View {
     @Binding var inputText: String
     var inputTitle : String = "クイズの詳細"
     var sampleText : String = "例）「擬態」この漢字の読み方をこたえよう"
@@ -322,16 +323,55 @@ struct InputView: View {
         VStack(alignment:.leading) {
             Text(inputTitle)
                 .padding(.leading, 20)
+            ZStack(alignment: .topLeading) {
+                //背景
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 100)
+                if inputText.isEmpty {
+                    Text(sampleText)
+                        .foregroundColor(.gray.opacity(0.5))
+                        .font(.system(size: 24))
+                        .padding(.top, 8)
+                        .padding(.leading, 10)
+                }
+                
+                TextEditor(text: $inputText)
+                    .font(.system(size: 24))
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 100)
+//                    .opacity(inputText.isEmpty ? 0.1 : 1)
+//                    .clipShape(RoundedRectangle(cornerRadius: 8))
+//                    .background(Color.gray.opacity(0.2))
+                    .scrollContentBackground(.hidden)
+//                    .border(.gray)
+                
+            }
+        }
+    }
+}
+
+struct InputView: View {
+    @Binding var inputText: String
+    var inputTitle : String = "タイトル"
+    var sampleText : String = "例）漢字を当てよう"
+    var body: some View {
+        VStack(alignment:.leading) {
+            Text(inputTitle)
+                .padding(.leading, 20)
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray.opacity(0.2))
-                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 40)
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: height())
                 TextField(sampleText, text: $inputText)
-                    .frame(width: UIScreen.main.bounds.width * 0.9, height: (CGFloat($inputText.count) + 30 / 30) * 35 )
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: height())
                     .padding(.leading, 20)
                     .font(.system(size: 24))
             }
         }
+    }
+    
+    func height()->CGFloat {
+        return (CGFloat(inputText.count + 30 ) / 30) * 35
     }
 }
 
