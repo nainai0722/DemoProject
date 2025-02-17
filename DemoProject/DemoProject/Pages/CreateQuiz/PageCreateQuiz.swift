@@ -43,6 +43,9 @@ struct PageCreateQuiz: View {
 
 struct CreateQuiaMainView: View {
     @ObservedObject var viewModel = RealmQuizCategoryListModel()
+    @State private var sampleQuizCategories = QuizCategoryListModel()
+    
+    @State var sampleQuiz: Quiz?
     
     // 編集関連のプロパティ
     @Binding var isEditMode: Bool
@@ -54,7 +57,7 @@ struct CreateQuiaMainView: View {
     // カテゴリ選択判定のプロパティ
     @State private var selectedCategoryId: Int = -1
     @State private var selectedCategoryTitle: String = ""
-    
+    @State private var selectedQuizItem: [Quiz]?
     // クイズの入力項目
     @State private var title: String = ""
     @State private var detail: String = ""
@@ -83,17 +86,34 @@ struct CreateQuiaMainView: View {
                 ScrollView {
                     VStack {
                         InputCategoryView(categories: $viewModel.categories, inputText: $selectedCategoryTitle, selectedCategoryId: $selectedCategoryId, isValidCategory: $isValidCategory)
-                        InputView(inputText:$title , inputTitle:"タイトル", sampleText: "例）漢字を当てよう")
-                        InputDetailView(inputText: $detail)
-//                        InputView(inputText: $detail, inputTitle: "クイズの問題文", sampleText: "例）「擬態」この漢字の読み方をこたえよう")
+                        
+//                        CategoryButtonView(selectedCategoryId: $selectedCategoryId)
+                        
+                        if let sampleQuiz = sampleQuiz {
+                            InputView(inputText:$title , inputTitle:"タイトル", sampleText: "例）" + sampleQuiz.title)
+                            InputDetailView(inputText: $detail,sampleText: "例）" + sampleQuiz.detail)
+                            InputView(inputText: $option1, inputTitle: "選択肢1", sampleText: sampleQuiz.quizOptions[0])
+                            InputView(inputText: $option2, inputTitle: "選択肢2", sampleText: sampleQuiz.quizOptions[1])
+                            InputView(inputText: $option3, inputTitle: "選択肢3", sampleText: sampleQuiz.quizOptions[2])
+                            InputView(inputText: $option4, inputTitle: "選択肢4", sampleText: sampleQuiz.quizOptions[3])
+                        } else {
+                            InputView(inputText:$title , inputTitle:"タイトル")
+                            InputDetailView(inputText: $detail)
+                            InputView(inputText: $option1, inputTitle: "選択肢1", sampleText: "ぎたい")
+                            InputView(inputText: $option2, inputTitle: "選択肢2", sampleText: "げたい")
+                            InputView(inputText: $option3, inputTitle: "選択肢3", sampleText: "たいぎ")
+                            InputView(inputText: $option4, inputTitle: "選択肢4", sampleText: "いたい")
+                        }
                         // 選択肢
-                        InputView(inputText: $option1, inputTitle: "選択肢1", sampleText: "ぎたい")
-                        InputView(inputText: $option2, inputTitle: "選択肢2", sampleText: "げたい")
-                        InputView(inputText: $option3, inputTitle: "選択肢3", sampleText: "たいぎ")
-                        InputView(inputText: $option4, inputTitle: "選択肢4", sampleText: "いたい")
+                        
                         InputAnswerView(selectedAnswerNumber: $answerNumber, selectedAnswerString: $selectedAnswerString)
                     }
                     .focused($isTextFieldFocused) // フォーカス管理
+                    .onChange(of: selectedCategoryId) { newValue in
+                        selectedCategoryId = newValue
+                        fetchRandomQuiz(by: selectedCategoryId)
+                        print("カテゴリの値が変わった")
+                    }
                 }
                 
                 Spacer()
@@ -104,7 +124,14 @@ struct CreateQuiaMainView: View {
         }
         .onAppear(){
             inputEditParameters()
+            sampleQuizCategories.fetch()
         }
+    }
+    
+    func fetchRandomQuiz(by categoryId: Int) {
+        let categories = sampleQuizCategories.categories.first(where: {$0.id == categoryId})
+        sampleQuiz = categories?.quizItems.randomElement()! // ランダムで1つ選択
+        print("模範解答\(sampleQuiz?.detail)")
     }
     
     /// 更新画面に情報をセットする
@@ -319,36 +346,41 @@ struct InputDetailView: View {
     @Binding var inputText: String
     var inputTitle : String = "クイズの詳細"
     var sampleText : String = "例）「擬態」この漢字の読み方をこたえよう"
+//    TODO: 入力画面のレイアウト確認に必要。長文の際のレイアウト調整が出来ていない。
+//    var sampleText : String = "例）次の中からことわざ『二兎を追う者は一兎をも得ず』の意味として正しいものを選んでください。次の中からことわざ『二兎を追う者は一兎をも得ず』の意味として正しいものを選んでください。"
     var body: some View {
         VStack(alignment:.leading) {
             Text(inputTitle)
                 .padding(.leading, 20)
-            ZStack(alignment: .topLeading) {
+//            ZStack(alignment: .topLeading) {
+            ZStack(alignment:.top) {
                 //背景
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray.opacity(0.2))
-                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 100)
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 120)
                 if inputText.isEmpty {
                     Text(sampleText)
+                        .frame(width: UIScreen.main.bounds.width * 0.9, height: 120, alignment: .topLeading)
                         .foregroundColor(.gray.opacity(0.5))
                         .font(.system(size: 24))
                         .padding(.top, 8)
-                        .padding(.leading, 10)
+                        .padding([.leading,.trailing], 20)
                 }
                 
                 TextEditor(text: $inputText)
                     .font(.system(size: 24))
-                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 100)
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 120)
 //                    .opacity(inputText.isEmpty ? 0.1 : 1)
 //                    .clipShape(RoundedRectangle(cornerRadius: 8))
 //                    .background(Color.gray.opacity(0.2))
                     .scrollContentBackground(.hidden)
-//                    .border(.gray)
+
                 
             }
         }
     }
 }
+
 
 struct InputView: View {
     @Binding var inputText: String
@@ -361,17 +393,13 @@ struct InputView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray.opacity(0.2))
-                    .frame(width: UIScreen.main.bounds.width * 0.9, height: height())
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 35)
                 TextField(sampleText, text: $inputText)
-                    .frame(width: UIScreen.main.bounds.width * 0.9, height: height())
+                    .frame(width: UIScreen.main.bounds.width * 0.9, height: 35)
                     .padding(.leading, 20)
                     .font(.system(size: 24))
             }
         }
-    }
-    
-    func height()->CGFloat {
-        return (CGFloat(inputText.count + 30 ) / 30) * 35
     }
 }
 
@@ -421,6 +449,26 @@ struct InputAnswerView: View {
     }
 }
 
+struct CategoryButtonView: View {
+    @Binding var selectedCategoryId : Int
+    var body: some View {
+        VStack{
+            HStack {
+                Button(action:{
+                    
+                }){
+                    Menu("メニューを選ぶ") {
+                        Button("内容", action: {
+                            selectedCategoryId = 1
+                        })
+                    }
+                }
+                Spacer()
+            }
+        }
+        .padding(.leading, 20)
+    }
+}
 
 /// MenuコンポーネントはLabelにデフォルトの表示を設定し、タップされると、Menu{}に記述した表示を返す。
 /// 下記ではButton()をループで返す。
@@ -500,3 +548,5 @@ struct SubmitResultView: View {
         }
     }
 }
+
+

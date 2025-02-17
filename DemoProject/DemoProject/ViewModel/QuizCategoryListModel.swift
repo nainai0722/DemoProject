@@ -32,7 +32,7 @@ final class QuizCategoryListModel: ObservableObject {
     /// - Parameters:
     ///   - id: クイズのid
     ///   - completion: 完了したら、idが一致するQuiz型の配列をコールバックする
-    func fetchMockQuizByTitle(by id:Int) async {
+    func fetchMockQuizById(by id:Int) async {
         
         if categories.isEmpty {
             await fetch()
