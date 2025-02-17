@@ -27,10 +27,17 @@ struct QuizView: View {
             ZStack {
                 VStack(alignment:.leading) {
                     if index < viewModel.quizzes.count {
-                        QuizItemView(selectedAnswer: $selectedAnswer, quiz: $viewModel.quizzes[index])
-                        Spacer()
-                        // 次へボタン
-                        NextButton(action: nextQuestion)
+                        if (categoryId == 9 || categoryId == 10){
+                            ReadQuizItemView(selectedAnswer: $selectedAnswer, quiz: $viewModel.quizzes[index])
+                            Spacer()
+                            // 次へボタン
+                            NextButton(action: nextQuestion)
+                        } else {
+                            QuizItemView(selectedAnswer: $selectedAnswer, quiz: $viewModel.quizzes[index])
+                            Spacer()
+                            // 次へボタン
+                            NextButton(action: nextQuestion)
+                        }
                     }else{
                         // クイズがすべて終了した際の画面
                         QuizCompletedView(restartAction: restartQuiz, evaluateAction: evaluateQuiz)
@@ -94,6 +101,11 @@ struct QuizView: View {
 
 #Preview {
     QuizView()
+}
+
+#Preview("読みクイズ") {
+    @State var mockQuiz = Quiz.mockReadQuizData
+    ReadQuizItemView(selectedAnswer: .constant(9), quiz: .constant(mockQuiz))
 }
 
 struct NextButton: View {
@@ -181,7 +193,57 @@ struct QuizItemView: View {
     }
 }
 
-
+struct ReadQuizItemView: View {
+    let padding:CGFloat = 16
+    @Binding var selectedAnswer:Int
+    @Binding var quiz: Quiz
+    var body: some View {
+        VStack(alignment:.leading, spacing: 0)  {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.white)
+                    .frame(width: UIScreen.main.bounds.width - padding * 2, height: 200)
+                    .shadow(radius: 8)
+                    .padding()
+                VStack {
+                    Text(quiz.title)
+                        .font(.system(size: 24, weight: .bold))
+                        .padding()
+                    Text(quiz.detail)
+                        .font(.system(size: 50, weight: .medium))
+                        .frame(width: UIScreen.main.bounds.width - padding * 4)
+                        .padding()
+                }
+            }
+            ScrollView {
+                ForEach(Array(quiz.quizOptions.enumerated()), id: \.0) { index, option in
+                    HStack(alignment:.top) {
+                        if( selectedAnswer == index) {
+                            ZStack {
+                                Image(systemName: "square")
+                                    .font(.system(size: 30))
+                                Image(systemName: "checkmark")
+                            }
+                        }else {
+                            Image(systemName: "square")
+                                .font(.system(size: 30))
+                        }
+                        Text(option)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.leading)
+                            .font(.system(size: 24))
+                            .padding(.bottom,padding)
+                        Spacer()
+                    }
+                    .onTapGesture {
+                        selectedAnswer = index
+                    }
+                }
+                .padding()
+            }
+        }
+    }
+}
 
 
 struct AnswerFeedbackView: View {
