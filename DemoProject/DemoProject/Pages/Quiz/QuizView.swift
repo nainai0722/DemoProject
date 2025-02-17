@@ -13,7 +13,8 @@ struct QuizView: View {
     var categoryId:Int = 8 //データ格納しているIDを入れておくといい
     var quizCategory = QuizCategory()
     var myQuizFlag = true // 自作クイズ判定フラグ
-    @StateObject var viewModel = QuizListModel()
+//    @StateObject var viewModel = QuizListModel() 要らないはず
+    @StateObject var viewModel = QuizCategoryListModel()
     @State var index = 0
     @State var selectedAnswer :Int = -1
     @State var isCorrectedPresented  = false
@@ -85,7 +86,9 @@ struct QuizView: View {
         if myQuizFlag {
             viewModel.fetchMyQuizByCategoryId(by: categoryId)
         } else {
-            viewModel.fetch(by: categoryId)
+            Task {
+                await viewModel.fetchMockQuizByTitle(by: categoryId)
+            }
         }
     }
 }

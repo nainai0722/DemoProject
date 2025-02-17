@@ -12,18 +12,61 @@ import Combine
 /// この中でQuiz型でクイズ情報を入れている
 final class QuizCategoryListModel: ObservableObject {
     @Published var categories: [QuizCategory] = []
+    @Published var quizzes: [Quiz] = []
     
     func fetch() {
         // 検証用のクイズカテゴリを取得する
         self.categories = fetchMockNews()
     }
-
+    
+    ///  Realmデータベースの中からidが一致するQuiz型の配列をプロパティに格納する
+    /// - Parameter id: クイズカテゴリのID
+    func fetchMyQuizByCategoryId(by id:Int) {
+        // Previews閲覧しやすいようにQuiz型にする
+        quizzes = RealmQuizRepository().getQuizByCategoryId(by: id)
+        print(quizzes)
+    }
+    
+    /// アプリ内で用意しているカテゴリクイズにアクセスし、idが一致するQuiz型の配列をコールバックする
+    /// - Parameters:
+    ///   - id: クイズのid
+    ///   - completion: 完了したら、idが一致するQuiz型の配列をコールバックする
+    func fetchMockQuizByTitle(by id:Int) async {
+        
+        if categories.isEmpty {
+            await fetch()
+            print("フェッチ完了")
+        }
+        print("id検索を始める")
+        
+        if let sampleQuizzes = categories.first(where: { $0.id == id }){
+            self.quizzes = sampleQuizzes.quizItems
+        } else {
+            print("一致したものは見つからない")
+        }
+    }
+    
+    func getCategoryById(by Id: Int) -> QuizCategory {
+        if let quizCategory = categories.first(where: { $0.id == Id }) {
+            return quizCategory
+        } else {
+            return QuizCategory()
+        }
+    }
+    
+    func getCategoryById(by Id: Int) -> QuizCategory? {
+        if let quizCategory = categories.first(where: { $0.id == Id }) {
+            return quizCategory
+        } else {
+            return nil
+        }
+    }
     
     /// クイズの内容を返す
     /// - Returns: QuizCategory型の配列で返す
     private func fetchMockNews() -> [QuizCategory] {
-
-        // サンプルデータを返すフェッチ処理
+        
+        // デフォルトデータを返すフェッチ処理
         let quizCategories: [QuizCategory] = [
             QuizCategory(id: 1, title: "漢字1", starCount: 3, quizItems: wordQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28"),
             QuizCategory(id: 2, title: "ことわざ", starCount: 5, quizItems: kotowazaQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28"),
