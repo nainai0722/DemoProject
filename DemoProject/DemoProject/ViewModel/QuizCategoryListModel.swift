@@ -10,6 +10,7 @@ import Combine
 
 /// クイズの要素を管理するクラス
 /// この中でQuiz型でクイズ情報を入れている
+@MainActor
 final class QuizCategoryListModel: ObservableObject {
     @Published var categories: [QuizCategory] = []
     @Published var quizzes: [Quiz] = []
@@ -76,6 +77,7 @@ final class QuizCategoryListModel: ObservableObject {
             QuizCategory(id: 6, title: "漢字2", starCount: 3, quizItems: wordQuiz2, completed: false, correctCount: 0, createdAt: "2025-02-15"),
             QuizCategory(id: 7, title: "漢字3", starCount: 3, quizItems: wordQuiz3, completed: false, correctCount: 0, createdAt: "2025-02-15"),
             QuizCategory(id: 8, title: "漢字4", starCount: 3, quizItems: wordQuiz4, completed: false, correctCount: 0, createdAt: "2025-02-15"),
+            QuizCategory(id: 9, title: "漢字の読み1", starCount: 5, quizItems: yomiQuiz1, completed: false, correctCount: 0, createdAt: "2025-02-17"),
         ]
         
         // 新しいクイズを前に並べたいので、日付順にする。日付はString型
@@ -83,6 +85,40 @@ final class QuizCategoryListModel: ObservableObject {
         
         return sortedCreatedAt
     }
+    
+    let yomiQuiz1 = [
+        Quiz(id: 1,
+             title: "読み方を当てよう",
+             detail: "この漢字の読み方はどれ？『草原』",
+             answerNumber: 2,
+             quizOptions: ["そうげん","くさばら","そうはら","くさはら"]),
+
+        Quiz(id: 2,
+             title: "読み方を当てよう",
+             detail: "この漢字の読み方はどれ？『雲』",
+             answerNumber: 0,
+             quizOptions: ["くも","いわ","かぜ","そら"]),
+
+        Quiz(id: 3,
+             title: "読み方を当てよう",
+             detail: "この漢字の読み方はどれ？『計算』",
+             answerNumber: 1,
+             quizOptions: ["けいさつ","けいさん","けいしき","けいざい"]),
+
+        Quiz(id: 4,
+             title: "読み方を当てよう",
+             detail: "この漢字の読み方はどれ？『動物』",
+             answerNumber: 3,
+             quizOptions: ["どうぶつう","とうぶつ","どうもの","どうぶつ"]),
+
+        Quiz(id: 5,
+             title: "読み方を当てよう",
+             detail: "この漢字の読み方はどれ？『理由』",
+             answerNumber: 2,
+             quizOptions: ["りかい","りきゅう","りゆう","りょう"]),
+
+
+    ]
     
     let wordQuiz2 = [
         Quiz(id: 1,
@@ -109,7 +145,36 @@ final class QuizCategoryListModel: ObservableObject {
              title: "漢字を当てよう",
              detail: "ねむることを「すいみん」というよ。どれかな？",
              answerNumber: 2,
-             quizOptions: ["快眠","惰眠","睡眠","珉珉"])
+             quizOptions: ["快眠","惰眠","睡眠","珉珉"]),
+        Quiz(id: 6,
+             title: "漢字を当てよう",
+             detail: "何かを決めるために話し合うことを「ぎろん」と言うよ。当てはまる漢字はどれ？",
+             answerNumber: 1,
+             quizOptions: ["議論","疑問","理論","語論"]),
+
+        Quiz(id: 7,
+             title: "漢字を当てよう",
+             detail: "とても大切で、なくてはならないことを「ひつよう」と言うよ。どれかな？",
+             answerNumber: 2,
+             quizOptions: ["秘密","必要","必勝","必要性"]),
+
+        Quiz(id: 8,
+             title: "漢字を当てよう",
+             detail: "学校の授業が終わったあとに学ぶことを「よしゅう」と言うよ。ヒントは「前もって準備すること」",
+             answerNumber: 0,
+             quizOptions: ["予習","復習","習得","学習"]),
+
+        Quiz(id: 9,
+             title: "漢字を当てよう",
+             detail: "大きな動物が歩くときの足あとや、その場所に残る印のことを「そくせき」と言うよ。当てはまる漢字は？",
+             answerNumber: 3,
+             quizOptions: ["足音","測定","速攻","足跡"]),
+
+        Quiz(id: 10,
+             title: "漢字を当てよう",
+             detail: "すごくきれいで美しいことを「けいれい」と言うよ。ヒントは「景（けしき）が麗しい」",
+             answerNumber: 1,
+             quizOptions: ["敬礼","綺麗","軽冷","景令"])
         
     ]
     
