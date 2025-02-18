@@ -9,23 +9,24 @@ import SwiftUI
 import RealmSwift
 
 struct QuizView: View {
-    @State var isAnimating = false
+    @State var isAnswerAnimating = false
     var categoryId:Int = 8 //データ格納しているIDを入れておくといい
     var quizCategory = QuizCategory()
     var myQuizFlag = true // 自作クイズ判定フラグ
     @StateObject var viewModel = QuizCategoryListModel()
     @State var index = 0
     @State var selectedAnswer :Int = -1
-    @State var isCorrectedPresented  = false
+    @State var isCorrectAnswerPresented  = false
     @State var isEvaluateQuizPresented = false
+    let isPhone = UIDevice.current.userInterfaceIdiom == .phone
     var body: some View {
-        VStack {
-            if UIDevice.current.userInterfaceIdiom == .phone {
+        VStack(spacing:0) {
+            if isPhone {
                 SubPageTopTitle(title: "戻る", withArrow: true)
             }
             Divider()
             ZStack {
-                VStack(alignment:.leading) {
+                VStack(alignment:.leading,spacing: 0) {
                     if index < viewModel.quizzes.count {
                         QuizItemView(selectedAnswer: $selectedAnswer, quiz: $viewModel.quizzes[index])
                         Spacer()
@@ -36,39 +37,40 @@ struct QuizView: View {
                         QuizCompletedView(restartAction: restartQuiz, evaluateAction: evaluateQuiz)
                     }
                 }
-                .opacity(isAnimating ? 0.3 : 1)
+                .opacity(isAnswerAnimating ? 0.3 : 1)
                 .onAppear{
                     loadQuizData()
                 }
-                
-                if(isAnimating) {
-                    AnswerFeedbackView(isCorrect: isCorrectedPresented)
-                }
-                if(isEvaluateQuizPresented) {
+                .fullScreenCover(isPresented: $isEvaluateQuizPresented) {
                     EvaluateQuizView(isEvaluateQuizPresented: $isEvaluateQuizPresented, quizCategory:quizCategory)
                 }
+                // クイズの正否はカスタムモーダル必須
+                if(isAnswerAnimating) {
+                    AnswerFeedbackView(isCorrect: $isCorrectAnswerPresented)
+                }
             }
-            Spacer()
         }
-        .navigationTitle(UIDevice.current.userInterfaceIdiom == .phone ? "" : "戻る")
-        .navigationBarHidden(UIDevice.current.userInterfaceIdiom == .phone ? true : false)
+        .navigationTitle(isPhone ? "" : "戻る")
+        .navigationBarHidden(isPhone ? true : false)
     }
     
     private func nextQuestion() {
         if selectedAnswer == viewModel.quizzes[index].answerNumber {
-            isCorrectedPresented = true
+            isCorrectAnswerPresented = true
         }
-        isAnimating = true
+        isAnswerAnimating = true
 
         // 答えた数を反映させる
-        RealmQuizRepository().updateCategoryCorrectCount(by: categoryId, quizzesIndex: index)
-        RealmQuizRepository().updateCategoryComplete(by: categoryId)
+        if (myQuizFlag) {
+            RealmQuizRepository().updateCategoryCorrectCount(by: categoryId, quizzesIndex: index)
+            RealmQuizRepository().updateCategoryComplete(by: categoryId)
+        }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            isAnimating = false
+            isAnswerAnimating = false
             index += 1
             selectedAnswer = -1
-            isCorrectedPresented = false
+            isCorrectAnswerPresented = false
         }
     }
     
@@ -92,19 +94,6 @@ struct QuizView: View {
     }
 }
 
-#Preview {
-    QuizView()
-}
-
-#Preview("読み") {
-    @State var mockQuiz = Quiz.mockReadQuizData
-    QuizItemView(selectedAnswer: .constant(9), quiz: .constant(mockQuiz))
-}
-#Preview("絵クイズ") {
-    @State var mockQuiz = Quiz.mockImageQuizData
-    QuizItemView(selectedAnswer: .constant(9), quiz: .constant(mockQuiz))
-}
-
 
 struct NextButton: View {
     @Binding var selectedAnswer:Int
@@ -116,14 +105,14 @@ struct NextButton: View {
             if selectedAnswer == -1 {
                 isErrorMessage = true
             } else {
-                isErrorMessage = true
+                isErrorMessage = false
                 action()
             }
         }) {
-            VStack {
+            VStack(spacing:0) {
                 Text("次へ")
                     .padding()
-                    .padding(.horizontal, 30)
+                    .frame(maxWidth: .infinity)
                     .background(selectedAnswer == -1 ? Color.gray : Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(10)
@@ -132,8 +121,8 @@ struct NextButton: View {
                     .opacity(isErrorMessage && selectedAnswer == -1 ? 1 : 0)
             }
         }
-        .padding(.leading, 30)
-        .padding(.bottom, 30)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 10)
     }
 }
 
@@ -145,11 +134,87 @@ struct QuizCompletedView: View {
         VStack {
             Spacer()
             Text("クイズが終了しました！")
-                .font(.headline)
+                .font(.system(size: 30))
             Button("もう一度プレイ", action: restartAction)
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .frame(width: 150)
             Button("クイズを評価する", action: evaluateAction)
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(10)
+                .frame(width: 150)
             Spacer()
         }
+    }
+}
+#Preview("読み") {
+    @State var mockQuiz = Quiz.mockReadQuizData
+    QuizItemView(selectedAnswer: .constant(9), quiz: .constant(mockQuiz))
+}
+#Preview("絵クイズ") {
+    @State var mockQuiz = Quiz.mockImageQuizData
+    QuizItemView(selectedAnswer: .constant(9), quiz: .constant(mockQuiz))
+}
+
+#Preview {
+    QuizView()
+}
+
+// 選択肢のレイアウトプレビュー用
+#Preview("選択肢ボタン") {
+    @State var mockQuiz = Quiz.mockReadQuizData
+    HogeView(selectedAnswer: .constant(9), quiz: .constant(mockQuiz))
+    TestOptionView(selectedAnswer: .constant(9), quiz: .constant(mockQuiz))
+}
+
+struct TestOptionView:View {
+    @Binding var selectedAnswer:Int
+    @Binding var quiz: Quiz
+    @State var isTapped:Bool = false
+    var body: some View {
+        HStack(alignment:.top) {
+            ZStack {
+                Image(systemName: "square")
+                    .font(.system(size: 30))
+                Image(systemName: "checkmark")
+            }
+            if (quiz.quizOptions.count > 0){
+                Text(quiz.quizOptions[0])
+            }
+            Spacer()
+        }
+    }
+}
+
+// 選択肢のレイアウトの試験用　削除していいはず
+struct HogeView:View {
+    @Binding var selectedAnswer:Int
+    @Binding var quiz: Quiz
+    @State var isTapped:Bool = false
+    var body: some View {
+        
+        HStack {
+            Spacer()
+            Text(quiz.quizOptions[0])
+            Text("選択中")
+                .opacity(isTapped ? 1 : 0)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
+        .padding(16)
+        .contentShape(Rectangle())
+        .border(Color.blue)
+        .onTapGesture {
+            print("タップ")
+            isTapped.toggle( )
+        }
+        .background(isTapped ? Color.red : Color.clear)
+        .foregroundStyle(isTapped ? Color.white : Color.black)
+        
     }
 }
 
@@ -159,96 +224,45 @@ struct QuizItemView: View {
     @Binding var quiz: Quiz
     var body: some View {
         VStack()  {
-            ZStack {
-                VStack() {
-                    Text(quiz.title)
-                        .font(.system(size: 24, weight: .bold))
+            VStack() {
+                Text(quiz.title)
+                    .font(.system(size: 24, weight: .bold))
+                    .padding()
+                switch quiz.quizType {
+                    case .imageQuiz:
+                    Text(quiz.detail)
+                        .font(.system(size: 40, weight: .medium))
+                        .frame(width: UIScreen.main.bounds.width - padding * 4)
                         .padding()
-                    if (quiz.quizType == .readQuiz) {
-                        // 複数行対応していない。入力制限をかけるべきか？
-                        Text(quiz.detail)
-                            .font(.system(size: 50, weight: .medium))
-                            .frame(width: UIScreen.main.bounds.width - padding * 4)
-                            .padding()
-                    } else {
-                        Text(quiz.detail)
-                            .font(.system(size: 20))
-                            .frame(width: UIScreen.main.bounds.width - padding * 4)
-                            .padding()
-                    }
-                    if (quiz.quizType == .imageQuiz && !quiz.imageName.isEmpty) {
+                    if !quiz.imageName.isEmpty {
                         Image(quiz.imageName)
                             .resizable()
                             .scaledToFit()
-                            
                     }
-                }
-                .padding()
-                .frame(width: UIScreen.main.bounds.width * 0.9)
-                .background(Color.white) // 背景色をつける
-                .cornerRadius(15) // 角を丸くする
-                .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 3)
-            }
-
-            VStack(alignment:.leading, spacing: 0) {
-                ScrollView() {
-                    ForEach(Array(quiz.quizOptions.enumerated()), id: \.0) { index, option in
-                        HStack(alignment:.top) {
-                            if( selectedAnswer == index) {
-                                ZStack {
-                                    Image(systemName: "square")
-                                        .font(.system(size: 30))
-                                    Image(systemName: "checkmark")
-                                }
-                            }else {
-                                Image(systemName: "square")
-                                    .font(.system(size: 30))
-                            }
-                            Text(option)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .multilineTextAlignment(.leading)
-                                .font(.system(size: 24))
-                                .padding(.bottom,padding)
-                            Spacer()
-                        }
-                        .onTapGesture {
-                            selectedAnswer = index
-                        }
-                    }
-                    .padding()
-                    .padding(.leading,20)
-                }
-            }
-        }
-    }
-}
-
-struct ReadQuizItemView: View {
-    let padding:CGFloat = 16
-    @Binding var selectedAnswer:Int
-    @Binding var quiz: Quiz
-    var body: some View {
-        VStack(alignment:.leading, spacing: 0)  {
-            ZStack {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.white)
-                    .frame(width: UIScreen.main.bounds.width - padding * 2, height: 200)
-                    .shadow(radius: 8)
-                    .padding()
-                VStack {
-                    Text(quiz.title)
-                        .font(.system(size: 24, weight: .bold))
-                        .padding()
+                    
+                    case .readQuiz:
                     Text(quiz.detail)
                         .font(.system(size: 50, weight: .medium))
                         .frame(width: UIScreen.main.bounds.width - padding * 4)
                         .padding()
+                    default:
+                    Text(quiz.detail)
+                        .font(.system(size: 20))
+                        .frame(width: UIScreen.main.bounds.width - padding * 4)
+                        .padding()
                 }
             }
-            ScrollView {
+            .padding()
+            .frame(width: UIScreen.main.bounds.width * 0.9)
+            .background(Color.white) // 背景色をつける
+            .cornerRadius(15) // 角を丸くする
+            .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 3)
+
+            ScrollView(){
                 ForEach(Array(quiz.quizOptions.enumerated()), id: \.0) { index, option in
                     HStack(alignment:.top) {
-                        if( selectedAnswer == index) {
+                        
+                        if(selectedAnswer == index) {
                             ZStack {
                                 Image(systemName: "square")
                                     .font(.system(size: 30))
@@ -265,7 +279,14 @@ struct ReadQuizItemView: View {
                             .padding(.bottom,padding)
                         Spacer()
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding(16)
+                    .contentShape(Rectangle())
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 3)
                     .onTapGesture {
+//                        print("タップ")
                         selectedAnswer = index
                     }
                 }
@@ -275,9 +296,9 @@ struct ReadQuizItemView: View {
     }
 }
 
-
+/// 選択肢の正否を表示する画面
 struct AnswerFeedbackView: View {
-    var isCorrect: Bool
+    @Binding var isCorrect: Bool
     var body: some View {
         VStack {
             Image(systemName: isCorrect ? "circle" : "xmark.app")
@@ -289,51 +310,47 @@ struct AnswerFeedbackView: View {
                 .font(.system(size: 40))
                 .foregroundStyle(isCorrect ? .red : .blue)
                 .shadow(radius: 10)
-                .transition(.opacity)
         }
+        .animation(.easeInOut, value: isCorrect)
     }
 }
 
+
+/// クイズの評価画面
 struct EvaluateQuizView: View {
     @Binding var isEvaluateQuizPresented: Bool
     @State var quizCategory:QuizCategory
     @State var startCount:Int = 0
-    @State var startFlag : Bool = false
+//    @State var startFlag : Bool = false
     @State private var selectedStar: Int? = nil // 選択された星のインデックス
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 15)
-                .fill(Color.white)
-                .frame(width: UIScreen.main.bounds.width * 0.8, height: 150)
-                .shadow(radius: 0.3)
-            
-            VStack{
-                Text("このクイズの評価をしてください")
-                HStack{
-                    ForEach(1..<6, id: \.self) { count in
-                        Button(action: {
-                            if selectedStar == count {
-                                selectedStar = count - 1  // すでに選択している星なら1つ消す
-                            } else {
-                                selectedStar = count // 新しい星を選択
-                            }
-                            guard let selectedStar = selectedStar else { return }
-                            print("selectedStar \(String(selectedStar))")
-                        }) {
-                            Image(systemName: (selectedStar ?? quizCategory.starCount) >= count ? "star.fill" : "star")
-                                .foregroundColor(.yellow)
+        VStack{
+            Text("このクイズの評価をしてください")
+            HStack{
+                ForEach(1..<6, id: \.self) { count in
+                    Button(action: {
+                        if selectedStar == count {
+                            selectedStar = count - 1  // すでに選択している星なら1つ消す
+                        } else {
+                            selectedStar = count // 新しい星を選択
                         }
+                        guard let selectedStar = selectedStar else { return }
+                        print("selectedStar \(String(selectedStar))")
+                    }) {
+                        Image(systemName: (selectedStar ?? quizCategory.starCount) >= count ? "star.fill" : "star")
+                            .foregroundColor(.yellow)
+
                     }
                 }
-                Divider()
-                Button(action:{
-                    applyChanges()
-                }){
-                    Text("閉じる")
-                }
             }
-            .frame(width: 200, height: 200)
+            Button(action:{
+                applyChanges()
+            }){
+                Text("閉じる")
+            }
+            .padding(.top,40)
         }
+        .frame(width: 200, height: 200)
     }
     
     func tapStarCount(count:Int) {
