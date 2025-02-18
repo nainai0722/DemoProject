@@ -36,14 +36,14 @@ final class QuizCategoryListModel: ObservableObject {
         
         if categories.isEmpty {
             await fetch()
-            print("フェッチ完了")
+//            print("フェッチ完了")
         }
-        print("id検索を始める")
+//        print("id検索を始める")
         
         if let sampleQuizzes = categories.first(where: { $0.id == id }){
             self.quizzes = sampleQuizzes.quizItems
         } else {
-            print("一致したものは見つからない")
+//            print("一致したものは見つからない")
         }
     }
     
@@ -92,122 +92,123 @@ final class QuizCategoryListModel: ObservableObject {
              title: "読み方を当てよう",
              detail: "『草原』",
              answerNumber: 2,
-             quizOptions: ["そうげん","くさばら","そうはら","くさはら"]),
+             quizOptions: ["そうげん","くさばら","そうはら","くさはら"],quizType: .readQuiz
+            ),
 
         Quiz(id: 2,
              title: "読み方を当てよう",
              detail: "『雲』",
              answerNumber: 0,
-             quizOptions: ["くも","いわ","かぜ","そら"]),
+             quizOptions: ["くも","いわ","かぜ","そら"],quizType: .readQuiz),
 
         Quiz(id: 3,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『計算』",
+             detail: "『計算』",
              answerNumber: 1,
-             quizOptions: ["けいさつ","けいさん","けいしき","けいざい"]),
+             quizOptions: ["けいさつ","けいさん","けいしき","けいざい"],quizType: .readQuiz),
 
         Quiz(id: 4,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『動物』",
+             detail: "『動物』",
              answerNumber: 3,
-             quizOptions: ["どうぶつう","とうぶつ","どうもの","どうぶつ"]),
+             quizOptions: ["どうぶつう","とうぶつ","どうもの","どうぶつ"],quizType: .readQuiz),
 
         Quiz(id: 5,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『理由』",
+             detail: "『理由』",
              answerNumber: 2,
-             quizOptions: ["りかい","りきゅう","りゆう","りょう"]),
+             quizOptions: ["りかい","りきゅう","りゆう","りょう"],quizType: .readQuiz),
         Quiz(id: 6,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『出発』",
+             detail: "『出発』",
              answerNumber: 0,
-             quizOptions: ["しゅっぱつ","しゅうはつ","しゅつばつ","しゅうぱつ"]),
+             quizOptions: ["しゅっぱつ","しゅうはつ","しゅつばつ","しゅうぱつ"],quizType: .readQuiz),
 
         Quiz(id: 7,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『集合』",
+             detail: "『集合』",
              answerNumber: 1,
-             quizOptions: ["しゅうこう","しゅうごう","しゅうほう","しゅうじゅう"]),
+             quizOptions: ["しゅうこう","しゅうごう","しゅうほう","しゅうじゅう"],quizType: .readQuiz),
 
         Quiz(id: 8,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『開く』",
+             detail: "『開く』",
              answerNumber: 3,
-             quizOptions: ["かたく","へらく","ひらく","あく"]),
+             quizOptions: ["かたく","へらく","ひらく","あく"],quizType: .readQuiz),
 
         Quiz(id: 9,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『旅行』",
+             detail: "『旅行』",
              answerNumber: 2,
-             quizOptions: ["りょこ","りこう","りょこう","ろこう"]),
+             quizOptions: ["りょこ","りこう","りょこう","ろこう"],quizType: .readQuiz),
 
         Quiz(id: 10,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『大事』",
+             detail: "『大事』",
              answerNumber: 0,
-             quizOptions: ["だいじ","たいじ","おおごと","おおじ"]),
+             quizOptions: ["だいじ","たいじ","おおごと","おおじ"],quizType: .readQuiz),
     ]
     
     let yomiQuiz2 = [
         Quiz(id: 1,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『工事』",
+             detail: "『工事』",
              answerNumber: 1,
-             quizOptions: ["こうじょう","こうじ","こうし","こうごう"]),
+             quizOptions: ["こうじょう","こうじ","こうし","こうごう"] ,quizType: .readQuiz),
 
         Quiz(id: 2,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『夕日』",
+             detail: "『夕日』",
              answerNumber: 2,
-             quizOptions: ["ゆうにち","せきじつ","ゆうひ","あさひ"]),
+             quizOptions: ["ゆうにち","せきじつ","ゆうひ","あさひ"] ,quizType: .readQuiz),
 
         Quiz(id: 3,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『遠足』",
+             detail: "『遠足』",
              answerNumber: 0,
-             quizOptions: ["えんそく","とおあし","えんぽ","えんきゃく"]),
+             quizOptions: ["えんそく","とおあし","えんぽ","えんきゃく"] ,quizType: .readQuiz),
 
         Quiz(id: 4,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『寒気』",
+             detail: "『寒気』",
              answerNumber: 3,
-             quizOptions: ["さむき","かんけ","かんき","さむけ"]),
+             quizOptions: ["さむき","かんけ","かんき","さむけ"] ,quizType: .readQuiz),
 
         Quiz(id: 5,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『集合』",
+             detail: "『集合』",
              answerNumber: 1,
-             quizOptions: ["しゅうこう","しゅうごう","しゅうほう","しゅうじゅう"]),
+             quizOptions: ["しゅうこう","しゅうごう","しゅうほう","しゅうじゅう"] ,quizType: .readQuiz),
 
         Quiz(id: 6,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『早朝』",
+             detail: "『早朝』",
              answerNumber: 2,
-             quizOptions: ["そうひる","はやま","そうちょう","さっちょう"]),
+             quizOptions: ["そうひる","はやま","そうちょう","さっちょう"] ,quizType: .readQuiz),
 
         Quiz(id: 7,
              title: "読み方を当てよう",
              detail: "『市場』",
              answerNumber: 0,
-             quizOptions: ["いちば","しじょう","いちじょう","しば"]),
+             quizOptions: ["いちば","しじょう","いちじょう","しば"] ,quizType: .readQuiz),
 
         Quiz(id: 8,
              title: "読み方を当てよう",
              detail: "『読書』",
              answerNumber: 3,
-             quizOptions: ["どっしょ","とくさつ","とくじょ","どくしょ"]),
+             quizOptions: ["どっしょ","とくさつ","とくじょ","どくしょ"] ,quizType: .readQuiz),
 
         Quiz(id: 9,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『海岸』",
+             detail: "『海岸』",
              answerNumber: 1,
-             quizOptions: ["うみべ","かいがん","かいそく","うみがん"]),
+             quizOptions: ["うみべ","かいがん","かいそく","うみがん"] ,quizType: .readQuiz),
 
         Quiz(id: 10,
              title: "読み方を当てよう",
-             detail: "この漢字の読み方はどれ？『昼食』",
+             detail: "『昼食』",
                   answerNumber: 2,
-                  quizOptions: ["ちゅうはん","ひるじき","ちゅうしょく","ひるしょく"])
+                  quizOptions: ["ちゅうはん","ひるじき","ちゅうしょく","ひるしょく"] ,quizType: .readQuiz)
     ]
     
     let wordQuiz2 = [

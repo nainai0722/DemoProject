@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class QuizCategory: NSObject, Codable,Identifiable {
+class QuizCategory: NSObject, Identifiable {
     var id : Int
     var title : String
     var starCount : Int
@@ -15,17 +15,6 @@ class QuizCategory: NSObject, Codable,Identifiable {
     var completed : Bool
     var correctCount : Int
     var createdAt : String
-    
-//    init(id: Int, title: String, starCount: Int, quizItems: [Quiz], completed: Bool, correctCount: Int, createdAt: String) {
-//        self.id = id
-//        self.title = title
-//        self.starCount = starCount
-//        self.quizItems = quizItems
-//        self.completed = completed
-//        self.correctCount = correctCount
-//        self.createdAt = createdAt
-//    }
-    
     
     init(id: Int = 1, title: String = "漢字クイズ", starCount: Int = 3, quizItems: [Quiz] = [], completed: Bool = true, correctCount: Int = 0, createdAt: String = "2025--2-7 11:09") {
         self.id = id

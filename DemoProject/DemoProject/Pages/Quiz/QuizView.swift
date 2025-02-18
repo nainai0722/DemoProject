@@ -27,17 +27,10 @@ struct QuizView: View {
             ZStack {
                 VStack(alignment:.leading) {
                     if index < viewModel.quizzes.count {
-                        if (categoryId == 9 || categoryId == 10){
-                            ReadQuizItemView(selectedAnswer: $selectedAnswer, quiz: $viewModel.quizzes[index])
-                            Spacer()
-                            // 次へボタン
-                            NextButton(action: nextQuestion)
-                        } else {
-                            QuizItemView(selectedAnswer: $selectedAnswer, quiz: $viewModel.quizzes[index])
-                            Spacer()
-                            // 次へボタン
-                            NextButton(action: nextQuestion)
-                        }
+                        QuizItemView(selectedAnswer: $selectedAnswer, quiz: $viewModel.quizzes[index])
+                        Spacer()
+                        // 次へボタン
+                        NextButton(selectedAnswer: $selectedAnswer, isErrorMessage: false, action: nextQuestion)
                     }else{
                         // クイズがすべて終了した際の画面
                         QuizCompletedView(restartAction: restartQuiz, evaluateAction: evaluateQuiz)
@@ -103,22 +96,41 @@ struct QuizView: View {
     QuizView()
 }
 
-#Preview("読みクイズ") {
+#Preview("読み") {
     @State var mockQuiz = Quiz.mockReadQuizData
-    ReadQuizItemView(selectedAnswer: .constant(9), quiz: .constant(mockQuiz))
+    QuizItemView(selectedAnswer: .constant(9), quiz: .constant(mockQuiz))
+}
+#Preview("絵クイズ") {
+    @State var mockQuiz = Quiz.mockImageQuizData
+    QuizItemView(selectedAnswer: .constant(9), quiz: .constant(mockQuiz))
 }
 
+
 struct NextButton: View {
+    @Binding var selectedAnswer:Int
+    @State var isErrorMessage :Bool
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            Text("次へ")
-                .padding()
-                .padding(.horizontal, 30)
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .cornerRadius(10)
+        Button(action:{
+            if selectedAnswer == -1 {
+                isErrorMessage = true
+            } else {
+                isErrorMessage = true
+                action()
+            }
+        }) {
+            VStack {
+                Text("次へ")
+                    .padding()
+                    .padding(.horizontal, 30)
+                    .background(selectedAnswer == -1 ? Color.gray : Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                Text("答えを選んで")
+                    .foregroundStyle(.red)
+                    .opacity(isErrorMessage && selectedAnswer == -1 ? 1 : 0)
+            }
         }
         .padding(.leading, 30)
         .padding(.bottom, 30)
@@ -146,48 +158,65 @@ struct QuizItemView: View {
     @Binding var selectedAnswer:Int
     @Binding var quiz: Quiz
     var body: some View {
-        VStack(alignment:.leading, spacing: 0)  {
+        VStack()  {
             ZStack {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.white)
-                    .frame(width: UIScreen.main.bounds.width - padding * 2, height: 200)
-                    .shadow(radius: 8)
-                    .padding()
-                VStack {
+                VStack() {
                     Text(quiz.title)
                         .font(.system(size: 24, weight: .bold))
                         .padding()
-                    Text(quiz.detail)
-                        .font(.system(size: 20))
-                        .frame(width: UIScreen.main.bounds.width - padding * 4)
-                        .padding()
-                }
-            }
-            ScrollView {
-                ForEach(Array(quiz.quizOptions.enumerated()), id: \.0) { index, option in
-                    HStack(alignment:.top) {
-                        if( selectedAnswer == index) {
-                            ZStack {
-                                Image(systemName: "square")
-                                    .font(.system(size: 30))
-                                Image(systemName: "checkmark")
-                            }
-                        }else {
-                            Image(systemName: "square")
-                                .font(.system(size: 30))
-                        }
-                        Text(option)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .multilineTextAlignment(.leading)
-                            .font(.system(size: 24))
-                            .padding(.bottom,padding)
-                        Spacer()
+                    if (quiz.quizType == .readQuiz) {
+                        Text(quiz.detail)
+                            .font(.system(size: 50, weight: .medium))
+                            .frame(width: UIScreen.main.bounds.width - padding * 4)
+                            .padding()
+                    } else {
+                        Text(quiz.detail)
+                            .font(.system(size: 20))
+                            .frame(width: UIScreen.main.bounds.width - padding * 4)
+                            .padding()
                     }
-                    .onTapGesture {
-                        selectedAnswer = index
+                    if (!quiz.imageName.isEmpty) {
+                        Image(quiz.imageName)
+                            .resizable()
+                            .scaledToFit()
+                            
                     }
                 }
                 .padding()
+                .frame(width: UIScreen.main.bounds.width * 0.9)
+                .background(Color.white) // 背景色をつける
+                .cornerRadius(15) // 角を丸くする
+                .shadow(color: Color.black.opacity(0.3), radius: 5, x: 0, y: 3)
+            }
+
+            VStack(alignment:.leading, spacing: 0) {
+                ScrollView() {
+                    ForEach(Array(quiz.quizOptions.enumerated()), id: \.0) { index, option in
+                        HStack(alignment:.top) {
+                            if( selectedAnswer == index) {
+                                ZStack {
+                                    Image(systemName: "square")
+                                        .font(.system(size: 30))
+                                    Image(systemName: "checkmark")
+                                }
+                            }else {
+                                Image(systemName: "square")
+                                    .font(.system(size: 30))
+                            }
+                            Text(option)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .multilineTextAlignment(.leading)
+                                .font(.system(size: 24))
+                                .padding(.bottom,padding)
+                            Spacer()
+                        }
+                        .onTapGesture {
+                            selectedAnswer = index
+                        }
+                    }
+                    .padding()
+                    .padding(.leading,20)
+                }
             }
         }
     }
