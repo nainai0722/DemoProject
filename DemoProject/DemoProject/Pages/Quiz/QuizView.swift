@@ -165,6 +165,7 @@ struct QuizItemView: View {
                         .font(.system(size: 24, weight: .bold))
                         .padding()
                     if (quiz.quizType == .readQuiz) {
+                        // 複数行対応していない。入力制限をかけるべきか？
                         Text(quiz.detail)
                             .font(.system(size: 50, weight: .medium))
                             .frame(width: UIScreen.main.bounds.width - padding * 4)
@@ -175,7 +176,7 @@ struct QuizItemView: View {
                             .frame(width: UIScreen.main.bounds.width - padding * 4)
                             .padding()
                     }
-                    if (!quiz.imageName.isEmpty) {
+                    if (quiz.quizType == .imageQuiz && !quiz.imageName.isEmpty) {
                         Image(quiz.imageName)
                             .resizable()
                             .scaledToFit()

@@ -79,6 +79,7 @@ final class QuizCategoryListModel: ObservableObject {
             QuizCategory(id: 8, title: "漢字4", starCount: 3, quizItems: wordQuiz4, completed: false, correctCount: 0, createdAt: "2025-02-15"),
             QuizCategory(id: 9, title: "漢字の読み1", starCount: 5, quizItems: yomiQuiz1, completed: false, correctCount: 0, createdAt: "2025-02-17"),
             QuizCategory(id: 10, title: "漢字の読み2", starCount: 5, quizItems: yomiQuiz2, completed: false, correctCount: 0, createdAt: "2025-02-17"),
+            QuizCategory(id: 11, title: "ことわざ2", starCount: 4, quizItems: kotowaQuiz2, completed: false, correctCount: 0, createdAt: "2025-02-18"),
         ]
         
         // 新しいクイズを前に並べたいので、日付順にする。日付はString型
@@ -86,6 +87,23 @@ final class QuizCategoryListModel: ObservableObject {
         
         return sortedCreatedAt
     }
+    
+    let kotowaQuiz2: [Quiz] = [
+        Quiz(id: 1,
+             title: "ことわざの意味を当てよう",
+             detail: "『豚に真珠』",
+             answerNumber: 0,
+             quizOptions: ["物の価値がわからないものに、高価なものを与えても仕方ない","豚は真珠が好き","真珠のようなピカピカしたものを与えても動物は育たない","豚に真珠をあげようとすると、何が起きるか"],
+             quizType:.imageQuiz,
+             imageName:"kotowaza_buta_shinju"),
+        Quiz(id: 2,
+             title: "ことわざの意味を当てよう",
+             detail: "一石二鳥",
+             answerNumber: 3,
+             quizOptions: ["一つの石でもたくさんの生き物を傷つけてしまう","散歩すると、鳥や石を見かけるものだ","ふたつの生き物が、石のような無意味なものを取り合う","一つのきっかけで２つのものが得られること"],
+             quizType:.imageQuiz,
+             imageName:"isseki_nichou")
+    ]
     
     let yomiQuiz1 = [
         Quiz(id: 1,
