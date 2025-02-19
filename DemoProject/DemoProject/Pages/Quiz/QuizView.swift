@@ -321,7 +321,6 @@ struct EvaluateQuizView: View {
     @Binding var isEvaluateQuizPresented: Bool
     @State var quizCategory:QuizCategory
     @State var startCount:Int = 0
-//    @State var startFlag : Bool = false
     @State private var selectedStar: Int? = nil // 選択された星のインデックス
     var body: some View {
         VStack{
@@ -334,8 +333,8 @@ struct EvaluateQuizView: View {
                         } else {
                             selectedStar = count // 新しい星を選択
                         }
-                        guard let selectedStar = selectedStar else { return }
-                        print("selectedStar \(String(selectedStar))")
+//                        guard let selectedStar = selectedStar else { return }
+//                        print("selectedStar \(String(selectedStar))")
                     }) {
                         Image(systemName: (selectedStar ?? quizCategory.starCount) >= count ? "star.fill" : "star")
                             .foregroundColor(.yellow)

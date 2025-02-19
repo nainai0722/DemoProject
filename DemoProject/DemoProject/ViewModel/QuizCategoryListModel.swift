@@ -80,6 +80,9 @@ final class QuizCategoryListModel: ObservableObject {
             QuizCategory(id: 9, title: "漢字の読み1", starCount: 5, quizItems: yomiQuiz1, completed: false, correctCount: 0, createdAt: "2025-02-17"),
             QuizCategory(id: 10, title: "漢字の読み2", starCount: 5, quizItems: yomiQuiz2, completed: false, correctCount: 0, createdAt: "2025-02-17"),
             QuizCategory(id: 11, title: "ことわざ2", starCount: 4, quizItems: kotowaQuiz2, completed: false, correctCount: 0, createdAt: "2025-02-18"),
+            QuizCategory(id: 12, title: "漢字の読み3", starCount: 4, quizItems: yomiQuiz3, completed: false, correctCount: 0, createdAt: "2025-02-19"),
+            QuizCategory(id: 13, title: "漢字の読み4", starCount: 4, quizItems: yomiQuiz4, completed: false, correctCount: 0, createdAt: "2025-02-19"),
+            QuizCategory(id: 14, title: "漢字の読み5", starCount: 4, quizItems: yomiQuiz5, completed: false, correctCount: 0, createdAt: "2025-02-19"),
         ]
         
         // 新しいクイズを前に並べたいので、日付順にする。日付はString型
@@ -87,6 +90,46 @@ final class QuizCategoryListModel: ObservableObject {
         
         return sortedCreatedAt
     }
+    
+    let yomiQuiz3: [Quiz] = [
+        Quiz(id: 1, title: "読み方を当てよう", detail: "『草原』", answerNumber: 0, quizOptions: ["そうげん", "くさばら", "そうはら", "くさはら"], quizType: .readQuiz),
+        Quiz(id: 2, title: "読み方を当てよう", detail: "『午前』", answerNumber: 0, quizOptions: ["ごぜん", "うままえ", "ごご", "まえひる"], quizType: .readQuiz),
+        Quiz(id: 3, title: "読み方を当てよう", detail: "『出発』", answerNumber: 0, quizOptions: ["しゅっぱつ", "でばつ", "しゅっぽつ", "はつで"], quizType: .readQuiz),
+        Quiz(id: 4, title: "読み方を当てよう", detail: "『茶色』", answerNumber: 2, quizOptions: ["ちゃしょく", "さゆいろ", "ちゃいろ", "おういろ"], quizType: .readQuiz),
+        Quiz(id: 5, title: "読み方を当てよう", detail: "『台風』", answerNumber: 1, quizOptions: ["たいふ", "たいふう", "だいかぜ", "ふうたい"], quizType: .readQuiz),
+        Quiz(id: 6, title: "読み方を当てよう", detail: "『図書館』", answerNumber: 0, quizOptions: ["としょかん", "ずがくかん", "とがくかん", "しょとずかん"], quizType: .readQuiz),
+        Quiz(id: 7, title: "読み方を当てよう", detail: "『遠足』", answerNumber: 2, quizOptions: ["とおあし", "えんほ", "えんそく", "あしなが"], quizType: .readQuiz),
+        Quiz(id: 8, title: "読み方を当てよう", detail: "『軽食』", answerNumber: 1, quizOptions: ["けいじき", "けいしょく", "かるしょく", "しょうしょく"], quizType: .readQuiz),
+        Quiz(id: 9, title: "読み方を当てよう", detail: "『体育』", answerNumber: 2, quizOptions: ["たいく", "たいい", "たいいく", "たいぎょう"], quizType: .readQuiz),
+        Quiz(id: 10, title: "読み方を当てよう", detail: "『黒板』", answerNumber: 0, quizOptions: ["こくばん", "くろいた", "こくいた", "くろばん"], quizType: .readQuiz)
+    ]
+
+    let yomiQuiz4: [Quiz] = [
+        Quiz(id: 11, title: "読み方を当てよう", detail: "『温度』", answerNumber: 0, quizOptions: ["おんど", "あつさ", "ぬくもり", "どあつ"], quizType: .readQuiz),
+        Quiz(id: 12, title: "読み方を当てよう", detail: "『最初』", answerNumber: 1, quizOptions: ["さいしゅう", "さいしょ", "しょさい", "はじめ"], quizType: .readQuiz),
+        Quiz(id: 13, title: "読み方を当てよう", detail: "『練習』", answerNumber: 0, quizOptions: ["れんしゅう", "れんしょう", "ねんしゅう", "しゅうれん"], quizType: .readQuiz),
+        Quiz(id: 14, title: "読み方を当てよう", detail: "『卒業』", answerNumber: 2, quizOptions: ["そつえい", "そつこう", "そつぎょう", "ごうそつ"], quizType: .readQuiz),
+        Quiz(id: 15, title: "読み方を当てよう", detail: "『植物』", answerNumber: 2, quizOptions: ["しょくもつ", "しょくぶつ", "しょっぶつ", "はなもの"], quizType: .readQuiz),
+        Quiz(id: 16, title: "読み方を当てよう", detail: "『計算』", answerNumber: 0, quizOptions: ["けいさん", "けいざん", "さんけい", "かいさん"], quizType: .readQuiz),
+        Quiz(id: 17, title: "読み方を当てよう", detail: "『試合』", answerNumber: 2, quizOptions: ["しあ", "しけん", "しあい", "ためあい"], quizType: .readQuiz),
+        Quiz(id: 18, title: "読み方を当てよう", detail: "『自然』", answerNumber: 1, quizOptions: ["しねん", "しぜん", "じねん", "ちぜん"], quizType: .readQuiz),
+        Quiz(id: 19, title: "読み方を当てよう", detail: "『習慣』", answerNumber: 2, quizOptions: ["しゅうかん", "じゅうかん", "しゅうかい", "しゅうしょく"], quizType: .readQuiz),
+        Quiz(id: 20, title: "読み方を当てよう", detail: "『研究』", answerNumber: 0, quizOptions: ["けんきゅう", "けんぎゅう", "けんきょ", "きゅうけん"], quizType: .readQuiz)
+    ]
+
+    let yomiQuiz5: [Quiz] = [
+        Quiz(id: 21, title: "読み方を当てよう", detail: "『歴史』", answerNumber: 1, quizOptions: ["れきじ", "れきし", "れっき", "しれき"], quizType: .readQuiz),
+        Quiz(id: 22, title: "読み方を当てよう", detail: "『政治』", answerNumber: 0, quizOptions: ["せいじ", "せいち", "じせい", "しせい"], quizType: .readQuiz),
+        Quiz(id: 23, title: "読み方を当てよう", detail: "『国際』", answerNumber: 0, quizOptions: ["こくさい", "こくさいき", "こくさく", "さいこく"], quizType: .readQuiz),
+        Quiz(id: 24, title: "読み方を当てよう", detail: "『産業』", answerNumber: 1, quizOptions: ["さんごう", "さんぎょう", "ぎょうさん", "ぎょうば"], quizType: .readQuiz),
+        Quiz(id: 25, title: "読み方を当てよう", detail: "『文学』", answerNumber: 0, quizOptions: ["ぶんがく", "ぶんしゃ", "ぶんえい", "がくぶん"], quizType: .readQuiz),
+        Quiz(id: 26, title: "読み方を当てよう", detail: "『重要』", answerNumber: 2, quizOptions: ["しゅうよう", "じゅうもう", "じゅうよう", "ようじゅう"], quizType: .readQuiz),
+        Quiz(id: 27, title: "読み方を当てよう", detail: "『教育』", answerNumber: 1, quizOptions: ["きょうぎ", "きょういく", "きょうし", "きょうそく"], quizType: .readQuiz),
+        Quiz(id: 28, title: "読み方を当てよう", detail: "『社会』", answerNumber: 0, quizOptions: ["しゃかい", "しゅかい", "しゃえ", "かいしゃ"], quizType: .readQuiz),
+        Quiz(id: 29, title: "読み方を当てよう", detail: "『経済』", answerNumber: 2, quizOptions: ["けいざ", "けいし", "けいざい", "ざいけい"], quizType: .readQuiz),
+        Quiz(id: 30, title: "読み方を当てよう", detail: "『環境』", answerNumber: 0, quizOptions: ["かんきょう", "かんけい", "かんこう", "きょうかん"], quizType: .readQuiz)
+    ]
+
     
     let kotowaQuiz2: [Quiz] = [
         Quiz(id: 1,
@@ -102,7 +145,84 @@ final class QuizCategoryListModel: ObservableObject {
              answerNumber: 3,
              quizOptions: ["一つの石でもたくさんの生き物を傷つけてしまう","散歩すると、鳥や石を見かけるものだ","ふたつの生き物が、石のような無意味なものを取り合う","一つのきっかけで２つのものが得られること"],
              quizType:.imageQuiz,
-             imageName:"isseki_nichou")
+             imageName:"isseki_nichou"),
+            Quiz(id: 3,
+                 title: "ことわざの意味を当てよう",
+                 detail: "井の中の蛙",
+                 answerNumber: 1,
+                 quizOptions: [
+                     "小さな世界にいると、広い世界のことが分からない",
+                     "カエルは水辺にいるものだ",
+                     "小さな井戸の中でも、大きな声で鳴けば遠くまで届く",
+                     "雨の日はカエルがよく鳴く"
+                 ],
+                 quizType: .imageQuiz,
+                 imageName: "kotowaza_inonaka_kawazu"),
+
+            Quiz(id: 4,
+                 title: "ことわざの意味を当てよう",
+                 detail: "可愛い子には旅をさせよ",
+                 answerNumber: 0,
+                 quizOptions: [
+                     "子どもにはさまざまな経験を積ませると良い",
+                     "旅行に行くとかわいくなれる",
+                     "可愛い子を旅に連れて行くと運気が上がる",
+                     "旅先で新しい友達を作ると良い"
+                 ],
+                 quizType: .imageQuiz,
+                 imageName: "kotowaza_kawaiiko_tabi_girl"),
+
+            Quiz(id: 5,
+                 title: "ことわざの意味を当てよう",
+                 detail: "絵に描いた餅",
+                 answerNumber: 2,
+                 quizOptions: [
+                     "餅の絵を描くのが上手な人",
+                     "餅の絵を見ながら食べると美味しくなる",
+                     "実際には役に立たない計画や理想",
+                     "餅は絵に描いたように綺麗に作るべき"
+                 ],
+                 quizType: .imageQuiz,
+                 imageName: "kotowaza_enikaitamochi_man"),
+
+            Quiz(id: 6,
+                 title: "ことわざの意味を当てよう",
+                 detail: "鴨が葱を背負ってくる",
+                 answerNumber: 1,
+                 quizOptions: [
+                     "鴨が美味しい料理になるとき",
+                     "都合の良いことが重なってさらに良い状況になる",
+                     "カモ料理にはネギが必要不可欠",
+                     "運命的な出会いを果たす"
+                 ],
+                 quizType: .imageQuiz,
+                 imageName: "bird_kamonegi"),
+
+            Quiz(id: 7,
+                 title: "ことわざの意味を当てよう",
+                 detail: "猫に小判",
+                 answerNumber: 0,
+                 quizOptions: [
+                     "価値が分からないものに貴重なものを与えても意味がない",
+                     "猫が小判を持っていると幸運が訪れる",
+                     "猫に金運が宿ると良いことが起こる",
+                     "小判を持っていると猫が寄ってくる"
+                 ],
+                 quizType: .imageQuiz,
+                 imageName: "kotowaza_neko_koban"),
+
+            Quiz(id: 8,
+                 title: "ことわざの意味を当てよう",
+                 detail: "月とすっぽん",
+                 answerNumber: 2,
+                 quizOptions: [
+                     "月とスッポンはどちらも丸いので同じように見える",
+                     "月のように光り輝くスッポンがいる",
+                     "比べものにならないほど違いがあること",
+                     "スッポンの甲羅は月の満ち欠けと関係している"
+                 ],
+                 quizType: .imageQuiz,
+                 imageName: "kotowaza_tsuki_suppon")
     ]
     
     let yomiQuiz1 = [
@@ -110,7 +230,8 @@ final class QuizCategoryListModel: ObservableObject {
              title: "読み方を当てよう",
              detail: "『草原』",
              answerNumber: 2,
-             quizOptions: ["そうげん","くさばら","そうはら","くさはら"],quizType: .readQuiz
+             quizOptions: ["そうげん","くさばら","そうはら","くさはら"],
+             quizType: .readQuiz
             ),
 
         Quiz(id: 2,
