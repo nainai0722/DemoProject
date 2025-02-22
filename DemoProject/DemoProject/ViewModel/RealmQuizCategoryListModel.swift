@@ -35,12 +35,6 @@ final class RealmQuizCategoryListModel: ObservableObject {
     private var results: Results<RealmQuizCategory>?
 
     init() {
-//        let add: (Int, Int) -> Int = { a, b in
-//            return a + b
-//        }
-//        let result = add(3, 5) // 8
-//        print(result)
-        
         realm = try? Realm()
         setupObservation()
     }

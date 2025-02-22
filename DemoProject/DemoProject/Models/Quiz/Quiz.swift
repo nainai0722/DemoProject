@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import RealmSwift
 
-enum QuizType:String {
+enum QuizType:String,PersistableEnum {
     case defaultQuiz = "通常"
     case readQuiz = "読みクイズ"
     case imageQuiz = "絵クイズ"

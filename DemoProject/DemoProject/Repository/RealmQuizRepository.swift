@@ -155,8 +155,6 @@ struct RealmQuizRepository {
     ///   - categoryId: 変更するクイズカテゴリid
     func deleteQuiz(quiz:Quiz, categoryId: Int) {
         
-//        let realmQuiz = QuizConverter.toRealmQuiz(quiz: quiz)
-        
         let realm = try! Realm()
         // 引数categoryIdに一致するidのRealmQuizCategoryを取得
         if let category = realm.objects(RealmQuizCategory.self).filter("id == %@", categoryId).first {
@@ -176,10 +174,89 @@ struct RealmQuizRepository {
         }
     }
     
+    func showRealmSavePath()  {
+        if let realmURL = Realm.Configuration.defaultConfiguration.fileURL {
+            print("Realmの保存場所: \(realmURL)")
+        }
+    }
+    
+    // デバッグ用
+    func showLocalQuiz() {
+        print("showLocalQuiz")
+        
+        let realm = try! Realm()
+        print("realmインスタンス取得")
+        let allCategories = realm.objects(DefaultRealmQuizCategory.self)
+        
+        for category in allCategories {
+            print("カテゴリ名: \(category.title)")
+            for quiz in category.quizItems {
+                print("クイズ\(quiz.id)\(quiz.title)")
+            }
+        }
+    }
+    
+    // ViewModelで活用する
+    func fetchLocalQuiz() -> [QuizCategory] {
+        let realm = try! Realm()
+        
+        let allCategories = realm.objects(DefaultRealmQuizCategory.self)
+        
+//        print("allCategories: \(allCategories)")
+        
+        let allCategoryArray = QuizConverter.defaultRealmQuizCategoryToQuizCategoryList(categories: allCategories)
+        
+        var sortedCreatedAtArray: [QuizCategory] = allCategoryArray.sorted{ $0.createdAt > $1.createdAt }
+        
+        
+        
+//        for sortedCreatedAt in sortedCreatedAtArray {
+//            for item in sortedCreatedAt.quizItems {
+//                print("クイズタイトル: \(item.title)")
+//            }
+//        }
+        
+        return sortedCreatedAtArray
+    }
+    
+    func defaultRealmQuizInit() {
+        let quiz = DefaultRealmQuiz()
+        print(quiz.id)
+    }
+    
+    func loadLocalQuizIfNeed() {
+        let realm = try! Realm()
+        
+        let existingCategories = realm.objects(DefaultRealmQuizCategory.self)
+        print("DefaultRealmQuizCategory のデータ件数: \(existingCategories.count)")
+        
+        //判定処理を変える？
+        if !existingCategories.isEmpty {
+            print("データが入っている")
+            return
+        }
+        
+        let quizCategories: [QuizCategory] = QuizCategoryListModel().fetchMockNews()
+//      let quizCategories: [QuizCategory] =   QuizCategoryListModel().fetchTestMockNews()
+        let defaultCategories :[DefaultRealmQuizCategory] = QuizConverter.quizCategoryToDefaultRealmQuizCategory(categories:quizCategories)
+        
+        try! realm.write {
+            for category in defaultCategories {
+                // ① クイズカテゴリを先に保存（quizItemsは空のまま）
+                realm.add(category, update: .modified)
+                print("✅ カテゴリ追加: \(category.title)")
+            }
+        }
+    }
+    
     /// 自作クイズのデフォルトカテゴリを用意しておく
     func initializeDefaultCategoriesIfNeeded() {
         let realm = try! Realm()
         let existingCategories = realm.objects(RealmQuizCategory.self)
+        if !existingCategories.isEmpty {
+//            print("すでにデフォルトカテゴリは存在する")
+            return
+        }
         
         if existingCategories.isEmpty {
             let categoryNames = ["漢字", "ことわざ", "動物", "生活", "有名人", "家族", "社会"]
@@ -202,11 +279,11 @@ struct RealmQuizRepository {
     
     
     
-    func updateCategoryCorrectCount(by id:Int, quizzesIndex:Int) {
+    func updateCategoryCorrectCount(by id:Int, quizzesIndex:Int,myQuizFlag:Bool) {
         let realm = try! Realm()
-        
         // 引数categoryIdに一致するidのRealmQuizCategoryを取得
-        if let category = realm.objects(RealmQuizCategory.self).filter("id == %@", id).first {
+        if myQuizFlag {
+            let category = realm.objects(RealmQuizCategory.self).filter("id == %@", id).first!
             try! realm.write {
                 
                 if  category.correctCount < category.quizItems.count {
@@ -218,8 +295,33 @@ struct RealmQuizRepository {
                 }
             }
         } else {
-            print("指定したカテゴリIDが見つかりませんでした")
+            let category = realm.objects(DefaultRealmQuizCategory.self).filter("id == %@", id).first!
+            try! realm.write {
+                
+                if  category.correctCount < category.quizItems.count {
+                    category.correctCount += 1
+                    category.completed = false
+                } else {
+                    category.correctCount = category.quizItems.count
+                    category.completed = true
+                }
+            }
         }
+        
+//        if let category = realm.objects(RealmQuizCategory.self).filter("id == %@", id).first {
+//            try! realm.write {
+//                
+//                if  category.correctCount < category.quizItems.count {
+//                    category.correctCount += 1
+//                    category.completed = false
+//                } else {
+//                    category.correctCount = category.quizItems.count
+//                    category.completed = true
+//                }
+//            }
+//        } else {
+//            print("指定したカテゴリIDが見つかりませんでした")
+//        }
     }
     
     func updateCategoryStarCount(by id:Int, starCount:Int){
@@ -259,6 +361,17 @@ struct RealmQuizRepository {
         try! realm.write {
             realm.deleteAll()
             print("削除しました")
+        }
+    }
+    
+    func deleteDefaultQuizCategory() {
+        let realm = try! Realm()
+        try! realm.write {
+            let defaultQuiz = realm.objects(DefaultRealmQuiz.self)
+            realm.delete(defaultQuiz)
+            let defaultQuizCategory = realm.objects(DefaultRealmQuizCategory.self)
+            realm.delete(defaultQuizCategory)
+            print("DefaultRealmQuizとDefaultQuizCategoryオブジェクト削除しました")
         }
     }
     

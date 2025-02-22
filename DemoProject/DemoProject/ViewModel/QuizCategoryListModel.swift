@@ -10,14 +10,22 @@ import Combine
 
 /// クイズの要素を管理するクラス
 /// この中でQuiz型でクイズ情報を入れている
-@MainActor
+//@MainActor
 final class QuizCategoryListModel: ObservableObject {
     @Published var categories: [QuizCategory] = []
     @Published var quizzes: [Quiz] = []
     
     func fetch() {
+        // リアルム側にデータが1件でもあれば、取得する
+        if categories.isEmpty {
+            RealmQuizRepository().loadLocalQuizIfNeed()
+            // リアルムからローカル用のデータを取得する
+            self.categories = RealmQuizRepository().fetchLocalQuiz()
+            print("リアルムからローカル用のデータを取得する")
+        }
         // 検証用のクイズカテゴリを取得する
-        self.categories = fetchMockNews()
+        // リアルムのフェッチ失敗したとき用
+//        self.categories = fetchMockNews()
     }
     
     ///  Realmデータベースの中からidが一致するQuiz型の配列をプロパティに格納する
@@ -63,10 +71,18 @@ final class QuizCategoryListModel: ObservableObject {
         }
     }
     
+    func fetchTestMockNews() -> [QuizCategory] {
+        // デフォルトデータを返すフェッチ処理
+        let quizCategories: [QuizCategory] = [
+            QuizCategory(id: 1, title: "漢字1", starCount: 3, quizItems: animalQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28"),
+            QuizCategory(id: 2, title: "ことわざ", starCount: 5, quizItems: kotowazaQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28")
+            ]
+        return quizCategories
+    }
+    
     /// クイズの内容を返す
     /// - Returns: QuizCategory型の配列で返す
-    private func fetchMockNews() -> [QuizCategory] {
-        
+    func fetchMockNews() -> [QuizCategory] {
         // デフォルトデータを返すフェッチ処理
         let quizCategories: [QuizCategory] = [
             QuizCategory(id: 1, title: "漢字1", starCount: 3, quizItems: wordQuiz, completed: false, correctCount: 0, createdAt: "2025-01-28"),
@@ -86,7 +102,7 @@ final class QuizCategoryListModel: ObservableObject {
         ]
         
         // 新しいクイズを前に並べたいので、日付順にする。日付はString型
-        var sortedCreatedAt: [QuizCategory] = quizCategories.sorted{ $0.createdAt > $1.createdAt }
+        var sortedCreatedAt: [QuizCategory] = quizCategories.sorted{ $0.createdAt < $1.createdAt }
         
         return sortedCreatedAt
     }

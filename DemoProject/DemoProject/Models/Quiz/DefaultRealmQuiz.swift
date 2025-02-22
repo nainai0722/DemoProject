@@ -1,14 +1,14 @@
 //
-//  RealmQuiz.swift
+//  DefaultRealmQuiz.swift
 //  DemoProject
 //
-//  Created by 指原奈々 on 2025/01/29.
+//  Created by 指原奈々 on 2025/02/20.
 //
 
 import Foundation
 import RealmSwift
 
-class RealmQuiz: Object, Identifiable {
+class DefaultRealmQuiz: Object, Identifiable {
     @Persisted(primaryKey: true) var id: Int
     @Persisted var title: String
     @Persisted var detail: String
@@ -28,6 +28,8 @@ class RealmQuiz: Object, Identifiable {
         let maxId = realm.objects(RealmQuiz.self).max(ofProperty: "id") as Int?
         print("最大値を取得:\(String(describing: maxId))")
         self.id = (maxId ?? 0) + 1
+        print("idは:\(String(describing: self.id))")
+//        self.id = id //ここで、おそらくミスっている。データ設計としてミスっている。
         self.title = title
         self.detail = detail
         self.answerNumber = answerNumber

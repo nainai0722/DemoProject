@@ -14,18 +14,16 @@ struct PageMyQuizList: View {
     let myQuizFlag = true
     var body: some View {
         //クイズの一覧画面を表示する
-        ZStack {
-            NavigationStack{
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(spacing:0) {
-                        ForEach(viewModel.categories, id: \.self){ category in
-                            SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in
-                                self.selectedCategory = category
-                            })
-                        }
+        NavigationStack{
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing:0) {
+                    ForEach(viewModel.categories, id: \.self){ category in
+                        SubPageQuizRow(isAnimating: true, quizCategory: category, myQuizFlag: true, onSelect: { category in
+                            self.selectedCategory = category
+                        })
                     }
-                    .frame(maxWidth: .infinity)
                 }
+                .frame(maxWidth: .infinity)
             }
         }
     }

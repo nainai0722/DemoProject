@@ -12,6 +12,8 @@ struct ControlDBView: View {
     
     @ObservedObject var viewModel = RealmQuizCategoryListModel()
     
+    @ObservedObject var viewModel2 = QuizCategoryListModel()
+    
     var body: some View {
         VStack {
             Button(action:{
@@ -22,9 +24,38 @@ struct ControlDBView: View {
             Spacer()
             
             Button(action:{
+                RealmQuizRepository().deleteDefaultQuizCategory()
+            }){
+                Text("DefaultQuizCategoryデータを削除")
+            }
+            Spacer()
+            
+            Button(action:{
+                RealmQuizRepository().showLocalQuiz()
+            }){
+                Text("ローカルクイズを出力")
+            }
+            Spacer()
+            
+            Button(action:{
+                RealmQuizRepository().defaultRealmQuizInit()
+            }){
+                Text("初期化")
+            }
+            Spacer()
+            
+            
+            Button(action:{
+                RealmQuizRepository().loadLocalQuizIfNeed()
+            }){
+                Text("ローカルクイズをDBに追加")
+            }
+            Spacer()
+            
+            Button(action:{
                 RealmQuizRepository().initializeDefaultCategoriesIfNeeded()
             }){
-                Text("デフォルトカテゴリを追加")
+                Text("自作クイズ用のデフォルトカテゴリを追加")
             }
             Spacer()
             

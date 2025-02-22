@@ -62,7 +62,10 @@ struct QuizView: View {
 
         // 答えた数を反映させる
         if (myQuizFlag) {
-            RealmQuizRepository().updateCategoryCorrectCount(by: categoryId, quizzesIndex: index)
+            RealmQuizRepository().updateCategoryCorrectCount(by: categoryId, quizzesIndex: index, myQuizFlag:myQuizFlag)
+            RealmQuizRepository().updateCategoryComplete(by: categoryId)
+        } else {
+            RealmQuizRepository().updateCategoryCorrectCount(by: categoryId, quizzesIndex: index, myQuizFlag:myQuizFlag)
             RealmQuizRepository().updateCategoryComplete(by: categoryId)
         }
         

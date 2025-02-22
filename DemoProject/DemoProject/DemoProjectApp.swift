@@ -9,14 +9,12 @@ import SwiftUI
 
 @main
 struct DemoProjectApp: App {
+    init() {
+        MigrateRealmDB().migrateRealmDB(schemaVersion: 3)
+    }
     var body: some Scene {
         WindowGroup {
             TabViewIndex()
-//            if UIDevice.current.userInterfaceIdiom == .phone {
-//                TabViewIndex()
-//            } else {
-//                SelectPageView()
-//            }
         }
     }
 }
