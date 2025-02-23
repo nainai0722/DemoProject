@@ -9,11 +9,26 @@ import Foundation
 import RealmSwift
 
 protocol QuizCategoryProtocol {
+    associatedtype QuizName : Object
     var id : Int{ get }
     var title : String { get set }
     var starCount : Int { get set }
-    var quizItems : RealmSwift.List<DefaultRealmQuiz> { get }
     var completed : Bool { get set }
     var correctCount : Int { get set }
-    var createdAt : String { get set }
+    var createdAt : Date { get set }
+    
+    var quizItemArray: [QuizName] { get }
+}
+
+extension RealmQuizCategory: QuizCategoryProtocol {
+//    typealias QuizName = RealmQuiz
+    var quizItemArray: [RealmQuiz] {
+        return Array(quizItems)
+    }
+}
+extension DefaultRealmQuizCategory: QuizCategoryProtocol {
+//    typealias QuizName = DefaultRealmQuiz
+    var quizItemArray: [DefaultRealmQuiz] {
+        return Array(quizItems)
+    }
 }

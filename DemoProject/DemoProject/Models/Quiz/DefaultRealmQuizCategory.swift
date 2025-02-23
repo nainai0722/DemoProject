@@ -45,6 +45,5 @@ class DefaultRealmQuizCategory: Object, Identifiable {
         self.correctCount = 0
         self.createdAt = createdAt
     }
-    
 }
 

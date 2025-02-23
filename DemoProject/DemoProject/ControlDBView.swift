@@ -48,7 +48,14 @@ struct ControlDBView: View {
             Button(action:{
                 RealmQuizRepository().loadLocalQuizIfNeed()
             }){
-                Text("ローカルクイズをDBに追加")
+                Text("空っぽのときはローカルクイズをDBに流し込み")
+            }
+            Spacer()
+            
+            Button(action:{
+                RealmQuizRepository().addLocalQuizIfNeed()
+            }){
+                Text("追加でローカルクイズを流し込み")
             }
             Spacer()
             
@@ -148,7 +155,6 @@ struct ControlDBView: View {
                 }
             }
         }
-//        .onAppear(perform: viewModel.fetch)
     }
 
 }

@@ -42,7 +42,7 @@ struct QuizView: View {
                     loadQuizData()
                 }
                 .fullScreenCover(isPresented: $isEvaluateQuizPresented) {
-                    EvaluateQuizView(isEvaluateQuizPresented: $isEvaluateQuizPresented, quizCategory:quizCategory)
+                    EvaluateQuizView(isEvaluateQuizPresented: $isEvaluateQuizPresented, quizCategory:quizCategory, myQuizFlag: myQuizFlag)
                 }
                 // クイズの正否はカスタムモーダル必須
                 if(isAnswerAnimating) {
@@ -61,13 +61,8 @@ struct QuizView: View {
         isAnswerAnimating = true
 
         // 答えた数を反映させる
-        if (myQuizFlag) {
-            RealmQuizRepository().updateCategoryCorrectCount(by: categoryId, quizzesIndex: index, myQuizFlag:myQuizFlag)
-            RealmQuizRepository().updateCategoryComplete(by: categoryId)
-        } else {
-            RealmQuizRepository().updateCategoryCorrectCount(by: categoryId, quizzesIndex: index, myQuizFlag:myQuizFlag)
-            RealmQuizRepository().updateCategoryComplete(by: categoryId)
-        }
+        RealmQuizRepository().updateCategoryCorrectCount(by: categoryId, quizzesIndex: index, myQuizFlag:myQuizFlag)
+        RealmQuizRepository().updateCategoryComplete(by: categoryId,myQuizFlag: myQuizFlag)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             isAnswerAnimating = false
@@ -325,6 +320,7 @@ struct EvaluateQuizView: View {
     @State var quizCategory:QuizCategory
     @State var startCount:Int = 0
     @State private var selectedStar: Int? = nil // 選択された星のインデックス
+    var myQuizFlag:Bool = true
     var body: some View {
         VStack{
             Text("このクイズの評価をしてください")
@@ -363,7 +359,7 @@ struct EvaluateQuizView: View {
     func applyChanges(){
         isEvaluateQuizPresented.toggle()
         if let selectedStar = selectedStar {
-            RealmQuizRepository().updateCategoryStarCount(by:quizCategory.id , starCount: selectedStar)
+            RealmQuizRepository().updateCategoryStarCount(by:quizCategory.id , starCount: selectedStar,myQuizFlag: myQuizFlag)
         }
         
     }
