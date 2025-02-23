@@ -232,12 +232,12 @@ struct RealmQuizRepository {
         // クイズデータをDBに流し込める型に変換する
         let defaultCategories :[DefaultRealmQuizCategory] = QuizConverter.quizCategoryToDefaultRealmQuizCategory(categories:addCategories)
         // 内容が相違ないか目視で確かめる
-        for category in defaultCategories {
-            print("タイトル : \(category.title)\(category.id)")
-            for quizItemArray in category.quizItemArray {
-                print("クイズタイトル : \(quizItemArray.title)クイズid: \(quizItemArray.id)")
-            }
-        }
+//        for category in defaultCategories {
+//            print("タイトル : \(category.title)\(category.id)")
+//            for quizItemArray in category.quizItemArray {
+//                print("クイズタイトル : \(quizItemArray.title)クイズid: \(quizItemArray.id)")
+//            }
+//        }
         
         // データ追加の条件を確認する
         // 追加する内容と既存の内容を比較し、idが一致するもしくは追加する内容のほうがidが小さいときは追加しない　更新を防ぐ
@@ -264,7 +264,7 @@ struct RealmQuizRepository {
         
         //判定処理を変える？
         if !existingCategories.isEmpty {
-            print("データが入っている")
+//            print("データが入っている")
             return
         }
         

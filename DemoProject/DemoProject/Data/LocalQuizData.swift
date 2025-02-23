@@ -14,8 +14,73 @@ struct LocalQuizData {
         // デフォルトデータを返すフェッチ処理
         
         
-        return LocalQuizData.quizCategories2
+        return LocalQuizData.quizCategories3
     }
+    
+    static let quizCategories3:[QuizCategory] = [
+        QuizCategory(id: 19, title: "雑学", starCount: 3, quizItems: category19, completed: false, correctCount: 0, createdAt: "2025-02-23"),
+        QuizCategory(id: 20, title: "雑学", starCount: 3, quizItems: category20, completed: false, correctCount: 0, createdAt: "2025-02-23"),
+        QuizCategory(id: 21, title: "マイクラ", starCount: 3, quizItems: category21, completed: false, correctCount: 0, createdAt: "2025-02-23"),
+        QuizCategory(id: 22, title: "マイクラ", starCount: 3, quizItems: category22, completed: false, correctCount: 0, createdAt: "2025-02-23"),
+        
+    ]
+    
+    static let category19: [Quiz] = [
+        Quiz(id: 141, title: "世界一高い山は？", detail: "標高8,848m", answerNumber: 0, quizOptions: ["エベレスト", "キリマンジャロ", "モンブラン", "マッターホルン"], quizType: .defaultQuiz),
+        Quiz(id: 142, title: "シマウマの模様は？", detail: "白黒どっちの動物？", answerNumber: 1, quizOptions: ["白に黒のしま", "黒に白のしま", "グレー", "茶色"], quizType: .defaultQuiz),
+        Quiz(id: 143, title: "太陽の光が地球に届く時間", detail: "約○分", answerNumber: 2, quizOptions: ["5分", "10分", "8分", "12分"], quizType: .defaultQuiz),
+        Quiz(id: 144, title: "世界で一番消費されている飲み物", detail: "コーヒーより多い", answerNumber: 3, quizOptions: ["コーヒー", "ジュース", "水", "お茶"], quizType: .defaultQuiz),
+        Quiz(id: 145, title: "日本で一番面積が広い都道府県", detail: "北海道、沖縄、長野、岩手のどれ？", answerNumber: 0, quizOptions: ["北海道", "沖縄", "長野", "岩手"], quizType: .defaultQuiz),
+        Quiz(id: 146, title: "1円玉の重さは？", detail: "○グラム", answerNumber: 1, quizOptions: ["2g", "1g", "3g", "5g"], quizType: .defaultQuiz),
+        Quiz(id: 147, title: "日本で一番長い川", detail: "全長367km", answerNumber: 0, quizOptions: ["信濃川", "利根川", "淀川", "筑後川"], quizType: .defaultQuiz),
+        Quiz(id: 148, title: "地球の7割を占めるもの", detail: "ほとんどが○○", answerNumber: 2, quizOptions: ["砂漠", "森林", "海", "氷"], quizType: .defaultQuiz),
+        Quiz(id: 149, title: "1年のうち、一番昼が長い日", detail: "何の日？", answerNumber: 0, quizOptions: ["夏至", "冬至", "春分", "秋分"], quizType: .defaultQuiz),
+        Quiz(id: 150, title: "雷は上から落ちる？", detail: "実は違う！", answerNumber: 1, quizOptions: ["上から下", "下から上", "横から", "どっちでもない"], quizType: .defaultQuiz)
+    ]
+
+    
+    static let category20: [Quiz] = [
+        Quiz(id: 151, title: "パンダの主食は？", detail: "何を食べる？", answerNumber: 0, quizOptions: ["竹", "肉", "果物", "草"], quizType: .defaultQuiz),
+        Quiz(id: 152, title: "一番大きな哺乳類", detail: "海にいる", answerNumber: 1, quizOptions: ["ゾウ", "シロナガスクジラ", "カバ", "ゴリラ"], quizType: .defaultQuiz),
+        Quiz(id: 153, title: "世界で一番話されている言語", detail: "中国で使われる", answerNumber: 2, quizOptions: ["英語", "スペイン語", "中国語", "フランス語"], quizType: .defaultQuiz),
+        Quiz(id: 154, title: "日本の国鳥は？", detail: "赤い顔が特徴", answerNumber: 0, quizOptions: ["キジ", "スズメ", "タカ", "ツバメ"], quizType: .defaultQuiz),
+        Quiz(id: 155, title: "オリンピックの開催間隔", detail: "○年に1回", answerNumber: 1, quizOptions: ["2年", "4年", "6年", "8年"], quizType: .defaultQuiz),
+        Quiz(id: 156, title: "人間の骨の数", detail: "○個", answerNumber: 2, quizOptions: ["150", "250", "206", "180"], quizType: .defaultQuiz),
+        Quiz(id: 157, title: "カメレオンが色を変える理由", detail: "なぜ変わる？", answerNumber: 3, quizOptions: ["迷彩", "気分", "温度調整", "コミュニケーション"], quizType: .defaultQuiz),
+        Quiz(id: 158, title: "日本の最南端の島", detail: "有人島で最南端", answerNumber: 0, quizOptions: ["波照間島", "与那国島", "沖ノ鳥島", "石垣島"], quizType: .defaultQuiz),
+        Quiz(id: 159, title: "マグロが泳ぎ続ける理由", detail: "止まると○○", answerNumber: 1, quizOptions: ["眠くなる", "呼吸できない", "捕食される", "筋肉が落ちる"], quizType: .defaultQuiz),
+        Quiz(id: 160, title: "カタツムリの目はどこ？", detail: "どこにある？", answerNumber: 2, quizOptions: ["口の近く", "足", "触角の先", "甲羅の下"], quizType: .defaultQuiz)
+    ]
+
+    
+    static let category21: [Quiz] = [
+        Quiz(id: 161, title: "マイクラの基本ブロック", detail: "最初に手に入れるブロックは？", answerNumber: 0, quizOptions: ["木", "石", "ダイヤモンド", "鉄"], quizType: .defaultQuiz),
+        Quiz(id: 162, title: "クリーパーの特徴", detail: "近づくと何をする？", answerNumber: 1, quizOptions: ["逃げる", "爆発する", "攻撃する", "毒を与える"], quizType: .defaultQuiz),
+        Quiz(id: 163, title: "ダイヤモンドを掘るのに必要なツール", detail: "どのツルハシで掘れる？", answerNumber: 2, quizOptions: ["木のツルハシ", "石のツルハシ", "鉄のツルハシ", "金のツルハシ"], quizType: .defaultQuiz),
+        Quiz(id: 164, title: "ネザーに行く方法", detail: "何を作る？", answerNumber: 3, quizOptions: ["ポータル", "梯子", "魔法陣", "ネザーポータル"], quizType: .defaultQuiz),
+        Quiz(id: 165, title: "エンダードラゴンのいる場所", detail: "どこにいる？", answerNumber: 0, quizOptions: ["エンド", "ネザー", "地下洞窟", "スカイワールド"], quizType: .defaultQuiz),
+        Quiz(id: 166, title: "村人の職業", detail: "司書の仕事は？", answerNumber: 1, quizOptions: ["作物を育てる", "本を売る", "武器を作る", "ポーションを作る"], quizType: .defaultQuiz),
+        Quiz(id: 167, title: "レッドストーンの使い道", detail: "何ができる？", answerNumber: 2, quizOptions: ["装備を作る", "食料を作る", "回路を作る", "水を止める"], quizType: .defaultQuiz),
+        Quiz(id: 168, title: "エリトラの使い方", detail: "どうやって飛ぶ？", answerNumber: 3, quizOptions: ["走る", "ジャンプする", "泳ぐ", "ロケット花火を使う"], quizType: .defaultQuiz),
+        Quiz(id: 169, title: "ネザーにある危険な城", detail: "何という？", answerNumber: 0, quizOptions: ["ネザー要塞", "エンドシティ", "廃坑", "森の洋館"], quizType: .defaultQuiz),
+        Quiz(id: 170, title: "ゾンビピグリンの特徴", detail: "攻撃しなければ？", answerNumber: 1, quizOptions: ["襲ってくる", "襲ってこない", "すぐ消える", "金を落とす"], quizType: .defaultQuiz)
+    ]
+
+    
+    static let category22: [Quiz] = [
+        Quiz(id: 171, title: "マイクラで一番硬いブロック", detail: "爆発にも強い！", answerNumber: 2, quizOptions: ["鉄ブロック", "黒曜石", "ネザライトブロック", "ダイヤモンドブロック"], quizType: .defaultQuiz),
+        Quiz(id: 172, title: "最初の夜に作るべきもの", detail: "敵から身を守るために必要なもの", answerNumber: 0, quizOptions: ["家", "剣", "畑", "ベッド"], quizType: .defaultQuiz),
+        Quiz(id: 173, title: "エンダーマンの弱点", detail: "何に触れるとダメージを受ける？", answerNumber: 1, quizOptions: ["火", "水", "石", "金"], quizType: .defaultQuiz),
+        Quiz(id: 174, title: "ビーコンを作るために必要なボス", detail: "何を倒せばいい？", answerNumber: 3, quizOptions: ["エンダードラゴン", "ガスト", "エルダーガーディアン", "ウィザー"], quizType: .defaultQuiz),
+        Quiz(id: 175, title: "シュルカーボックスの特徴", detail: "何ができる？", answerNumber: 2, quizOptions: ["攻撃力アップ", "空を飛べる", "アイテムを持ち運べる", "自動でアイテムを分類"], quizType: .defaultQuiz),
+        Quiz(id: 176, title: "一番速く移動できる手段", detail: "どれが一番速い？", answerNumber: 3, quizOptions: ["ボート", "馬", "ネザー鉄道", "氷の上のボート"], quizType: .defaultQuiz),
+        Quiz(id: 177, title: "エンドシティで手に入る貴重なアイテム", detail: "どこで手に入る？", answerNumber: 1, quizOptions: ["ネザー", "エンドシティ", "村", "ピリジャーの前哨基地"], quizType: .defaultQuiz),
+        Quiz(id: 178, title: "雷が落ちると変身する敵", detail: "どの敵？", answerNumber: 0, quizOptions: ["クリーパー", "ゾンビ", "スケルトン", "ウィザー"], quizType: .defaultQuiz),
+        Quiz(id: 179, title: "ネザライトを作るために必要な鉱石", detail: "何を使う？", answerNumber: 2, quizOptions: ["鉄", "ダイヤモンド", "古代の残骸", "レッドストーン"], quizType: .defaultQuiz),
+        Quiz(id: 180, title: "最強の装備", detail: "どの素材が最強？", answerNumber: 3, quizOptions: ["鉄", "ダイヤモンド", "金", "ネザライト"], quizType: .defaultQuiz)
+    ]
+
+    
     static let quizCategories2: [QuizCategory] = [
         QuizCategory(id: 15, title: "いろいろ", starCount: 3, quizItems: category15, completed: false, correctCount: 0, createdAt: "2025-02-23"),
         QuizCategory(id: 16, title: "漢字の意味と読み", starCount: 5, quizItems: category16, completed: false, correctCount: 0, createdAt: "2025-02-23"),
